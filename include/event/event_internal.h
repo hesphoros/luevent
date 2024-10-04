@@ -18,9 +18,17 @@ struct lu_event_op{
     // int (*evsel_del)(struct lu_event_base *base, struct lu_event *ev);
 };
 
+struct event_changelist{
+    int paser;//TODO
+};
 
 struct lu_event_base{
     const struct lu_event_op * evsel;
+    void*                      ev_base;
+    struct event_changelist    changelist;
+
+    const struct lu_event_op * evsigsel;
+
 };
 
 
@@ -28,4 +36,4 @@ struct lu_event_base{
 }
 #endif //__cplusplus
 
-#endif /*LU_EVENT_INTERNAL_H_INCLUDED_*/
+#endif /*LU_EVENT_INTERNAL_H_INCLUDED_*/ //com

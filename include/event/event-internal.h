@@ -10,12 +10,51 @@ extern "C" {
 #include <time.h>
 #include <sys/queue.h>
 
+#include "util.h"
+
+enum event_method_feature{}; //事件方法特性
+
+
 struct event_op{
-    int Placeholder; //TODO
-    // int (*evsel_init)(struct lu_event_base *base);
-    // void (*evsel_cleanup)(struct lu_event_base *base);
-    // int (*evsel_add)(struct lu_event_base *base, struct lu_event *ev);
-    // int (*evsel_del)(struct lu_event_base *base, struct lu_event *ev);
+    const char* name;//后端名称
+
+    /** 初始化函数，用于设置事件基础结构以使用该后端。它应该创建一个新的结构体，
+     * 保存运行该后端所需的任何信息，并将其返回。返回的指针将由event_init存储在
+     * event_base.evbase字段中。如果初始化失败，该函数应返回NULL。 */
+    void *(*init)(struct event_base*);
+
+
+    /** 启用给定文件描述符或信号的读写事件。'events'参数表示我们要启用的事件类型，
+     * 可能是EV_READ、EV_WRITE、EV_SIGNAL和EV_ET的组合。'old'参数表示之前在该
+     * 文件描述符上启用的事件。'fdinfo'参数是与文件描述符相关联的结构体，在evmap
+     * 中管理；其大小由下面的fdinfo_len字段定义。第一次添加文件描述符时，
+     * 它将被设置为0。该函数应在成功时返回0，在错误时返回-1。 */
+    int (*add)(struct event_base *, evutil_socket_t fd, short old, short events, void *fd_info);
+   
+    /** 类似于'add'函数，但'events'参数表示我们要禁用的事件类型。 */
+    int (*del)(struct event_base *, evutil_socket_t fd, short old, short events, void *fdinfo);
+
+
+    /** 实现事件循环的核心功能。它需要检查哪些已添加的事件已准备就绪，并为每个活动事件
+     * 调用event_active函数（通常通过event_io_active等方式）。该函数应在成功时返回0，
+     * 在错误时返回-1。 */
+    int (*dispatch)(struct event_base *, struct timeval *);
+
+    /** 用于清理和释放事件基础结构中的数据的函数。 */
+    void (*dealloc)(struct event_base *);
+
+    /** 标志：如果我们在fork之后需要重新初始化事件基础结构，则设置此标志。 */
+    int need_reinit;
+
+    /** 支持的事件方法特性的位数组。 */
+    enum event_method_feature features;
+
+    /** 每个具有一个或多个活动事件的文件描述符应记录的额外信息的长度。
+     * 此信息作为每个文件描述符的evmap条目的一部分记录，并作为参数传递给上述的
+     * 'add'和'del'函数。 */
+    size_t fdinfo_len;
+
+
 };
 
 struct event{
@@ -57,7 +96,11 @@ struct evutil_weakrand_state{
 
 };
 
-typedef int evutil_socket_t ;
+
+
+struct event_config{
+    int paser;
+};
 
 struct event_base{
     const struct lu_event_op*   evsel;                  //指向后端数据的指针，用于描述event_base端的数据
@@ -123,7 +166,7 @@ struct event_base{
 	void *th_base_lock;
 	/** A condition that gets signalled when we're done processing an
 	 * event with waiters on it. */
-	void *current_event_cond;
+	void *current_event_cond;   
 	/** Number of threads blocking on current_event_cond. */
 	int current_event_waiters;
 #endif
@@ -141,7 +184,7 @@ struct event_base{
     
 	enum event_base_config_flag flags;
 	
-    //，用于表示最大调度时间。
+    //用于表示最大调度时间。
 	struct timeval max_dispatch_time;
 
     int max_dispatch_callbacks;//用于表示最大调度回调数量。
@@ -182,3 +225,6 @@ struct event_base{
 #endif //__cplusplus
 
 #endif /*LU_EVENT_INTERNAL_H_INCLUDED_*/ //com
+
+
+ 

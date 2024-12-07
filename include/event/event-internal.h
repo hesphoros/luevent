@@ -14,8 +14,10 @@ extern "C" {
  
 
 
-// 前置声明
+
 typedef struct lu_event_operate_s lu_event_operate_t;
+//typedef struct lu_event_base_s    lu_event_base_t;
+
 
 // 定义 lu_event_base_s 结构体
 typedef struct lu_event_base_s {
@@ -28,8 +30,7 @@ typedef struct lu_event_operate_s {
     const char* name;
 
     /**
-     * 返回值：返回一个新创建的结构体指针；
-     *          返回的指针将由 event_init() 储存在 event_base_s.evbase 字段中；
+     * 返回值：  返回一个新创建的结构体指针;返回的指针将由 event_init() 储存在 event_base_s.evbase 字段中；
      *          如果初始化失败则返回 NULL。
      */
     void* (*init)(lu_event_base_t*);  // 这里的类型已变为 lu_event_base_t*

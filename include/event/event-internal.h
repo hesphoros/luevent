@@ -220,6 +220,7 @@ struct event_base{
 };
 
 
+//some changes make by lu
 #ifdef __cplusplus
 }
 #endif //__cplusplus

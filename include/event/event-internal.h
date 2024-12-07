@@ -21,7 +21,9 @@ typedef struct lu_event_operate_s lu_event_operate_t;
 
 // 定义 lu_event_base_s 结构体
 typedef struct lu_event_base_s {
-    const lu_event_operate_t* evsel_op;  // 引用 lu_event_operate_t 类型的指针
+    // 引用 lu_event_operate_t 类型的指针
+    const lu_event_operate_t* evsel_op;  
+    // 操作lu_event_base_s
     void* evbase;
 } lu_event_base_t;
 
@@ -38,6 +40,11 @@ typedef struct lu_event_operate_s {
 
 
 
+/** Internal structure: describes the configuration we want for an event_base
+ * that we're about to allocate. */
+typedef struct lu_event_config_s {
+    int flags;
+}lu_event_config_t;
  
 
 

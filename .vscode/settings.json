@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "array": "cpp",
+        "atomic": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "cwchar": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "stop_token": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "thread": "cpp"
+    }
+}

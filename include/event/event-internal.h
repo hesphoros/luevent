@@ -11,30 +11,29 @@ extern "C" {
 #include <sys/queue.h>
 #include "util.h"
 
-#define PASER int paser
-
-
-
-typedef struct lu_event_base_s{
-    const struct lu_event_operate_t* evsel_op;
-    void*                            evbase;
-}lu_event_base_t;
-
-
  
-typedef struct lu_event_operate_s{
-    // name
-    const char*     name;
+
+
+// 前置声明
+typedef struct lu_event_operate_s lu_event_operate_t;
+
+// 定义 lu_event_base_s 结构体
+typedef struct lu_event_base_s {
+    const lu_event_operate_t* evsel_op;  // 引用 lu_event_operate_t 类型的指针
+    void* evbase;
+} lu_event_base_t;
+
+// 定义 lu_event_operate_s 结构体
+typedef struct lu_event_operate_s {
+    const char* name;
 
     /**
-     * return : 返回一个新创建的结构体
-     *          返回的指针将由event_init()储存在event_base_s.evbase字段中;
-     *          如果初始化失败则返回NULL
+     * 返回值：返回一个新创建的结构体指针；
+     *          返回的指针将由 event_init() 储存在 event_base_s.evbase 字段中；
+     *          如果初始化失败则返回 NULL。
      */
-    void* (*init)(struct lu_event_base_s *);
-
-}event_operate_t;
-
+    void* (*init)(lu_event_base_t*);  // 这里的类型已变为 lu_event_base_t*
+} lu_event_operate_t;
 
 
 

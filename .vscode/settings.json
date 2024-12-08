@@ -15,6 +15,9 @@
         "thread": "cpp",
         "lu_event.h": "c",
         "lu_event-internal.h": "c",
-        "ranges": "c"
+        "ranges": "c",
+        "initializer_list": "cpp",
+        "span": "cpp",
+        "utility": "cpp"
     }
 }

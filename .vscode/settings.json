@@ -12,6 +12,7 @@
         "string_view": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "lu_event.h": "c"
     }
 }

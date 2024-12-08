@@ -20,9 +20,8 @@ typedef struct lu_event_operate_s lu_event_operate_t;
 
  
 typedef struct lu_event_base_s {
-    // 引用 lu_event_operate_t 类型的指针 
+    
     const struct lu_event_operate_s* evsel_op;  
-    // 操作lu_event_base_s
     void* evbase;
 } lu_event_base_t;
 
@@ -34,7 +33,7 @@ typedef struct lu_event_operate_s {
      * return : 返回一个新创建的结构体指针;返回的指针将由 event_init() 储存在 event_base_s.evbase 字段中；
      *          如果初始化失败则返回 NULL。
      */
-    void* (*init)(lu_event_base_t*);  // 这里的类型已变为 lu_event_base_t*
+    void* (*init)(lu_event_base_t*);  
 } lu_event_operate_t;
 
 
@@ -53,6 +52,10 @@ typedef struct lu_event_config_s {
 
     //指定最大分派间隔的时间值。
 	struct timeval max_dispatch_interval;
+    //指定在一次循环中最大的分派回调数量。
+    int max_dispatch_callbacks;
+    //用于限制在特定优先级之后的回调数量。
+	int limit_callbacks_after_prio;
 
 }lu_event_config_t;
  

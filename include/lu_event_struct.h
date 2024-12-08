@@ -5,9 +5,8 @@
 extern "C" {
 #endif
 
-//#include <sys/queue.h>
-
-
+#include <sys/queue.h>
+ 
 
 
 /* Fix so that people don't have to run with <sys/queue.h> */

@@ -52,10 +52,12 @@ typedef struct lu_event_config_s {
 
     //指定最大分派间隔的时间值。
 	struct timeval max_dispatch_interval;
+    
     //指定在一次循环中最大的分派回调数量。
     int max_dispatch_callbacks;
+    
     //用于限制在特定优先级之后的回调数量。
-	int limit_callbacks_after_prio;
+	int limit_callbacks_after_priority;
 
 }lu_event_config_t;
  

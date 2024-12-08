@@ -13,6 +13,8 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "thread": "cpp",
-        "lu_event.h": "c"
+        "lu_event.h": "c",
+        "lu_event-internal.h": "c",
+        "ranges": "c"
     }
 }

@@ -44,6 +44,7 @@ typedef struct lu_event_operate_s {
  * that we're about to allocate. */
 typedef struct lu_event_config_s {
     int flags;
+    TAILQ_HEAD(lu_event_config_q, lu_event_config_s) entries;
 }lu_event_config_t;
  
 

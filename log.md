@@ -9,3 +9,5 @@
 #define mm_strdup(str) 			        lu_event_mm_strdup_(str)
 #define mm_realloc(ptr, size) 		    lu_event_mm_realloc_((ptr), (size))
 #define mm_free(ptr) 				    lu_event_mm_free_(ptr)
+
+update lu_utils.h

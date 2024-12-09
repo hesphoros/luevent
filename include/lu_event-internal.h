@@ -8,7 +8,7 @@ extern "C" {
 
 
 #include <sys/queue.h>
-#include "util.h"
+#include "lu_util.h"
 #include <sys/time.h>
  
 
@@ -30,10 +30,16 @@ typedef struct lu_event_operate_s {
     const char* name;
 
     /**
-     * return : 返回一个新创建的结构体指针;返回的指针将由 event_init() 储存在 event_base_s.evbase 字段中；
-     *          如果初始化失败则返回 NULL。
+     *  Function to set up an lu_event_base_t to use this backend.It should 
+     *  create a new lu_event_base_t and return it.On failture,this function should return NULL
      */
     void* (*init)(lu_event_base_t*);  
+    //add 
+    //del
+    //dispatch
+    //dealloc
+    //
+
 } lu_event_operate_t;
 
 

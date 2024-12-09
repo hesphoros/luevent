@@ -1,0 +1,118 @@
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// 宏定义，启用或禁用日志记录
+#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING 1  // 设置为 1 启用日志，0 禁用日志
+#define LU_EVENT__DISABLE_DEFAULT_MEMORY_LOGGING 0 // 设置为 0 禁用日志
+
+// 根据宏设置日志记录的启用或禁用
+#if LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+    #define ENABLE_DEFAULT_MEMORY_LOGGING() \
+        lu_mm_malloc_log_fn_ = default_memory_log; \
+        lu_mm_calloc_log_fn_ = default_memory_log; \
+        lu_mm_free_log_fn_ = default_memory_log; \
+        lu_mm_aligned_malloc_log_fn_ = default_memory_log;
+#elif LU_EVENT__DISABLE_DEFAULT_MEMORY_LOGGING
+    #define ENABLE_DEFAULT_MEMORY_LOGGING() \
+        lu_mm_malloc_log_fn_ = NULL; \
+        lu_mm_calloc_log_fn_ = NULL; \
+        lu_mm_free_log_fn_ = NULL; \
+        lu_mm_aligned_malloc_log_fn_ = NULL;
+#else
+    #define ENABLE_DEFAULT_MEMORY_LOGGING() \
+        // 可以定义一个默认的行为，或者在这里处理错误
+        printf("Invalid logging configuration\n");
+#endif
+
+
+
+static void* (*lu_mm_malloc_fn_)(size_t size_) = NULL;
+static void* (*lu_mm_calloc_fn_)(void* ptr_, size_t size_) = NULL;
+static void* (*lu_mm_free_fn_)(void* ptr_) = NULL;
+static void* (*lu_mm_aligned_malloc_fn_)(size_t size_, size_t alignment) = NULL;
+
+// static 日志函数指针
+static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_calloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+
+
+// static 默认日志记录函数
+static void default_memory_log(const char* operation, void* ptr, size_t size) {
+    if (ptr == NULL) {
+        printf("[%s] Failed to allocate memory (size: %zu bytes)\n", operation, size);
+    } else {
+        printf("[%s] %p allocated/freed (size: %zu bytes)\n", operation, ptr, size);
+    }
+}
+}
+
+
+static void* lu_mm_malloc(size_t size) {
+    void* ptr = NULL;
+    if (lu_mm_malloc_fn_) {
+        ptr = lu_mm_malloc_fn_(size);  // 使用自定义的 malloc
+    } else {
+        ptr = malloc(size);  // 默认使用 malloc
+    }
+
+    if (lu_mm_malloc_log_fn_) {
+        lu_mm_malloc_log_fn_("malloc", ptr, size);  // 调用日志记录函数
+    } else {
+        default_memory_log("malloc", ptr, size);  // 默认日志记录
+    }
+
+    return ptr;
+}
+
+static void* lu_mm_calloc(size_t num, size_t size) {
+    void* ptr = NULL;
+    if (lu_mm_calloc_fn_) {
+        ptr = lu_mm_calloc_fn_(NULL, num * size);  // 使用自定义的 calloc
+    } else {
+        ptr = calloc(num, size);  // 默认使用 calloc
+    }
+
+    if (lu_mm_calloc_log_fn_) {
+        lu_mm_calloc_log_fn_("calloc", ptr, num * size);  // 调用日志记录函数
+    } else {
+        default_memory_log("calloc", ptr, num * size);  // 默认日志记录
+    }
+
+    return ptr;
+}
+
+static void lu_mm_free(void* ptr) {
+    if (lu_mm_free_fn_) {
+        lu_mm_free_fn_(ptr);  // 使用自定义的 free
+    } else {
+        free(ptr);  // 默认使用 free
+    }
+
+    if (lu_mm_free_log_fn_) {
+        lu_mm_free_log_fn_("free", ptr, 0);  // 调用日志记录函数
+    } else {
+        default_memory_log("free", ptr, 0);  // 默认日志记录
+    }
+}
+
+static void* lu_mm_aligned_malloc(size_t size, size_t alignment) {
+    void* ptr = NULL;
+    if (lu_mm_aligned_malloc_fn_) {
+        ptr = lu_mm_aligned_malloc_fn_(size, alignment);  // 使用自定义的对齐 malloc
+    } else {
+        ptr = aligned_alloc(alignment, size);  // 默认使用 aligned_alloc
+    }
+
+    if (lu_mm_aligned_malloc_log_fn_) {
+        lu_mm_aligned_malloc_log_fn_("aligned_malloc", ptr, size);  
+        // 调用日志记录函数
+    } else {
+        default_memory_log("aligned_malloc", ptr, size);  // 默认日志记录
+    }
+
+    return ptr;
+}

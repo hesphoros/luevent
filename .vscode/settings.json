@@ -18,6 +18,13 @@
         "ranges": "c",
         "initializer_list": "cpp",
         "span": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "lu_mm-internal.h": "c",
+        "stddef.h": "c",
+        "lu_util.h": "c",
+        "cerrno": "c",
+        "lu_erron.h": "c",
+        "string.h": "c",
+        "errno.h": "c"
     }
 }

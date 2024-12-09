@@ -12,7 +12,7 @@ extern "C" {
 #define mm_realloc(p, sz) 		lu_event_mm_realloc_((p), (sz))
 #define mm_free(p) 				lu_event_mm_free_(p)
 
-#ifdef LU_EVENT__DISABLE_MM_REPLACEMENT 
+#ifdef  LU_EVENT__DISABLE_CUSTOM_MM_REPLACEMENT 
 #define mm_malloc(sz) malloc(sz)
 #define mm_calloc(n, sz) calloc((n), (sz))
 #define mm_strdup(s) strdup(s)

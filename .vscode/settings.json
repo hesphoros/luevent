@@ -25,6 +25,7 @@
         "cerrno": "c",
         "lu_erron.h": "c",
         "string.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "lu_memory_manager.h": "c"
     }
 }

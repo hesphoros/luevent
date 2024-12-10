@@ -1,4 +1,5 @@
-#include "include/lu_event-internal.h"
+
+#include <include/lu_memory_manager.h>
 #include <stdio.h>
 #include <limits.h>
 #include "include/lu_event.h"
@@ -10,7 +11,7 @@
 
 lu_event_config_t * lu_event_config_new(void)
 {
-    lu_event_config_t *ev_cfg_t = calloc(1, sizeof(*ev_cfg_t));
+    lu_event_config_t *ev_cfg_t = lu_event_mm_calloc_(1, sizeof(*ev_cfg_t));
      
 	if (ev_cfg_t == NULL)
 		return (NULL);

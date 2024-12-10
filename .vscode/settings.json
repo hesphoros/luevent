@@ -26,6 +26,8 @@
         "lu_erron.h": "c",
         "string.h": "c",
         "errno.h": "c",
-        "lu_memory_manager.h": "c"
+        "lu_memory_manager.h": "c",
+        "algorithm": "c",
+        "chrono": "c"
     }
 }

@@ -4,6 +4,9 @@
 #include "lu_util.h"
 #include <stdlib.h>
 #include <memory.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {

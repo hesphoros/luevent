@@ -14,19 +14,19 @@ extern "C" {
 
 
 
-typedef struct lu_event_operate_s lu_event_operate_t;
-//typedef struct lu_event_base_s    lu_event_base_t;
+typedef struct lu_event_operation_s lu_event_operate_t;
+
 
 
  
 typedef struct lu_event_base_s {
     
-    const struct lu_event_operate_s* evsel_op;  
+    const struct lu_event_operation_s* evsel_op;  
     void* evbase;
 } lu_event_base_t;
 
  
-typedef struct lu_event_operate_s {
+typedef struct lu_event_operation_s {
     const char* name;
 
     /**

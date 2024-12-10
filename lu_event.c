@@ -8,7 +8,7 @@
 
 
  
-
+ 
 lu_event_config_t * lu_event_config_new(void)
 {
     lu_event_config_t *ev_cfg_t = mm_calloc(1, sizeof(*ev_cfg_t));

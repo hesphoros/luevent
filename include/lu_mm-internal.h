@@ -3,6 +3,7 @@
 
 #include "lu_util.h"
 #include <stdlib.h>
+#include <memory.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,12 +17,15 @@ static void*(*lu_mm_calloc_fn_)(void* ptr_, size_t size_) = NULL;
 static void *(*lu_mm_realloc_fn_)(void *ptr, size_t size) = NULL;
 static void*(*lu_mm_free_fn_)(void* ptr_) = NULL;
 static void*(*lu_mm_aligned_malloc_fn_)(size_t size_, size_t alignment) = NULL;
- 
+
 // static 日志函数指针
 static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 static void (*lu_mm_calloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_realloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void default_memory_log(const char* operation, void* ptr, size_t size);
+ 
 
 // 内存对齐等等
 // void *aligned_malloc(size_t size, size_t alignment) {
@@ -31,7 +35,10 @@ static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, si
 //     return (void*)aligned;
 // }
 
-
+/** 
+ * @briefMemory management functions 
+ * @{
+*/
 #ifndef LU_EVENT__DISABLE_CUSTOM_MM_REPLACEMENT
 #define mm_malloc(size) 			    lu_event_mm_malloc_(size)
 #define mm_calloc(nitems, size) 	    lu_event_mm_calloc_((nitems), (size))
@@ -47,6 +54,32 @@ static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, si
 #define mm_realloc(p, sz) realloc((p), (sz))
 #define mm_free(p) free(p)
 #endif
+
+/** @}  */
+
+/**
+ * @brief Memory opreration logging functions
+ *  默认情况下不启用日志，如果没有定义启用宏
+ * @{
+ *  
+*/
+
+ 
+
+
+#ifdef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+# else
+
+    lu_mm_malloc_log_fn_ = (void (*)(const char*, void*, size_t)) NULL;;
+    
+#endif
+
+ 
+
+/**
+ * @}
+ */
+
 
 #ifdef __cplusplus
 }

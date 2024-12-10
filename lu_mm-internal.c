@@ -3,6 +3,8 @@
 #include "include/lu_erron.h"
 #include <string.h>
 
+
+
 //#define LU_ERROR_NO_MEMORY 12
 void* lu_event_mm_malloc_(size_t size){
     if(size == 0){

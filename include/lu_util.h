@@ -51,7 +51,6 @@ extern "C" {
    @{
 */
 
-
 #ifdef __has_include
     #if __has_include(<limits.h>)
         #include <limits.h>

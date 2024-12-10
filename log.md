@@ -14,3 +14,5 @@ update lu_utils.h
 
 # Tuesday 10 Dec 2024
 sizeof(*ptr) 无法准确反映动态分配的内存大小，可以考虑在内存分配时额外存储内存块大小，或者使用自定义的内存管理来追踪内存块大小。
+完成了mm-internal.h头文件的封装，实现了mm_malloc、mm_calloc、mm_strdup、mm_realloc、mm_free等函数。 以及条件日志输出
+

@@ -22,12 +22,16 @@ static void*(*lu_mm_free_fn_)(void* ptr_) = NULL;
 static void*(*lu_mm_aligned_malloc_fn_)(size_t size_, size_t alignment) = NULL;
 
 // static 日志函数指针
-static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-static void (*lu_mm_calloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-static void (*lu_mm_realloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+// static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+// static void (*lu_mm_calloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+// static void (*lu_mm_realloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+// static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+// static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+
+
+ 
 static void default_memory_log(const char* operation, void* ptr, size_t size);
+ 
  
 
 // 内存对齐等等
@@ -71,7 +75,7 @@ static void default_memory_log(const char* operation, void* ptr, size_t size);
 
 
 // 默认情况下不启用日志，如果没有定义启用宏
-#ifndef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+#ifdef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
     // 禁用日志记录
     #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
         lu_mm_malloc_log_fn_ = NULL; \

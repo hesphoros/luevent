@@ -20,9 +20,16 @@ void* lu_event_mm_malloc_(size_t size){
         }
     } else {
         ptr = malloc(size);  
-        if (ptr == NULL && lu_mm_malloc_log_fn_) {
+        
+       // if (ptr == NULL && lu_mm_malloc_log_fn_) {
+        if ( lu_mm_malloc_log_fn_) {
             lu_mm_malloc_log_fn_("__malloc__", NULL, size);  // 记录内存分配失败的日志
+            printf("malloced ");
         }
+        else{
+            printf("malloced but lu_mm_malloc_log_fn_ is empty ");
+        }
+        
     }
    
 
@@ -113,7 +120,7 @@ void lu_event_mm_free_(void* ptr){
 }
 
 
-static void default_memory_log(const char* operation, void* ptr, size_t size) {
+void default_memory_log(const char* operation, void* ptr, size_t size) {
     if (ptr == NULL) {
         
         printf("[%s] Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",

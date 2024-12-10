@@ -28,6 +28,7 @@
         "errno.h": "c",
         "lu_memory_manager.h": "c",
         "algorithm": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "stdlib.h": "c"
     }
 }

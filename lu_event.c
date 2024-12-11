@@ -1,5 +1,4 @@
-
-#include "lu_mm-internal.h"
+#include <include/lu_memory_manager.h>
 #include <stdio.h>
 #include <limits.h>
 #include "include/lu_event.h"

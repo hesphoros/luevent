@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/test_executable.dir/test.c.o -o test_executable

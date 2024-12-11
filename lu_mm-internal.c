@@ -1,6 +1,8 @@
-#include "include/lu_mm-internal.h"
+#include "lu_mm-internal.h"
 #include <errno.h>  
-#include "include/lu_erron.h"
+
+
+//#include "include/lu_erron.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -135,6 +137,57 @@ void lu_event_mm_free_(void* ptr){
         free(ptr);
 }
 
+
+void default_memory_log(const char* operation, void* ptr, size_t size) {
+    // 获取当前时间
+    time_t rawtime;
+    struct tm *timeinfo;
+    char time_str[20];  // 用于存储格式化的时间字符串
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    // 格式化时间为 "YYYY-MM-DD HH:MM:SS"
+    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
+
+    // 打开日志文件，O_APPEND 标志表示追加写入，O_CREAT 表示文件不存在时创建
+    int log_file = open("memory_log.txt", O_WRONLY | O_APPEND | O_CREAT, 0644);
+    if (log_file == -1) {
+        // 如果打开文件失败，输出错误信息
+        perror("Error opening log file");
+        return;
+    }
+
+    char log_message[256];
+    ssize_t message_len;
+
+    if (ptr == NULL && strcmp(operation, MM_MALLOC_STR) != 0 && strcmp(operation, MALLOC_STR) != 0) {
+        // 格式化日志信息：内存分配失败
+        message_len = snprintf(log_message, sizeof(log_message),
+            "[%s] [%s] Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",
+            time_str, operation, size, errno, strerror(errno));
+    } else {
+        // 格式化日志信息：内存分配或释放成功
+        message_len = snprintf(log_message, sizeof(log_message),
+            "[%s] [%s] %p allocated/freed (size: %zu bytes)\n", time_str, operation, ptr, size);
+    }
+
+    // 使用 write 系统调用写入日志信息到文件
+    if (message_len > 0) {
+        ssize_t written = write(log_file, log_message, message_len);
+        if (written == -1) {
+            // 如果写入失败，输出错误信息
+            perror("Error writing to log file");
+        }
+    }
+
+    // 关闭文件
+    close(log_file);
+}
+
+/*
+
+
 void default_memory_log(const char* operation, void* ptr, size_t size) {
     // 打开日志文件，O_APPEND 标志表示追加写入，O_CREAT 表示文件不存在时创建
     int log_file = open("memory_log.txt", O_WRONLY | O_APPEND | O_CREAT, 0644);
@@ -171,3 +224,4 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
     // 关闭文件
     close(log_file);
 }
+*/

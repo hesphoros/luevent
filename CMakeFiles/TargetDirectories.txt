@@ -1,0 +1,10 @@
+/root/luevent/CMakeFiles/test.dir
+/root/luevent/CMakeFiles/edit_cache.dir
+/root/luevent/CMakeFiles/rebuild_cache.dir
+/root/luevent/tests/CMakeFiles/test_executable.dir
+/root/luevent/tests/CMakeFiles/test.dir
+/root/luevent/tests/CMakeFiles/edit_cache.dir
+/root/luevent/tests/CMakeFiles/rebuild_cache.dir
+/root/luevent/examples/CMakeFiles/test.dir
+/root/luevent/examples/CMakeFiles/edit_cache.dir
+/root/luevent/examples/CMakeFiles/rebuild_cache.dir

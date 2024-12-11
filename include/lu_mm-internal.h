@@ -16,16 +16,13 @@ extern "C" {
 #endif
 
 // Custom memory management functions for malloc, calloc realloc  free aligned_malloc , Memory Logging etc.
-// 自定义的内存管理函数 
+
 // TODO 使用内存池进行管理
 static void*(*lu_mm_malloc_fn_)(size_t size_) = NULL;
 static void*(*lu_mm_calloc_fn_)(void* ptr_, size_t size_) = NULL;
 static void *(*lu_mm_realloc_fn_)(void *ptr, size_t size) = NULL;
 static void*(*lu_mm_free_fn_)(void* ptr_) = NULL;
 static void*(*lu_mm_aligned_malloc_fn_)(size_t size_, size_t alignment) = NULL;
-
-
-
 
 
 //static 日志函数指针
@@ -72,41 +69,9 @@ extern void* lu_log_functions_global_[];
 
 /** @}  */
 
-/**
- * @brief Memory opreration logging functions
- *  默认情况下不启用日志，如果没有定义启用宏
- * @{
- *  
-*/
-
- 
 void lu_enable_default_memory_logging(int);
 
-// 默认情况下不启用日志，如果没有定义启用宏
-// #ifndef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
-//     // 禁用日志记录
-//     #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
-//         lu_mm_malloc_log_fn_ = NULL; \
-//         lu_mm_calloc_log_fn_ = NULL; \
-//         lu_mm_realloc_log_fn_ = NULL; \
-//         lu_mm_free_log_fn_ = NULL; \
-//         lu_mm_aligned_malloc_log_fn_ = NULL; \
-//     } while(0)
-// #else
-//     // 启用日志记录
-//     #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
-//         lu_mm_malloc_log_fn_ = default_memory_log; \
-//         lu_mm_calloc_log_fn_ = default_memory_log; \
-//         lu_mm_realloc_log_fn_ = default_memory_log; \
-//         lu_mm_free_log_fn_ = default_memory_log; \
-//         lu_mm_aligned_malloc_log_fn_ = default_memory_log; \
-//     } while(0)
-// #endif
- 
 
-/**
- * @}
- */
 
 
 #ifdef __cplusplus

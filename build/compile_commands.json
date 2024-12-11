@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/root/luevent/build",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -std=gnu11 -o CMakeFiles/luevent.dir/src/lu_event.c.o -c /root/luevent/src/lu_event.c",
+  "file": "/root/luevent/src/lu_event.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_event.c.o"
+},
+{
+  "directory": "/root/luevent/build",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -std=gnu11 -o CMakeFiles/luevent.dir/src/lu_mm-internal.c.o -c /root/luevent/src/lu_mm-internal.c",
+  "file": "/root/luevent/src/lu_mm-internal.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o"
+},
+{
+  "directory": "/root/luevent/build",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -std=gnu11 -o CMakeFiles/luevent.dir/src/main.c.o -c /root/luevent/src/main.c",
+  "file": "/root/luevent/src/main.c",
+  "output": "CMakeFiles/luevent.dir/src/main.c.o"
+}
+]

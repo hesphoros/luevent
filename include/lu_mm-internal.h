@@ -39,6 +39,8 @@ static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, si
 void default_memory_log(const char* operation, void* ptr, size_t size);
  
  
+extern void* lu_log_functions_global_[];
+
 
 // 内存对齐等等
 // void *aligned_malloc(size_t size, size_t alignment) {
@@ -78,28 +80,28 @@ void default_memory_log(const char* operation, void* ptr, size_t size);
 */
 
  
-void lu_enable_defalut_memory_logging();
+void lu_enable_default_memory_logging(int);
 
 // 默认情况下不启用日志，如果没有定义启用宏
-#ifndef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
-    // 禁用日志记录
-    #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
-        lu_mm_malloc_log_fn_ = NULL; \
-        lu_mm_calloc_log_fn_ = NULL; \
-        lu_mm_realloc_log_fn_ = NULL; \
-        lu_mm_free_log_fn_ = NULL; \
-        lu_mm_aligned_malloc_log_fn_ = NULL; \
-    } while(0)
-#else
-    // 启用日志记录
-    #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
-        lu_mm_malloc_log_fn_ = default_memory_log; \
-        lu_mm_calloc_log_fn_ = default_memory_log; \
-        lu_mm_realloc_log_fn_ = default_memory_log; \
-        lu_mm_free_log_fn_ = default_memory_log; \
-        lu_mm_aligned_malloc_log_fn_ = default_memory_log; \
-    } while(0)
-#endif
+// #ifndef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+//     // 禁用日志记录
+//     #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
+//         lu_mm_malloc_log_fn_ = NULL; \
+//         lu_mm_calloc_log_fn_ = NULL; \
+//         lu_mm_realloc_log_fn_ = NULL; \
+//         lu_mm_free_log_fn_ = NULL; \
+//         lu_mm_aligned_malloc_log_fn_ = NULL; \
+//     } while(0)
+// #else
+//     // 启用日志记录
+//     #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
+//         lu_mm_malloc_log_fn_ = default_memory_log; \
+//         lu_mm_calloc_log_fn_ = default_memory_log; \
+//         lu_mm_realloc_log_fn_ = default_memory_log; \
+//         lu_mm_free_log_fn_ = default_memory_log; \
+//         lu_mm_aligned_malloc_log_fn_ = default_memory_log; \
+//     } while(0)
+// #endif
  
 
 /**

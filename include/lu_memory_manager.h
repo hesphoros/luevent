@@ -13,7 +13,7 @@ char* lu_event_mm_strdup_   (const char *str);
 void* lu_event_mm_realloc_  (void* ptr,     size_t size);
 void  lu_event_mm_free_     (void* ptr);
 
-void lu_enable_defalut_memory_logging();
-
+void lu_enable_default_memory_logging(int);
+extern void* lu_log_functions_global_[];
 
 #endif // LU_MEMORY_MANAGER_H

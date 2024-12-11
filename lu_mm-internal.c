@@ -6,14 +6,21 @@
 
 
 
- 
-void lu_enable_defalut_memory_logging(){
-    lu_mm_malloc_log_fn_ = default_memory_log; 
-    lu_mm_calloc_log_fn_ = default_memory_log; 
-    lu_mm_realloc_log_fn_ = default_memory_log; 
-    lu_mm_free_log_fn_ = default_memory_log; 
-    lu_mm_aligned_malloc_log_fn_ = default_memory_log; 
+
+void* lu_log_functions_global_[] = {
+    &lu_mm_malloc_log_fn_,
+    &lu_mm_calloc_log_fn_,
+    &lu_mm_realloc_log_fn_,
+    &lu_mm_free_log_fn_,
+    &lu_mm_aligned_malloc_log_fn_
+};
+
+ void lu_enable_default_memory_logging(int enable) {
+    void (*log_fn)(const char*, void*, size_t) = enable ? default_memory_log : NULL;
     
+    for (int i = 0; i < sizeof(lu_log_functions_global_) / sizeof(lu_log_functions_global_[0]); i++) {
+        *(void**)lu_log_functions_global_[i] = log_fn;
+    }
 }
 
 
@@ -35,11 +42,8 @@ void* lu_event_mm_malloc_(size_t size){
         
        // if (ptr == NULL && lu_mm_malloc_log_fn_) {
         if ( lu_mm_malloc_log_fn_) {
-            lu_mm_malloc_log_fn_("__malloc__", NULL, size);  // 记录内存分配失败的日志
-            //printf("malloced \n");
-        }
-        else{
-            printf("malloced [%ld] but lu_mm_malloc_log_fn_ is empty \n",size);
+            lu_mm_malloc_log_fn_("__malloc__", ptr, size);  // 记录内存分配失败的日志
+           
         }
         
     }
@@ -152,6 +156,7 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
         // 格式化日志信息：内存分配或释放成功
         message_len = snprintf(log_message, sizeof(log_message),
             "[%s] %p allocated/freed (size: %zu bytes)\n", operation, ptr, size);
+            
     }
 
     // 使用 write 系统调用写入日志信息到文件

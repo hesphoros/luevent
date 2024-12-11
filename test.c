@@ -1,11 +1,11 @@
 #include "include/lu_memory_manager.h"
 #include <stdio.h>
-#include <stdlib.h>
 
-#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+
+//#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
 int main(){
 
-    lu_enable_defalut_memory_logging();    
+    lu_enable_default_memory_logging(1);    
     int *x = mm_malloc(sizeof(int));
     *x = 1;
     printf("%d\n", *x);

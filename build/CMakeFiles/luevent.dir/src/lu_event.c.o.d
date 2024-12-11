@@ -36,11 +36,6 @@ CMakeFiles/luevent.dir/src/lu_event.c.o: /root/luevent/src/lu_event.c \
  /usr/include/bits/posix_opt.h /usr/include/bits/environments.h \
  /usr/include/bits/confname.h /usr/include/bits/getopt_posix.h \
  /usr/include/bits/getopt_core.h /usr/include/bits/unistd_ext.h \
- /usr/lib/gcc/x86_64-redhat-linux/10/include/limits.h \
- /usr/lib/gcc/x86_64-redhat-linux/10/include/syslimits.h \
- /usr/include/limits.h /usr/include/bits/posix1_lim.h \
- /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
- /usr/include/bits/posix2_lim.h /root/luevent/include/lu_event.h \
  /root/luevent/include/lu_event-internal.h \
  /root/luevent/compat/sys/queue.h /root/luevent/include/lu_util.h \
  /usr/include/time.h /usr/include/bits/time.h \
@@ -49,4 +44,11 @@ CMakeFiles/luevent.dir/src/lu_event.c.o: /root/luevent/src/lu_event.c \
  /usr/lib/gcc/x86_64-redhat-linux/10/include/stdint.h \
  /usr/include/stdint.h /usr/include/bits/wchar.h \
  /usr/include/bits/stdint-uintn.h /usr/include/inttypes.h \
- /usr/include/sys/time.h /usr/include/error.h /usr/include/bits/error.h
+ /usr/lib/gcc/x86_64-redhat-linux/10/include/limits.h \
+ /usr/lib/gcc/x86_64-redhat-linux/10/include/syslimits.h \
+ /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+ /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+ /usr/include/bits/posix2_lim.h /usr/include/sys/time.h \
+ /root/luevent/include/lu_event.h \
+ /root/luevent/include/lu_event-internal.h /usr/include/error.h \
+ /usr/include/bits/error.h

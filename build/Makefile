@@ -129,6 +129,30 @@ luevent/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/build
 .PHONY : luevent/fast
 
+src/lu_error.o: src/lu_error.c.o
+.PHONY : src/lu_error.o
+
+# target to build an object file
+src/lu_error.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_error.c.o
+.PHONY : src/lu_error.c.o
+
+src/lu_error.i: src/lu_error.c.i
+.PHONY : src/lu_error.i
+
+# target to preprocess a source file
+src/lu_error.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_error.c.i
+.PHONY : src/lu_error.c.i
+
+src/lu_error.s: src/lu_error.c.s
+.PHONY : src/lu_error.s
+
+# target to generate assembly for a file
+src/lu_error.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_error.c.s
+.PHONY : src/lu_error.c.s
+
 src/lu_event.o: src/lu_event.c.o
 .PHONY : src/lu_event.o
 
@@ -210,6 +234,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... luevent"
+	@echo "... src/lu_error.o"
+	@echo "... src/lu_error.i"
+	@echo "... src/lu_error.s"
 	@echo "... src/lu_event.o"
 	@echo "... src/lu_event.i"
 	@echo "... src/lu_event.s"

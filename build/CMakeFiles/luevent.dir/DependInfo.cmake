@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/root/luevent/src/lu_error.c" "CMakeFiles/luevent.dir/src/lu_error.c.o" "gcc" "CMakeFiles/luevent.dir/src/lu_error.c.o.d"
   "/root/luevent/src/lu_event.c" "CMakeFiles/luevent.dir/src/lu_event.c.o" "gcc" "CMakeFiles/luevent.dir/src/lu_event.c.o.d"
   "/root/luevent/src/lu_mm-internal.c" "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o" "gcc" "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o.d"
   "/root/luevent/src/main.c" "CMakeFiles/luevent.dir/src/main.c.o" "gcc" "CMakeFiles/luevent.dir/src/main.c.o.d"

@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/luevent.dir/src/lu_error.c.o"
+  "CMakeFiles/luevent.dir/src/lu_error.c.o.d"
   "CMakeFiles/luevent.dir/src/lu_event.c.o"
   "CMakeFiles/luevent.dir/src/lu_event.c.o.d"
   "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o"

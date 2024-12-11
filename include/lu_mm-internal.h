@@ -7,6 +7,9 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,16 +24,19 @@ static void *(*lu_mm_realloc_fn_)(void *ptr, size_t size) = NULL;
 static void*(*lu_mm_free_fn_)(void* ptr_) = NULL;
 static void*(*lu_mm_aligned_malloc_fn_)(size_t size_, size_t alignment) = NULL;
 
-// static 日志函数指针
-// static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-// static void (*lu_mm_calloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-// static void (*lu_mm_realloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-// static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-// static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 
+
+
+
+//static 日志函数指针
+static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_calloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_realloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
+static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 
  
-static void default_memory_log(const char* operation, void* ptr, size_t size);
+void default_memory_log(const char* operation, void* ptr, size_t size);
  
  
 
@@ -72,10 +78,10 @@ static void default_memory_log(const char* operation, void* ptr, size_t size);
 */
 
  
-
+void lu_enable_defalut_memory_logging();
 
 // 默认情况下不启用日志，如果没有定义启用宏
-#ifdef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+#ifndef LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
     // 禁用日志记录
     #define ENABLE_DEFAULT_MEMORY_LOGGING() do { \
         lu_mm_malloc_log_fn_ = NULL; \

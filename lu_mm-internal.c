@@ -5,6 +5,18 @@
 #include <stdio.h>
 
 
+
+ 
+void lu_enable_defalut_memory_logging(){
+    lu_mm_malloc_log_fn_ = default_memory_log; 
+    lu_mm_calloc_log_fn_ = default_memory_log; 
+    lu_mm_realloc_log_fn_ = default_memory_log; 
+    lu_mm_free_log_fn_ = default_memory_log; 
+    lu_mm_aligned_malloc_log_fn_ = default_memory_log; 
+    
+}
+
+
 //#define LU_ERROR_NO_MEMORY 12
 void* lu_event_mm_malloc_(size_t size){
     if(size == 0){
@@ -24,10 +36,10 @@ void* lu_event_mm_malloc_(size_t size){
        // if (ptr == NULL && lu_mm_malloc_log_fn_) {
         if ( lu_mm_malloc_log_fn_) {
             lu_mm_malloc_log_fn_("__malloc__", NULL, size);  // 记录内存分配失败的日志
-            printf("malloced ");
+            //printf("malloced \n");
         }
         else{
-            printf("malloced but lu_mm_malloc_log_fn_ is empty ");
+            printf("malloced [%ld] but lu_mm_malloc_log_fn_ is empty \n",size);
         }
         
     }
@@ -119,14 +131,38 @@ void lu_event_mm_free_(void* ptr){
         free(ptr);
 }
 
-
 void default_memory_log(const char* operation, void* ptr, size_t size) {
-    if (ptr == NULL) {
-        
-        printf("[%s] Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",
+    // 打开日志文件，O_APPEND 标志表示追加写入，O_CREAT 表示文件不存在时创建
+    int log_file = open("memory_log.txt", O_WRONLY | O_APPEND | O_CREAT, 0644);
+    if (log_file == -1) {
+        // 如果打开文件失败，输出错误信息
+        perror("Error opening log file");
+        return;
+    }
+
+    char log_message[256];
+    ssize_t message_len;
+
+    if (ptr == NULL && operation != "__malloc__" && operation != "__mm_malloc__") {
+        // 格式化日志信息：内存分配失败
+        message_len = snprintf(log_message, sizeof(log_message),
+            "[%s] Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",
             operation, size, errno, strerror(errno));
     } else {
-         
-        printf("[%s] %p allocated/freed (size: %zu bytes)\n", operation, ptr, size);
+        // 格式化日志信息：内存分配或释放成功
+        message_len = snprintf(log_message, sizeof(log_message),
+            "[%s] %p allocated/freed (size: %zu bytes)\n", operation, ptr, size);
     }
+
+    // 使用 write 系统调用写入日志信息到文件
+    if (message_len > 0) {
+        ssize_t written = write(log_file, log_message, message_len);
+        if (written == -1) {
+            // 如果写入失败，输出错误信息
+            perror("Error writing to log file");
+        }
+    }
+
+    // 关闭文件
+    close(log_file);
 }

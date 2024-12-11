@@ -93,6 +93,21 @@ extern "C" {
 
 /**@}*/
 
+#define MM_MALLOC_STR      "__mm_malloc__"
+#define MM_CALLOC_STR      "__mm_calloc__"
+#define MM_FREE_STR        "__mm_free__"
+#define MM_REALLOC_STR     "__mm_realloc__"
+#define MM_STRDUP_STR      "__mm_strdup__"
+
+#define MALLOC_STR          "__malloc__"
+#define CALLOC_STR          "__calloc__"
+#define FREE_STR            "__free__"
+#define REALLOC_STR         "__realloc__"
+#define STRDUP_STR          "__strdup__"
+
+
+
+
 #ifdef __cplusplus
 }
 #endif

@@ -143,7 +143,7 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
     char log_message[256];
     ssize_t message_len;
 
-    if (ptr == NULL && operation != "__malloc__" && operation != "__mm_malloc__") {
+    if (ptr == NULL && strcmp(operation, MM_MALLOC_STR) != 0 && strcmp(operation, MALLOC_STR) != 0)  {
         // 格式化日志信息：内存分配失败
         message_len = snprintf(log_message, sizeof(log_message),
             "[%s] Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",

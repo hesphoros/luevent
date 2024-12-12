@@ -1,6 +1,6 @@
 #include "lu_mm-internal.h"
 #include <errno.h>  
-
+#include "lu_util.h"
 
 //#include "include/lu_erron.h"
 #include <string.h>

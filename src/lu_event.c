@@ -1,7 +1,9 @@
 #include "lu_memory_manager.h"
+#include "lu_event-internal.h"
+#include "lu_event.h"
+
 #include <stdio.h>
 #include <limits.h>
-#include "lu_event.h"
 #include <error.h>
 #include <stdlib.h>
 
@@ -19,7 +21,7 @@ lu_event_config_t * lu_event_config_new(void)
 	ev_cfg_t->max_dispatch_interval.tv_sec = -1;
 	ev_cfg_t->max_dispatch_callbacks = INT_MAX;
 	ev_cfg_t->limit_callbacks_after_priority = 1;
-    ev_cfg_t->max_dispatch_interval.tv_usec     = -1;
+  ev_cfg_t->max_dispatch_interval.tv_usec     = -1;
 
 	return (ev_cfg_t);
 }

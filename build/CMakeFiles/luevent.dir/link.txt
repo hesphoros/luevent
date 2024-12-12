@@ -1,1 +1,1 @@
-/usr/bin/cc CMakeFiles/luevent.dir/src/lu_event.c.o "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o" CMakeFiles/luevent.dir/src/main.c.o CMakeFiles/luevent.dir/src/lu_error.c.o -o luevent
+/usr/bin/c++ CMakeFiles/luevent.dir/src/lu_event.c.o "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o" CMakeFiles/luevent.dir/src/main.cpp.o CMakeFiles/luevent.dir/src/lu_error.c.o -o luevent  -lpthread

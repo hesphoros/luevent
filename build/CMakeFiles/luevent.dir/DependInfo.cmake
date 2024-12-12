@@ -11,7 +11,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/root/luevent/src/lu_error.c" "CMakeFiles/luevent.dir/src/lu_error.c.o" "gcc" "CMakeFiles/luevent.dir/src/lu_error.c.o.d"
   "/root/luevent/src/lu_event.c" "CMakeFiles/luevent.dir/src/lu_event.c.o" "gcc" "CMakeFiles/luevent.dir/src/lu_event.c.o.d"
   "/root/luevent/src/lu_mm-internal.c" "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o" "gcc" "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o.d"
-  "/root/luevent/src/main.c" "CMakeFiles/luevent.dir/src/main.c.o" "gcc" "CMakeFiles/luevent.dir/src/main.c.o.d"
+  "/root/luevent/src/main.cpp" "CMakeFiles/luevent.dir/src/main.cpp.o" "gcc" "CMakeFiles/luevent.dir/src/main.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

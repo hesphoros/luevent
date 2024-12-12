@@ -1,10 +1,9 @@
 #ifndef LU_MM_INTERNAL_H
 #define LU_MM_INTERNAL_H
 
-#include "lu_util.h"
+
 #include <stdlib.h>
 #include <memory.h>
-#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
@@ -70,8 +69,6 @@ extern void* lu_log_functions_global_[];
 /** @}  */
 
 void lu_enable_default_memory_logging(int);
-
-
 
 
 #ifdef __cplusplus

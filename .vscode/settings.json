@@ -29,6 +29,8 @@
         "lu_memory_manager.h": "c",
         "algorithm": "c",
         "chrono": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "lu_mutex-internal.h": "c"
     }
 }

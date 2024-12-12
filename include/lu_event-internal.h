@@ -10,13 +10,11 @@ extern "C" {
 #include <sys/queue.h>
 #include "lu_util.h"
 #include <sys/time.h>
- 
+#include "lu_mm-internal.h"
 
 
 
 typedef struct lu_event_operation_s lu_event_operate_t;
-
-
 
  
 typedef struct lu_event_base_s {
@@ -45,6 +43,7 @@ typedef struct lu_event_operation_s {
 
 typedef struct lu_event_config_entry_s {
     TAILQ_ENTRY(lu_event_config_entry_s) next;
+    //aviod method
     const char *avoid_method;
 } lu_event_config_entry_t;
 

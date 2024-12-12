@@ -134,20 +134,25 @@ void lu_event_mm_free_(void* ptr){
         }
     }
     else
+    {
         free(ptr);
+        if (lu_mm_free_log_fn_){
+            lu_mm_free_log_fn_("__free__", ptr,ptr?sizeof(*ptr):0);
+        }
+    }
+         
 }
-
 
 void default_memory_log(const char* operation, void* ptr, size_t size) {
     // 获取当前时间
     time_t rawtime;
     struct tm *timeinfo;
-    char time_str[20];  // 用于存储格式化的时间字符串
+    char time_str[20];  
 
     time(&rawtime);
     timeinfo = localtime(&rawtime);
 
-    // 格式化时间为 "YYYY-MM-DD HH:MM:SS"
+    
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
 
     // 打开日志文件，O_APPEND 标志表示追加写入，O_CREAT 表示文件不存在时创建
@@ -162,14 +167,37 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
     ssize_t message_len;
 
     if (ptr == NULL && strcmp(operation, MM_MALLOC_STR) != 0 && strcmp(operation, MALLOC_STR) != 0) {
-        // 格式化日志信息：内存分配失败
+        // 内存分配失败的格式化日志信息
         message_len = snprintf(log_message, sizeof(log_message),
             "[%s] [%s] Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",
             time_str, operation, size, errno, strerror(errno));
     } else {
-        // 格式化日志信息：内存分配或释放成功
-        message_len = snprintf(log_message, sizeof(log_message),
-            "[%s] [%s] %p allocated/freed (size: %zu bytes)\n", time_str, operation, ptr, size);
+        // 根据不同的操作类型来调整日志内容
+        if (strcmp(operation, MM_MALLOC_STR) == 0 || strcmp(operation, MALLOC_STR) == 0) {
+            // malloc 或 mm_malloc 操作
+            message_len = snprintf(log_message, sizeof(log_message),
+                "[%s] [%s] %p allocated (size: %zu bytes)\n", time_str, operation, ptr, size);
+        } else if (strcmp(operation, MM_CALLOC_STR) == 0 || strcmp(operation, CALLOC_STR) == 0) {
+            // calloc 或 mm_calloc 操作
+            message_len = snprintf(log_message, sizeof(log_message),
+                "[%s] [%s] %p calloc allocated (size: %zu bytes)\n", time_str, operation, ptr, size);
+        } else if (strcmp(operation, MM_FREE_STR) == 0 || strcmp(operation, FREE_STR) == 0) {
+            // free 或 mm_free 操作
+            message_len = snprintf(log_message, sizeof(log_message),
+                "[%s] [%s] %p freed\n", time_str, operation, ptr);
+        } else if (strcmp(operation, MM_REALLOC_STR) == 0 || strcmp(operation, REALLOC_STR) == 0) {
+            // realloc 或 mm_realloc 操作
+            message_len = snprintf(log_message, sizeof(log_message),
+                "[%s] [%s] %p realloc allocated (new size: %zu bytes)\n", time_str, operation, ptr, size);
+        } else if (strcmp(operation, MM_STRDUP_STR) == 0 || strcmp(operation, STRDUP_STR) == 0) {
+            // strdup 或 mm_strdup 操作
+            message_len = snprintf(log_message, sizeof(log_message),
+                "[%s] [%s] %p strdup allocated (size: %zu bytes)\n", time_str, operation, ptr, size);
+        } else {
+            // 其他操作
+            message_len = snprintf(log_message, sizeof(log_message),
+                "[%s] [%s] %p allocated/freed (size: %zu bytes)\n", time_str, operation, ptr, size);
+        }
     }
 
     // 使用 write 系统调用写入日志信息到文件
@@ -186,7 +214,6 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
 }
 
 /*
-
 
 void default_memory_log(const char* operation, void* ptr, size_t size) {
     // 打开日志文件，O_APPEND 标志表示追加写入，O_CREAT 表示文件不存在时创建

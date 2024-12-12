@@ -13,8 +13,8 @@ int main(){
     printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
     printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
-    printf("end\n");
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_BROKEN_PIPE));
+    
     mm_free(x);
     return 0;
 }

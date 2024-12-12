@@ -1,8 +1,9 @@
 #include "lu_mm-internal.h"
+#include "lu_erron.h"
 #include <errno.h>  
 #include "lu_util.h"
 
-//#include "include/lu_erron.h"
+ 
 #include <string.h>
 #include <stdio.h>
 
@@ -17,7 +18,7 @@ void* lu_log_functions_global_[] = {
     &lu_mm_aligned_malloc_log_fn_
 };
 
- void lu_enable_default_memory_logging(int enable) {
+void lu_enable_default_memory_logging(int enable) {
     void (*log_fn)(const char*, void*, size_t) = enable ? default_memory_log : NULL;
     
     for (int i = 0; i < sizeof(lu_log_functions_global_) / sizeof(lu_log_functions_global_[0]); i++) {
@@ -37,15 +38,14 @@ void* lu_event_mm_malloc_(size_t size){
         ptr = lu_mm_malloc_fn_(size);  // 调用自定义的内存分配函数
          // 如果启用了日志记录函数，则记录日志
         if ( lu_mm_malloc_log_fn_) {
-            lu_mm_malloc_log_fn_("__mm_malloc__", ptr, size);  // 记录日志
+            lu_mm_malloc_log_fn_(MM_MALLOC_STR, ptr, size);  // 记录日志
         }
     } else {
         ptr = malloc(size);  
         
-       // if (ptr == NULL && lu_mm_malloc_log_fn_) {
-        if ( lu_mm_malloc_log_fn_) {
-            lu_mm_malloc_log_fn_("__malloc__", ptr, size);  // 记录内存分配失败的日志
-           
+       if (ptr == NULL && lu_mm_malloc_log_fn_) {
+        //if (lu_mm_malloc_log_fn_) {
+            lu_mm_malloc_log_fn_(MALLOC_STR, ptr, size);  // 记录内存分配的日志           
         }
         
     }
@@ -65,7 +65,7 @@ void* lu_event_mm_calloc_(size_t nitems, size_t size) {
     if (lu_mm_calloc_fn_) {
         p = lu_event_mm_malloc_(sz);
         if (lu_mm_calloc_log_fn_) {
-            lu_mm_calloc_log_fn_("__mm_calloc__", p, sz);
+            lu_mm_calloc_log_fn_(MM_CALLOC_STR, p, sz);
         }
         if (p)
             return memset(p, 0, sz);
@@ -73,10 +73,14 @@ void* lu_event_mm_calloc_(size_t nitems, size_t size) {
         p = calloc(nitems, size);
         if (p == NULL) 
             goto error;
+        if(lu_mm_calloc_log_fn_) {
+            lu_mm_calloc_log_fn_(CALLOC_STR, p, sz);
+        }
+    
         return p;
     }
 error:
-    errno = ENOMEM;
+    errno = LU_ERROR_OUT_OF_MEMORY;
     return NULL;
 }
 
@@ -100,7 +104,7 @@ char* lu_event_mm_strdup_(const char *str){
         return strdup(str);
 
 error:
-    errno = ENOMEM;
+    errno = LU_ERROR_OUT_OF_MEMORY;
     return  NULL;
 
 }

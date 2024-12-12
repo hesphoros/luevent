@@ -1,10 +1,10 @@
 #ifndef LU_ERRNO_H_
 #define LU_ERRNO_H_
+ 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
  // 自定义错误码，从0x100开始
 #define LU_ERROR_OPERATION_NOT_PERMITTED 0x100
@@ -47,8 +47,10 @@ extern "C" {
 
 
  
-const char* lu_get_error_string(int errno);
+ 
 
+
+const char* lu_get_error_string(int errno);
 const char* lu_get_error_string_hash(int errno);
 
 

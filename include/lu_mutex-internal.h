@@ -1,14 +1,17 @@
 #ifndef THREAD_SAFETY_ANALYSIS_MUTEX_H
 #define THREAD_SAFETY_ANALYSIS_MUTEX_H
 
-// Enable thread safety attributes only with clang.
-// The attributes can be safely erased when compiling with other compilers.
+#include <pthread.h>  // POSIX 线程库
+#include <stdbool.h>   // 布尔类型支持
+
+// 线程安全属性宏（仅适用于 clang）
 #if defined(__clang__) && (!defined(SWIG))
 #define THREAD_ANNOTATION_ATTRIBUTE__(x)   __attribute__((x))
 #else
-#define THREAD_ANNOTATION_ATTRIBUTE__(x)   // no-op
+#define THREAD_ANNOTATION_ATTRIBUTE__(x)   // 无操作
 #endif
 
+// 线程安全属性宏定义
 #define CAPABILITY(x) \
   THREAD_ANNOTATION_ATTRIBUTE__(capability(x))
 
@@ -70,209 +73,96 @@
   THREAD_ANNOTATION_ATTRIBUTE__(no_thread_safety_analysis)
 
 
-// Defines an annotated interface for mutexes.
-// These methods can be implemented to use any internal mutex implementation.
-class CAPABILITY("mutex") Mutex {
-public:
-  // Acquire/lock this mutex exclusively.  Only one thread can have exclusive
-  // access at any one time.  Write operations to guarded data require an
-  // exclusive lock.
-  void Lock() ACQUIRE();
+// 互斥锁结构体定义，使用 POSIX 线程库中的 `pthread_mutex_t`
+typedef pthread_mutex_t Mutex;
 
-  // Acquire/lock this mutex for read operations, which require only a shared
-  // lock.  This assumes a multiple-reader, single writer semantics.  Multiple
-  // threads may acquire the mutex simultaneously as readers, but a writer
-  // must wait for all of them to release the mutex before it can acquire it
-  // exclusively.
-  void ReaderLock() ACQUIRE_SHARED();
+// 线程安全的锁操作接口定义（不使用 C++ 的类和成员函数）
 
-  // Release/unlock an exclusive mutex.
-  void Unlock() RELEASE();
+// 初始化互斥锁
+int Mutex_Init(Mutex* mtx) {
+    return pthread_mutex_init(mtx, NULL);
+}
 
-  // Release/unlock a shared mutex.
-  void ReaderUnlock() RELEASE_SHARED();
+// 销毁互斥锁
+int Mutex_Destroy(Mutex* mtx) {
+    return pthread_mutex_destroy(mtx);
+}
 
-  // Generic unlock, can unlock exclusive and shared mutexes.
-  void GenericUnlock() RELEASE_GENERIC();
+// 获取互斥锁
+int Mutex_Lock(Mutex* mtx) {
+    return pthread_mutex_lock(mtx);
+}
 
-  // Try to acquire the mutex.  Returns true on success, and false on failure.
-  bool TryLock() TRY_ACQUIRE(true);
+// 获取共享锁（如果有读写锁机制，则用此函数）
+int Mutex_ReaderLock(Mutex* mtx) {
+    // 假设这里使用的仅为普通互斥锁，没有读写锁机制
+    return pthread_mutex_lock(mtx);  // 对于 C 语言中的互斥锁，读写锁通常是通过自定义锁机制来实现的
+}
 
-  // Try to acquire the mutex for read operations.
-  bool ReaderTryLock() TRY_ACQUIRE_SHARED(true);
+// 解锁互斥锁
+int Mutex_Unlock(Mutex* mtx) {
+    return pthread_mutex_unlock(mtx);
+}
 
-  // Assert that this mutex is currently held by the calling thread.
-  void AssertHeld() ASSERT_CAPABILITY(this);
+// 释放共享锁
+int Mutex_ReaderUnlock(Mutex* mtx) {
+    return pthread_mutex_unlock(mtx);  // 共享锁也用普通的互斥锁来解锁
+}
 
-  // Assert that is mutex is currently held for read operations.
-  void AssertReaderHeld() ASSERT_SHARED_CAPABILITY(this);
+// 尝试获取互斥锁
+int Mutex_TryLock(Mutex* mtx) {
+    return pthread_mutex_trylock(mtx);
+}
 
-  // For negative capabilities.
-  const Mutex& operator!() const { return *this; }
-};
-
-// Tag types for selecting a constructor.
-struct adopt_lock_t {} inline constexpr adopt_lock = {};
-struct defer_lock_t {} inline constexpr defer_lock = {};
-struct shared_lock_t {} inline constexpr shared_lock = {};
-
-// MutexLocker is an RAII class that acquires a mutex in its constructor, and
-// releases it in its destructor.
-class SCOPED_CAPABILITY MutexLocker {
-private:
-  Mutex* mut;
-  bool locked;
-
-public:
-  // Acquire mu, implicitly acquire *this and associate it with mu.
-  MutexLocker(Mutex *mu) ACQUIRE(mu) : mut(mu), locked(true) {
-    mu->Lock();
-  }
-
-  // Assume mu is held, implicitly acquire *this and associate it with mu.
-  MutexLocker(Mutex *mu, adopt_lock_t) REQUIRES(mu) : mut(mu), locked(true) {}
-
-  // Acquire mu in shared mode, implicitly acquire *this and associate it with mu.
-  MutexLocker(Mutex *mu, shared_lock_t) ACQUIRE_SHARED(mu) : mut(mu), locked(true) {
-    mu->ReaderLock();
-  }
-
-  // Assume mu is held in shared mode, implicitly acquire *this and associate it with mu.
-  MutexLocker(Mutex *mu, adopt_lock_t, shared_lock_t) REQUIRES_SHARED(mu)
-    : mut(mu), locked(true) {}
-
-  // Assume mu is not held, implicitly acquire *this and associate it with mu.
-  MutexLocker(Mutex *mu, defer_lock_t) EXCLUDES(mu) : mut(mu), locked(false) {}
-
-  // Same as constructors, but without tag types. (Requires C++17 copy elision.)
-  static MutexLocker Lock(Mutex *mu) ACQUIRE(mu) {
-    return MutexLocker(mu);
-  }
-
-  static MutexLocker Adopt(Mutex *mu) REQUIRES(mu) {
-    return MutexLocker(mu, adopt_lock);
-  }
-
-  static MutexLocker ReaderLock(Mutex *mu) ACQUIRE_SHARED(mu) {
-    return MutexLocker(mu, shared_lock);
-  }
-
-  static MutexLocker AdoptReaderLock(Mutex *mu) REQUIRES_SHARED(mu) {
-    return MutexLocker(mu, adopt_lock, shared_lock);
-  }
-
-  static MutexLocker DeferLock(Mutex *mu) EXCLUDES(mu) {
-    return MutexLocker(mu, defer_lock);
-  }
-
-  // Release *this and all associated mutexes, if they are still held.
-  // There is no warning if the scope was already unlocked before.
-  ~MutexLocker() RELEASE() {
-    if (locked)
-      mut->GenericUnlock();
-  }
-
-  // Acquire all associated mutexes exclusively.
-  void Lock() ACQUIRE() {
-    mut->Lock();
-    locked = true;
-  }
-
-  // Try to acquire all associated mutexes exclusively.
-  bool TryLock() TRY_ACQUIRE(true) {
-    return locked = mut->TryLock();
-  }
-
-  // Acquire all associated mutexes in shared mode.
-  void ReaderLock() ACQUIRE_SHARED() {
-    mut->ReaderLock();
-    locked = true;
-  }
-
-  // Try to acquire all associated mutexes in shared mode.
-  bool ReaderTryLock() TRY_ACQUIRE_SHARED(true) {
-    return locked = mut->ReaderTryLock();
-  }
-
-  // Release all associated mutexes. Warn on double unlock.
-  void Unlock() RELEASE() {
-    mut->Unlock();
-    locked = false;
-  }
-
-  // Release all associated mutexes. Warn on double unlock.
-  void ReaderUnlock() RELEASE() {
-    mut->ReaderUnlock();
-    locked = false;
-  }
-};
+// 尝试获取共享锁
+int Mutex_ReaderTryLock(Mutex* mtx) {
+    return pthread_mutex_trylock(mtx);  // 和普通锁一样，尝试获取
+}
 
 
-#ifdef USE_LOCK_STYLE_THREAD_SAFETY_ATTRIBUTES
-// The original version of thread safety analysis the following attribute
-// definitions.  These use a lock-based terminology.  They are still in use
-// by existing thread safety code, and will continue to be supported.
+// 互斥锁生命周期管理结构体
+typedef struct {
+    Mutex* mutex;
+    bool locked;
+} MutexLocker;
 
-// Deprecated.
-#define PT_GUARDED_VAR \
-  THREAD_ANNOTATION_ATTRIBUTE__(pt_guarded_var)
+// 初始化锁定管理
+int MutexLocker_Init(MutexLocker* locker, Mutex* mtx) {
+    locker->mutex = mtx;
+    locker->locked = false;
+    return Mutex_Lock(mtx);  // 默认构造时锁定互斥锁
+}
 
-// Deprecated.
-#define GUARDED_VAR \
-  THREAD_ANNOTATION_ATTRIBUTE__(guarded_var)
+// 销毁锁定管理
+void MutexLocker_Destroy(MutexLocker* locker) {
+    if (locker->locked) {
+        Mutex_Unlock(locker->mutex);
+    }
+}
 
-// Replaced by REQUIRES
-#define EXCLUSIVE_LOCKS_REQUIRED(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(exclusive_locks_required(__VA_ARGS__))
+// 锁定管理
+int MutexLocker_Lock(MutexLocker* locker) {
+    int result = Mutex_Lock(locker->mutex);
+    if (result == 0) {
+        locker->locked = true;
+    }
+    return result;
+}
 
-// Replaced by REQUIRES_SHARED
-#define SHARED_LOCKS_REQUIRED(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(shared_locks_required(__VA_ARGS__))
+// 解锁管理
+int MutexLocker_Unlock(MutexLocker* locker) {
+    int result = Mutex_Unlock(locker->mutex);
+    if (result == 0) {
+        locker->locked = false;
+    }
+    return result;
+}
 
-// Replaced by CAPABILITY
-#define LOCKABLE \
-  THREAD_ANNOTATION_ATTRIBUTE__(lockable)
+// 宏简化：使用 `MutexLocker` 来管理锁
+#define MUTEX_LOCK(locker, mtx) \
+    MutexLocker_Init(locker, mtx)
 
-// Replaced by SCOPED_CAPABILITY
-#define SCOPED_LOCKABLE \
-  THREAD_ANNOTATION_ATTRIBUTE__(scoped_lockable)
-
-// Replaced by ACQUIRE
-#define EXCLUSIVE_LOCK_FUNCTION(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(exclusive_lock_function(__VA_ARGS__))
-
-// Replaced by ACQUIRE_SHARED
-#define SHARED_LOCK_FUNCTION(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(shared_lock_function(__VA_ARGS__))
-
-// Replaced by RELEASE and RELEASE_SHARED
-#define UNLOCK_FUNCTION(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(unlock_function(__VA_ARGS__))
-
-// Replaced by TRY_ACQUIRE
-#define EXCLUSIVE_TRYLOCK_FUNCTION(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(exclusive_trylock_function(__VA_ARGS__))
-
-// Replaced by TRY_ACQUIRE_SHARED
-#define SHARED_TRYLOCK_FUNCTION(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(shared_trylock_function(__VA_ARGS__))
-
-// Replaced by ASSERT_CAPABILITY
-#define ASSERT_EXCLUSIVE_LOCK(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(assert_exclusive_lock(__VA_ARGS__))
-
-// Replaced by ASSERT_SHARED_CAPABILITY
-#define ASSERT_SHARED_LOCK(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(assert_shared_lock(__VA_ARGS__))
-
-// Replaced by EXCLUDE_CAPABILITY.
-#define LOCKS_EXCLUDED(...) \
-  THREAD_ANNOTATION_ATTRIBUTE__(locks_excluded(__VA_ARGS__))
-
-// Replaced by RETURN_CAPABILITY
-#define LOCK_RETURNED(x) \
-  THREAD_ANNOTATION_ATTRIBUTE__(lock_returned(x))
-
-#endif  // USE_LOCK_STYLE_THREAD_SAFETY_ATTRIBUTES
+#define MUTEX_UNLOCK(locker) \
+    MutexLocker_Destroy(locker)
 
 #endif  // THREAD_SAFETY_ANALYSIS_MUTEX_H

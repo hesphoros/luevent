@@ -43,8 +43,8 @@ void* lu_event_mm_malloc_(size_t size){
     } else {
         ptr = malloc(size);  
         
-       if (ptr == NULL && lu_mm_malloc_log_fn_) {
-        //if (lu_mm_malloc_log_fn_) {
+        //if (ptr == NULL && lu_mm_malloc_log_fn_) {
+        if (lu_mm_malloc_log_fn_) {
             lu_mm_malloc_log_fn_(MALLOC_STR, ptr, size);  // 记录内存分配的日志           
         }
         
@@ -100,8 +100,11 @@ char* lu_event_mm_strdup_(const char *str){
         if(ptr)
             return memcpy(ptr,str,len+1);
     }
-    else
+    else{
+      
         return strdup(str);
+    }
+        
 
 error:
     errno = LU_ERROR_OUT_OF_MEMORY;
@@ -114,13 +117,15 @@ void* lu_event_mm_realloc_(void* ptr,size_t size){
     if (lu_mm_realloc_fn_)  {
         p = lu_mm_realloc_fn_(ptr, size);
         if (p && lu_mm_realloc_log_fn_)
-            lu_mm_realloc_log_fn_("__mm_realloc__", p, size);
-       
+            lu_mm_realloc_log_fn_(MM_REALLOC_STR, p, size);
         return p;
         
     }
     else{
-        return realloc(ptr, size);
+        p = realloc(ptr, size);
+        if (p && lu_mm_realloc_log_fn_)
+            lu_mm_realloc_log_fn_(REALLOC_STR, p, size);
+        return p;              
     }  
         
 }
@@ -133,19 +138,44 @@ void lu_event_mm_free_(void* ptr){
     if(lu_mm_free_fn_){
         lu_mm_free_fn_(ptr);
         if (lu_mm_free_log_fn_){
-            lu_mm_free_log_fn_("__mm_free__", ptr,ptr?sizeof(*ptr):0);
-        
+            lu_mm_free_log_fn_(MM_FREE_STR, ptr,ptr?sizeof(*ptr):0);        
         }
     }
     else
     {
         free(ptr);
         if (lu_mm_free_log_fn_){
-            lu_mm_free_log_fn_("__free__", ptr,ptr?sizeof(*ptr):0);
+            lu_mm_free_log_fn_(FREE_STR, ptr,ptr?sizeof(*ptr):0);
         }
     }
          
 }
+
+ 
+
+void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment) {
+    void* ptr = NULL;
+
+    if(lu_mm_aligned_malloc_fn_){
+        int ret = lu_mm_aligned_malloc_fn_(&ptr, size, alignment);
+        if (ret == 0 && lu_mm_aligned_malloc_log_fn_) {
+            lu_mm_aligned_malloc_log_fn_(MM_ALIGEND_MALLOC_STR, ptr, size);
+        }
+        return ptr;
+    }else{
+
+        int ret = posix_memalign(&ptr, alignment, size);
+        if (ret == 0 && lu_mm_aligned_malloc_log_fn_) {
+            lu_mm_aligned_malloc_log_fn_(MM_ALIGEND_MALLOC_STR, ptr, size);
+        }
+        return ptr;
+    }
+}
+
+ 
+
+
+
 
 void default_memory_log(const char* operation, void* ptr, size_t size) {
     // 获取当前时间
@@ -161,6 +191,7 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
 
     // 打开日志文件，O_APPEND 标志表示追加写入，O_CREAT 表示文件不存在时创建
     int log_file = open("memory_log.txt", O_WRONLY | O_APPEND | O_CREAT, 0644);
+    
     if (log_file == -1) {
         // 如果打开文件失败，输出错误信息
         perror("Error opening log file");
@@ -173,34 +204,38 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
     if (ptr == NULL && strcmp(operation, MM_MALLOC_STR) != 0 && strcmp(operation, MALLOC_STR) != 0) {
         // 内存分配失败的格式化日志信息
         message_len = snprintf(log_message, sizeof(log_message),
-            "[%s] [%s] Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",
+            "[%-19s] %10s Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",
             time_str, operation, size, errno, strerror(errno));
     } else {
         // 根据不同的操作类型来调整日志内容
         if (strcmp(operation, MM_MALLOC_STR) == 0 || strcmp(operation, MALLOC_STR) == 0) {
             // malloc 或 mm_malloc 操作
             message_len = snprintf(log_message, sizeof(log_message),
-                "[%s] [%s] %p allocated (size: %zu bytes)\n", time_str, operation, ptr, size);
+                "[%-19s] %-14s %-14p allocated           (size: %zu bytes)\n", time_str, operation, ptr, size);
         } else if (strcmp(operation, MM_CALLOC_STR) == 0 || strcmp(operation, CALLOC_STR) == 0) {
             // calloc 或 mm_calloc 操作
             message_len = snprintf(log_message, sizeof(log_message),
-                "[%s] [%s] %p calloc allocated (size: %zu bytes)\n", time_str, operation, ptr, size);
+                "[%-19s] %-14s %-14p calloc allocated    (size: %zu bytes)\n", time_str, operation, ptr, size);
         } else if (strcmp(operation, MM_FREE_STR) == 0 || strcmp(operation, FREE_STR) == 0) {
             // free 或 mm_free 操作
             message_len = snprintf(log_message, sizeof(log_message),
-                "[%s] [%s] %p freed\n", time_str, operation, ptr);
+                "[%-19s] %-14s %-14p freed\n", time_str, operation, ptr);
         } else if (strcmp(operation, MM_REALLOC_STR) == 0 || strcmp(operation, REALLOC_STR) == 0) {
             // realloc 或 mm_realloc 操作
             message_len = snprintf(log_message, sizeof(log_message),
-                "[%s] [%s] %p realloc allocated (new size: %zu bytes)\n", time_str, operation, ptr, size);
+                "[%-19s] %-14s %-14p realloc allocated   (new size: %zu bytes)\n", time_str, operation, ptr, size);
         } else if (strcmp(operation, MM_STRDUP_STR) == 0 || strcmp(operation, STRDUP_STR) == 0) {
             // strdup 或 mm_strdup 操作
             message_len = snprintf(log_message, sizeof(log_message),
-                "[%s] [%s] %p strdup allocated (size: %zu bytes)\n", time_str, operation, ptr, size);
-        } else {
+                "[%-19s] %-14s %-14p strdup allocated    (size: %zu bytes)\n", time_str, operation, ptr, size);
+        } else if(strcmp(operation, MM_ALIGEND_MALLOC_STR) == 0 || strcmp(operation, ALIGEND_MALLOC_STR) == 0) {
+            // aligned_malloc 或 mm_aligned_malloc 操作
+            message_len = snprintf(log_message, sizeof(log_message),
+                "[%-19s] %-14s %-14p aligned_malloc allocated (size: %zu bytes)\n", time_str, operation, ptr, size);
+        }else {
             // 其他操作
             message_len = snprintf(log_message, sizeof(log_message),
-                "[%s] [%s] %p allocated/freed (size: %zu bytes)\n", time_str, operation, ptr, size);
+                "[%-19s] %-14s %-14p allocated/freed (size: %zu bytes)\n", time_str, operation, ptr, size);
         }
     }
 
@@ -216,6 +251,7 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
     // 关闭文件
     close(log_file);
 }
+
 
 /*
 

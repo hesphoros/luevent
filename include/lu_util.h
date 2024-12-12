@@ -93,22 +93,36 @@ extern "C" {
 
 /**@}*/
 
-#define MM_MALLOC_STR      "__mm_malloc__"
-#define MM_CALLOC_STR      "__mm_calloc__"
-#define MM_FREE_STR        "__mm_free__"
-#define MM_REALLOC_STR     "__mm_realloc__"
-#define MM_STRDUP_STR      "__mm_strdup__"
+// #define MM_MALLOC_STR      "__mm_malloc__"
+// #define MM_CALLOC_STR      "__mm_calloc__"
+// #define MM_FREE_STR        "__mm_free__"
+// #define MM_REALLOC_STR     "__mm_realloc__"
+// #define MM_STRDUP_STR      "__mm_strdup__"
+// #define MM_ALIGEND_MALLOC_STR  "__mm_ali_malloc__"
 
-#define MALLOC_STR          "__malloc__"
-#define CALLOC_STR          "__calloc__"
-#define FREE_STR            "__free__"
-#define REALLOC_STR         "__realloc__"
-#define STRDUP_STR          "__strdup__"
+// #define ALIGEND_MALLOC_STR  "__ali_malloc__"
+// #define MALLOC_STR          "__malloc__"
+// #define CALLOC_STR          "__calloc__"
+// #define FREE_STR            "__free__"
+// #define REALLOC_STR         "__realloc__"
+// #define STRDUP_STR          "__strdup__"
 
 
+#define MM_MALLOC_STR               "__MM_MALLOC__"
+#define MALLOC_STR                  "__MALLOC__"
+#define MM_CALLOC_STR               "__MM_CALLOC__"
+#define CALLOC_STR                  "__CALLOC__"
+#define MM_FREE_STR                 "__MM_FREE__"
+#define FREE_STR                    "__FREE__"
+#define MM_REALLOC_STR              "__MM_REALLOC__"
+#define REALLOC_STR                 "__REALLOC__"
+#define MM_STRDUP_STR               "__MM_STRDUP__"
+#define STRDUP_STR                  "__STRDUP__"
+#define MM_ALIGEND_MALLOC_STR       "__MM_ALIG_M__"
+#define ALIGEND_MALLOC_STR          "__ALIGNED_M__"
 
 
-#ifdef __cplusplus
+#ifdef __cplusplus  
 }
 #endif
 

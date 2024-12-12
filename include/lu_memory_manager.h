@@ -12,8 +12,9 @@ void* lu_event_mm_calloc_   (size_t nitems, size_t size);
 char* lu_event_mm_strdup_   (const char *str);
 void* lu_event_mm_realloc_  (void* ptr,     size_t size);
 void  lu_event_mm_free_     (void* ptr);
+void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment);
 
-void lu_enable_default_memory_logging(int);
+void  lu_enable_default_memory_logging(int);
 
 //global memory log 
 extern void* lu_log_functions_global_[];

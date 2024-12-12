@@ -181,6 +181,7 @@ CMakeFiles/luevent.dir/src/lu_event.c.o
 
 CMakeFiles/luevent.dir/src/lu_mm-internal.c.o
  /root/luevent/src/lu_mm-internal.c
+ /root/luevent/include/lu_erron.h
  /root/luevent/include/lu_mm-internal.h
  /root/luevent/include/lu_util.h
  /usr/include/alloca.h

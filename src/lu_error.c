@@ -174,7 +174,7 @@ void cleanup_error_table_(void)  {
 
 static void initialize_error_table_(void) {
     static int initialized = 0;
-    printf("initialize_error_table_ function is called.\n");
+    //printf("initialize_error_table_ function is called.\n");
     if (!initialized) {
         // 初始化锁
         if (pthread_mutex_init(&error_table_mutex, NULL) != 0) {

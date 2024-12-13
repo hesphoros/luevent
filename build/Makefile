@@ -177,6 +177,30 @@ src/lu_event.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_event.c.s
 .PHONY : src/lu_event.c.s
 
+src/lu_log.o: src/lu_log.c.o
+.PHONY : src/lu_log.o
+
+# target to build an object file
+src/lu_log.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_log.c.o
+.PHONY : src/lu_log.c.o
+
+src/lu_log.i: src/lu_log.c.i
+.PHONY : src/lu_log.i
+
+# target to preprocess a source file
+src/lu_log.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_log.c.i
+.PHONY : src/lu_log.c.i
+
+src/lu_log.s: src/lu_log.c.s
+.PHONY : src/lu_log.s
+
+# target to generate assembly for a file
+src/lu_log.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_log.c.s
+.PHONY : src/lu_log.c.s
+
 src/lu_mm-internal.o: src/lu_mm-internal.c.o
 .PHONY : src/lu_mm-internal.o
 
@@ -200,6 +224,30 @@ src/lu_mm-internal.s: src/lu_mm-internal.c.s
 src/lu_mm-internal.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm-internal.c.s
 .PHONY : src/lu_mm-internal.c.s
+
+src/lu_util.o: src/lu_util.c.o
+.PHONY : src/lu_util.o
+
+# target to build an object file
+src/lu_util.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_util.c.o
+.PHONY : src/lu_util.c.o
+
+src/lu_util.i: src/lu_util.c.i
+.PHONY : src/lu_util.i
+
+# target to preprocess a source file
+src/lu_util.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_util.c.i
+.PHONY : src/lu_util.c.i
+
+src/lu_util.s: src/lu_util.c.s
+.PHONY : src/lu_util.s
+
+# target to generate assembly for a file
+src/lu_util.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_util.c.s
+.PHONY : src/lu_util.c.s
 
 src/main.o: src/main.c.o
 .PHONY : src/main.o
@@ -240,9 +288,15 @@ help:
 	@echo "... src/lu_event.o"
 	@echo "... src/lu_event.i"
 	@echo "... src/lu_event.s"
+	@echo "... src/lu_log.o"
+	@echo "... src/lu_log.i"
+	@echo "... src/lu_log.s"
 	@echo "... src/lu_mm-internal.o"
 	@echo "... src/lu_mm-internal.i"
 	@echo "... src/lu_mm-internal.s"
+	@echo "... src/lu_util.o"
+	@echo "... src/lu_util.i"
+	@echo "... src/lu_util.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

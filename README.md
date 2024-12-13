@@ -3,13 +3,14 @@
     LU_EVENT__DISABLE_CUSTOM_MM_REPLACEMENT 宏 
      
     
-实现了宏函数 
+~~~c
+//实现了宏函数 
 #define mm_malloc(size) 			    lu_event_mm_malloc_(size)
 #define mm_calloc(nitems, size) 	    lu_event_mm_calloc_((nitems), (size))
 #define mm_strdup(str) 			        lu_event_mm_strdup_(str)
 #define mm_realloc(ptr, size) 		    lu_event_mm_realloc_((ptr), (size))
 #define mm_free(ptr) 				    lu_event_mm_free_(ptr)
-
+~~~
 update lu_utils.h
 
 # Tuesday 10 Dec 2024
@@ -18,6 +19,7 @@ sizeof(*ptr) 无法准确反映动态分配的内存大小，可以考虑在内�
 
 # Wednesday 11 Dec 2024
 完善lu_error.h lu_error.c 提供宏
+~~~c
  // 自定义错误码，从0x100开始
 #define LU_ERROR_OPERATION_NOT_PERMITTED 0x100
 #define LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY 0x101
@@ -54,17 +56,19 @@ sizeof(*ptr) 无法准确反映动态分配的内存大小，可以考虑在内�
 #define LU_ERROR_MATH_ARGUMENT_OUT_OF_DOMAIN_OF_FUNCTION 0x120
 #define LU_ERROR_RESULT_TOO_REPRESENTABLE 0x121
 #define LU_MAX_ERROR_CODE 0x122  // 假设错误码的最大值
+~~~
 对外提供的接口：
-
+~~~c
 const char* lu_get_error_string(int errno);
 const char* lu_get_error_string_hash(int errno);
+~~~
 
 使用数组实现以及hash表实现的字符串映射，采用惰性加载的方式，减少内存占用。
 
 # Friday 13 Dec 2024
 
 默认启用log
-
+~~~ c
 #if !defined(LU_EVENT__DISABLE_DEBUG_MODE) || defined(LU_USE_DEBUG)
 #define LU_EVENT_DEBUG_LOGGING_ENABLED
 #endif
@@ -75,14 +79,26 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t lu_event_debug_logging_mask_;
 #else
 #define lu_event_debug_get_logging_mask_() (0)
 #endif
-
+~~~
 提供宏LU_EVENT__DISABLE_DEBUG_MODE 用于关闭调试日志输出。 LU_USE_DEBUG  用于控制是否编译调试日志输出代码。
 
+~~~c
 #define LU_EVENT_LOG_DEBUG  0
 #define LU_EVENT_LOG_MSG    1
 #define LU_EVENT_LOG_WARN   2
 #define LU_EVENT_LOG_ERROR  3
+~~~
 
+~~~c
+static lu_event_log_cb 		lu_event_log_global_fn_ = NULL;
+static lu_event_fatal_cb 	lu_event_fatal_global_fn_ = NULL;
+~~~
 提供lu_event_log_global_cb 回调函数，用于自定义输出日志。
+提供lu_event_fatal_global_fn_，用于自定义输出致命错误日志。
+
 
 使用 inline 和符号导出结合可能导致编译器不能正确生成符号。
+在lu_util.h 中封装lu_evutil_vsnprintf lu_evutil_snprintf 函数来兼容不同平台。
+
+逐步完善lu_log.c lu_log-internal.h 提供日志输出接口。lu_event_enable_debug_logging(which_mask) 用于打开调试日志输出。
+

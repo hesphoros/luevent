@@ -66,9 +66,21 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_errx(int eval, const char *fmt, ...) LU_EV_
 LU_EVENT_EXPORT_SYMBOL void lu_event_warnx(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
 LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
 LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
-
 LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap) LU_EV_CHECK_FMT(3,0);
 
+
+
+
+/**
+  A callback function used to intercept lu_event's log messages.
+
+  @see event_set_log_callback
+ */
+typedef void (*lu_event_log_cb)(int severity, const char *msg) ;
+
+static lu_event_log_cb lu_event_log_global_cb = NULL;
+
+LU_EVENT_EXPORT_SYMBOL void lu_event_set_log_callback(lu_event_log_cb log_cb);
 
 
 

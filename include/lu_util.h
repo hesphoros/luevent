@@ -115,7 +115,7 @@ extern "C" {
 
 //debug level
 #define LU_EVENT_DBG_NONE 0
-#define LU_EVENT_DBG_ALL 0xffffffffu
+#define LU_EVENT_DBG_ALL  0xffffffffu
  
 
 /** @name Log severities

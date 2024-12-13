@@ -1,7 +1,15 @@
+/**
+ * @file lu_log.c
+ * @author <Lucifer gj3372819612@163.com>
+ * @date 2025-12-13
+ * @brief Log an event to the event log.
+*/
+#include <stdio.h>
+#include <stdarg.h>
 #include "lu_log-internal.h"
-#include "lu_mm-internal.h"
 #include "lu_util.h"
 #include "lu_erron.h"
+//#include "lu_mm-internal.h"
 
 /**
  * @brief Log an event to the event log.
@@ -9,6 +17,18 @@
  * @param msg The message to log.
 */
 static void lu_event_log_(int severity, const char *msg);
+
+
+
+#ifdef LU_EVENT_DEBUG_LOGGING_ENABLED
+#ifdef LU_USE_DEBUG
+#define DEFAULT_MASK LU_EVENT_DBG_ALL
+#else
+#define DEFAULT_MASK 0
+#endif
+LU_EVENT_EXPORT_SYMBOL lu_uint32_t lu_event_debug_logging_mask_ = DEFAULT_MASK;
+#endif /* LU_EVENT_DEBUG_LOGGING_ENABLED */
+
 
 static void lu_event_log_(int severity, const char *msg) { 
         
@@ -37,4 +57,8 @@ static void lu_event_log_(int severity, const char *msg) {
         (void)fprintf(stderr, "[%s] %s\n", severity_str, msg);
     }
 
+}
+
+void lu_event_set_log_callback(lu_event_log_cb log_cb){
+    lu_event_log_global_cb = log_cb;    
 }

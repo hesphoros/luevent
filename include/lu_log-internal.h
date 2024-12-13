@@ -74,14 +74,27 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, con
 /**
   A callback function used to intercept lu_event's log messages.
 
-  @see event_set_log_callback
+  @see lu_event_set_log_callback
  */
 typedef void (*lu_event_log_cb)(int severity, const char *msg) ;
 
 static lu_event_log_cb lu_event_log_global_cb = NULL;
 
+/**
+ * Redirect luevent's log messages to a custom callback function.
+ * @param log_cb The callback function to use. If NULL, the default log handler is used.
+   two arguments: severity (between LU_EVENT_LOG_DEBUG to LU_EVENT_LOG_ERROR) and message (a string)
+ */
 LU_EVENT_EXPORT_SYMBOL void lu_event_set_log_callback(lu_event_log_cb log_cb);
 
+/**
+ * Turn on debuging logs and have them output to the default log handeler.
+ * This is a global setting and affects all logs.
+ * @param which_mask Controls which debug messages are enabled. 
+   you must pass the constant "LU_EVENT_DBG_NONE" to turn off all debug messages
+   you can pass the constant "LU_EVENT_DBG_ALL" to turn on all debug messages   
+*/
+LU_EVENT_EXPORT_SYMBOL void lu_event_enable_debug_logging(lu_uint32_t which_mask);
 
 
 #ifdef __cplusplus

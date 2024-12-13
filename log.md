@@ -78,8 +78,11 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t lu_event_debug_logging_mask_;
 
 提供宏LU_EVENT__DISABLE_DEBUG_MODE 用于关闭调试日志输出。 LU_USE_DEBUG  用于控制是否编译调试日志输出代码。
 
-
 #define LU_EVENT_LOG_DEBUG  0
 #define LU_EVENT_LOG_MSG    1
 #define LU_EVENT_LOG_WARN   2
 #define LU_EVENT_LOG_ERROR  3
+
+提供lu_event_log_global_cb 回调函数，用于自定义输出日志。
+
+使用 inline 和符号导出结合可能导致编译器不能正确生成符号。

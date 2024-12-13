@@ -61,7 +61,7 @@ typedef struct lu_event_config_s {
     //指定在一次循环中最大的分派回调数量。
     int max_dispatch_callbacks;
     
-    //用于限制在特定优先级之后的回调数量。
+    //用于限制在特定优先级之后的回调数量。Use to limit the number of callbacks after a specific priority.
 	int limit_callbacks_after_priority;
 
 }lu_event_config_t;

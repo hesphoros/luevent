@@ -1,1 +1,0 @@
-/usr/bin/cc -g -g -O0 CMakeFiles/luevent.dir/src/lu_event.c.o "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o" CMakeFiles/luevent.dir/src/main.c.o CMakeFiles/luevent.dir/src/lu_error.c.o -o luevent  -lpthread

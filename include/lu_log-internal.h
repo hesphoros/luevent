@@ -50,13 +50,36 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t   lu_event_debug_logging_mask_;
 #endif //LU_EVENT_DEBUG_LOGGING_ENABLED
 
 //Log severities defined in lu_utils.h
+#ifndef LU_EVENT_LOG_DEBUG
+#define LU_EVENT_LOG_DEBUG  0
+#endif
 
-// #define LU_EVENT_LOG_DEBUG  0
-// #define LU_EVENT_LOG_MSG    1
-// #define LU_EVENT_LOG_WARN   2
-// #define LU_EVENT_LOG_ERROR  3
+#ifndef LU_EVENT_LOG_MSG
+#define LU_EVENT_LOG_MSG	1
+#endif
+
+#ifndef LU_EVENT_LOG_WARN
+#define LU_EVENT_LOG_WARN	2
+#endif
+
+
+#ifndef LU_EVENT_LOG_ERROR
+#define LU_EVENT_LOG_ERROR	3
+#endif
+
+#ifndef LU_EVENT_DBG_NONE
+#define LU_EVENT_DBG_NONE 0
+#endif
+
+#ifndef LU_EVENT_DBG_ALL
+#define LU_EVENT_DBG_ALL  0xffffffffu
+#endif
+
+
+ 
 
 LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char *fmt,...) LU_EV_CHECK_FMT(2,3) LU_EV_NORETURN;
+
 LU_EVENT_EXPORT_SYMBOL void lu_event_warn(const char *fmt,...) LU_EV_CHECK_FMT(1,2);
 LU_EVENT_EXPORT_SYMBOL void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...) LU_EV_CHECK_FMT(3,4) LU_EV_NORETURN;
 LU_EVENT_EXPORT_SYMBOL void lu_event_sock_warn(lu_evutil_socket_t sock,const char *fmt,...) LU_EV_CHECK_FMT(2,3);
@@ -84,8 +107,8 @@ typedef void (*lu_event_log_cb)(int severity, const char *msg) ;
  */
 typedef void (*lu_event_fatal_cb)(int error_code);
 
-static lu_event_log_cb 		lu_event_log_global_cb = NULL;
-static lu_event_fatal_cb 	lu_event_fatal_global_cb = NULL;
+static lu_event_log_cb 		lu_event_log_global_fn_ = NULL;
+static lu_event_fatal_cb 	lu_event_fatal_global_fn_ = NULL;
 
 /**
  * Redirect luevent's log messages to a custom callback function.
@@ -111,7 +134,7 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_enable_debug_logging(lu_uint32_t which_mask
    one argument: error_code (an integer)
  * By default, luevent will call exit(1) if a fatal error occurs.Note that if the function is ever invoked,
    it means something is wrong with your program, or with luevent: any subsequent calls
- * This function will set lu_event_fatal_global_cb(init is NULL) to the new callback function.
+ * This function will set lu_event_fatal_global_fn_(init is NULL) to the new callback function.
  */
 LU_EVENT_EXPORT_SYMBOL void lu_event_set_fatal_callback(lu_event_fatal_cb fatal_cb);
 

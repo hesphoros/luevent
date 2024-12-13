@@ -21,6 +21,7 @@ set(SOURCES
     src/main.c    
     src/lu_error.c
     src/lu_log.c
+    src/lu_util.c
 )
 
  

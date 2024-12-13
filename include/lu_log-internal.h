@@ -78,7 +78,14 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, con
  */
 typedef void (*lu_event_log_cb)(int severity, const char *msg) ;
 
-static lu_event_log_cb lu_event_log_global_cb = NULL;
+
+/**
+ * A callback function to be called if luevent encounters a fatal error.
+ */
+typedef void (*lu_event_fatal_cb)(int error_code);
+
+static lu_event_log_cb 		lu_event_log_global_cb = NULL;
+static lu_event_fatal_cb 	lu_event_fatal_global_cb = NULL;
 
 /**
  * Redirect luevent's log messages to a custom callback function.
@@ -91,11 +98,22 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_set_log_callback(lu_event_log_cb log_cb);
  * Turn on debuging logs and have them output to the default log handeler.
  * This is a global setting and affects all logs.
  * @param which_mask Controls which debug messages are enabled. 
+ * This function set lu_event_debug_logging_mask_ to the new mask(which_mask).
    you must pass the constant "LU_EVENT_DBG_NONE" to turn off all debug messages
    you can pass the constant "LU_EVENT_DBG_ALL" to turn on all debug messages   
 */
 LU_EVENT_EXPORT_SYMBOL void lu_event_enable_debug_logging(lu_uint32_t which_mask);
 
+
+/**
+ * Set a callback function to be called if luevent encounters a fatal error.
+ * @param fatal_cb The callback function to use. If NULL, the default fatal error handler is used.
+   one argument: error_code (an integer)
+ * By default, luevent will call exit(1) if a fatal error occurs.Note that if the function is ever invoked,
+   it means something is wrong with your program, or with luevent: any subsequent calls
+ * This function will set lu_event_fatal_global_cb(init is NULL) to the new callback function.
+ */
+LU_EVENT_EXPORT_SYMBOL void lu_event_set_fatal_callback(lu_event_fatal_cb fatal_cb);
 
 #ifdef __cplusplus
 }

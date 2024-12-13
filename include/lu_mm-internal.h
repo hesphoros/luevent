@@ -33,7 +33,12 @@ static void (*lu_mm_realloc_log_fn_)(const char* operation, void* ptr, size_t si
 static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 
- 
+
+/**
+ * This functions is luevent's offer for custom memory management functions
+ * It will create a file with the name "memory_log.txt" in the current directory.
+ * log_level : define some macro string in lu_utils.h 
+ * */ 
 void default_memory_log(const char* operation, void* ptr, size_t size);
  
  

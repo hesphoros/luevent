@@ -62,3 +62,11 @@ static void lu_event_log_(int severity, const char *msg) {
 void lu_event_set_log_callback(lu_event_log_cb log_cb){
     lu_event_log_global_cb = log_cb;    
 }
+
+void lu_event_enable_debug_logging(lu_uint32_t which_mask)
+{
+    #ifdef LU_EVENT_DEBUG_LOGGING_ENABLED
+    lu_event_debug_logging_mask_ = which_mask;
+    #endif /* LU_EVENT_DEBUG_LOGGING_ENABLED */
+}
+

@@ -4,6 +4,9 @@
 #include <memory.h>
 
 
+//#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+
+
 void test_error_to_string(){
     printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
     printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
@@ -34,11 +37,8 @@ void test_mm_memory(){
 
 }
 
-//#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+
 int main(){
-    
-    test_error_to_string();
-    //test_mm_memory();
 
     return 0;
 }

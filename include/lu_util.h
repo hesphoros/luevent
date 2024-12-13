@@ -1,7 +1,9 @@
 #ifndef LU_EVENT_UTIL_H
 #define LU_EVENT_UTIL_H
 
-#include <time.h>
+#include "lu_visibility.h"
+//#include <time.h>
+#include <stdarg.h>
 #include <stdint.h>
 #include <sys/types.h>
 #include <inttypes.h>
@@ -126,8 +128,26 @@ extern "C" {
 #define LU_EVENT_LOG_WARN   2
 #define LU_EVENT_LOG_ERROR  3
 /**@}*/
- 
 
+/*
+*   Replacement for snprintf to get consistent behavior on platforms for
+    which the return value of snprintf does not conform to C99.
+*/
+LU_EVENT_EXPORT_SYMBOL int lu_evutil_snprintf(char *str, size_t size, const char *format,...)
+#ifdef __GNUC__
+	__attribute__((format(printf, 3, 4)))
+#endif
+;
+
+
+/** Replacement for vsnprintf to get consistent behavior on platforms for
+    which the return value of snprintf does not conform to C99.
+ */
+LU_EVENT_EXPORT_SYMBOL int lu_evutil_vsnprintf(char *buf, size_t buflen, const char *format, va_list ap)
+#ifdef __GNUC__
+	__attribute__((format(printf, 3, 0)))
+#endif
+;
 
 #ifdef __cplusplus  
 }

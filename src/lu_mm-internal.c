@@ -2,8 +2,7 @@
 #include "lu_erron.h"
 #include <errno.h>  
 #include "lu_util.h"
-
- 
+#include <time.h>
 #include <string.h>
 #include <stdio.h>
 

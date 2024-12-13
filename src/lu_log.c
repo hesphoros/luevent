@@ -6,6 +6,7 @@
 */
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 #include <time.h>
 #include "lu_log-internal.h"
 #include "lu_util.h"
@@ -83,7 +84,16 @@ void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list a
     if(LU_EVENT_LOG_DEBUG == severity && !(lu_event_debug_get_logging_mask_()))
         return;
 
-    if(NULL != fmt){
-        len = vsnprintf(buff, sizeof(buff), fmt, ap);
-    }       
+    if(NULL != fmt)
+        len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap); 
+    else
+        buff[0] = '\0';
+    
+    if(errstr){
+        len = strlen(buff);
+        if(len < sizeof(buff)-1){
+            lu_evutil_snprintf(buff+len, sizeof(buff)-len, ": %s", errstr);
+        }        
+    }
+    lu_event_log_(severity, buff);
 }

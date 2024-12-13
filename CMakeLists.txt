@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(luevent VERSION 1.0 LANGUAGES C CXX)
 
 # 设置 C 和 C++ 标准
-set(CMAKE_C_STANDARD 17)
+# set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 99) # 设置 C 为 C99
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 20) # 设置 C++ 为 C++20
 

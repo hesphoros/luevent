@@ -3,7 +3,7 @@
 
 #include "lu_util.h"
 #include "lu_visibility.h"
-
+#include <stdio.h>
 #include <stdarg.h>
 
 #ifdef __cplusplus

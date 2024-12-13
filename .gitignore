@@ -2,4 +2,5 @@ root
 root.pub
 other/*
 *.out
- 
+build/CMakeFiles/
+build/CMakeCache.txt

@@ -18,9 +18,9 @@ extern "C" {
 
 // TODO 使用内存池进行管理
 static void*(*lu_mm_malloc_fn_)(size_t size) = NULL;
-static void*(*lu_mm_calloc_fn_)(void* ptr, size_t size) = NULL;
+static void*(*lu_mm_calloc_fn_)(void *ptr, size_t size) = NULL;
 static void*(*lu_mm_realloc_fn_)(void *ptr, size_t size) = NULL;
-static void*(*lu_mm_free_fn_)(void* ptr) = NULL;
+static void*(*lu_mm_free_fn_)(void *ptr) = NULL;
 
 //int posix_memalign(void **memptr, size_t alignment, size_t size);
 static int(*lu_mm_aligned_malloc_fn_)(void **ptr,size_t size, size_t alignment) = NULL;
@@ -63,7 +63,7 @@ extern void* lu_log_functions_global_[];
 #define mm_calloc(nitems, size) 	    lu_event_mm_calloc_((nitems), (size))
 #define mm_strdup(str) 			        lu_event_mm_strdup_(str)
 #define mm_realloc(ptr, size) 		    lu_event_mm_realloc_((ptr), (size))
-#define mm_free(ptr) 				    lu_event_mm_free_(ptr)
+#define mm_free(ptr) 				    lu_event_mm_free_((ptr))
 #define mm_memalign(size, alignment)    lu_event_mm_aligned_malloc_((size), (alignment))
 
 #else

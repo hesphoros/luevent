@@ -97,3 +97,17 @@ void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list a
     }
     lu_event_log_(severity, buff);
 }
+
+void lu_event_error(int errnum, const char *fmt,...) {
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_logv_(LU_EVENT_LOG_ERROR, strerror(errnum), fmt, ap);
+    va_end(ap);
+}
+
+void lu_event_warn(const char *fmt,...){
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_logv_(LU_EVENT_LOG_WARN, NULL, fmt, ap);
+    va_end(ap);
+}

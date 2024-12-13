@@ -8,6 +8,7 @@
 
 
 void test_error_to_string(){
+    lu_enable_default_memory_logging(1); 
     printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
     printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
@@ -16,11 +17,11 @@ void test_error_to_string(){
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_PROCESS));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE_OR_ADDRESS));    
-    
+    void *p = mm_memalign(100,100);
 }
 
 void test_mm_memory(){
-    lu_enable_default_memory_logging(1); 
+    
     void *p = mm_malloc(100);
     printf("%p size: %d\n",p,sizeof(*p));
    
@@ -39,6 +40,6 @@ void test_mm_memory(){
 
 
 int main(){
-
+    
     return 0;
 }

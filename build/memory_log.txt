@@ -1,0 +1,13 @@
+[2024-12-14 00:16:03] __MALLOC__     0x21716b0      allocated           (size: 24 bytes)
+[2024-12-14 00:16:03] __MALLOC__     0x2171930      allocated           (size: 24 bytes)
+[2024-12-14 00:16:03] __MALLOC__     0x2171950      allocated           (size: 24 bytes)
+[2024-12-14 00:16:03] __MALLOC__     0x2171970      allocated           (size: 24 bytes)
+[2024-12-14 00:16:03] __MALLOC__     0x2171990      allocated           (size: 24 bytes)
+[2024-12-14 00:16:03] __MALLOC__     0x21719b0      allocated           (size: 24 bytes)
+[2024-12-14 00:16:03] __ALIGNED_M__  (nil)          aligned_malloc allocated (size: 100 bytes)
+[2024-12-14 00:16:03] __FREE__       0x2171950      freed
+[2024-12-14 00:16:03] __FREE__       0x2171970      freed
+[2024-12-14 00:16:03] __FREE__       0x21719b0      freed
+[2024-12-14 00:16:03] __FREE__       0x21716b0      freed
+[2024-12-14 00:16:03] __FREE__       0x2171990      freed
+[2024-12-14 00:16:03] __FREE__       0x2171930      freed

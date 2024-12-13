@@ -164,8 +164,9 @@ void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment) {
     }else{
 
         int ret = posix_memalign(&ptr, alignment, size);
-        if (ret == 0 && lu_mm_aligned_malloc_log_fn_) {
-            lu_mm_aligned_malloc_log_fn_(MM_ALIGEND_MALLOC_STR, ptr, size);
+        //if (ret == 0 && lu_mm_aligned_malloc_log_fn_) {
+        if(lu_mm_aligned_malloc_log_fn_){
+            lu_mm_aligned_malloc_log_fn_(ALIGEND_MALLOC_STR, ptr, size);
         }
         return ptr;
     }
@@ -200,7 +201,7 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
     char log_message[256];
     ssize_t message_len;
 
-    if (ptr == NULL && strcmp(operation, MM_MALLOC_STR) != 0 && strcmp(operation, MALLOC_STR) != 0) {
+    if (ptr == NULL && strcmp(operation, MM_MALLOC_STR) != 0 && strcmp(operation, MALLOC_STR) != 0 && strcmp(operation,MM_ALIGEND_MALLOC_STR) != 0 && strcmp(operation, ALIGEND_MALLOC_STR) != 0) {
         // 内存分配失败的格式化日志信息
         message_len = snprintf(log_message, sizeof(log_message),
             "[%-19s] %10s Failed to allocate memory (size: %zu bytes), errno: %d, error: %s\n",

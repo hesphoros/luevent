@@ -93,21 +93,12 @@ extern "C" {
 
 /**@}*/
 
-// #define MM_MALLOC_STR      "__mm_malloc__"
-// #define MM_CALLOC_STR      "__mm_calloc__"
-// #define MM_FREE_STR        "__mm_free__"
-// #define MM_REALLOC_STR     "__mm_realloc__"
-// #define MM_STRDUP_STR      "__mm_strdup__"
-// #define MM_ALIGEND_MALLOC_STR  "__mm_ali_malloc__"
 
-// #define ALIGEND_MALLOC_STR  "__ali_malloc__"
-// #define MALLOC_STR          "__malloc__"
-// #define CALLOC_STR          "__calloc__"
-// #define FREE_STR            "__free__"
-// #define REALLOC_STR         "__realloc__"
-// #define STRDUP_STR          "__strdup__"
-
-
+/**
+   @name Memory allocation macros
+   These macros are used to track memory allocation and deallocation.
+   @{
+*/
 #define MM_MALLOC_STR               "__MM_MALLOC__"
 #define MALLOC_STR                  "__MALLOC__"
 #define MM_CALLOC_STR               "__MM_CALLOC__"
@@ -120,6 +111,22 @@ extern "C" {
 #define STRDUP_STR                  "__STRDUP__"
 #define MM_ALIGEND_MALLOC_STR       "__MM_ALIG_M__"
 #define ALIGEND_MALLOC_STR          "__ALIGNED_M__"
+/**@}*/
+
+//debug level
+#define LU_EVENT_DBG_NONE 0
+#define LU_EVENT_DBG_ALL 0xffffffffu
+ 
+
+/** @name Log severities
+ */
+/**@{*/
+#define LU_EVENT_LOG_DEBUG  0
+#define LU_EVENT_LOG_MSG    1
+#define LU_EVENT_LOG_WARN   2
+#define LU_EVENT_LOG_ERROR  3
+/**@}*/
+ 
 
 
 #ifdef __cplusplus  

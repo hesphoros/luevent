@@ -60,3 +60,26 @@ const char* lu_get_error_string(int errno);
 const char* lu_get_error_string_hash(int errno);
 
 使用数组实现以及hash表实现的字符串映射，采用惰性加载的方式，减少内存占用。
+
+# Friday 13 Dec 2024
+
+默认启用log
+
+#if !defined(LU_EVENT__DISABLE_DEBUG_MODE) || defined(LU_USE_DEBUG)
+#define LU_EVENT_DEBUG_LOGGING_ENABLED
+#endif
+
+#ifdef LU_EVENT_DEBUG_LOGGING_ENABLED
+LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t lu_event_debug_logging_mask_;
+#define lu_event_debug_get_logging_mask_() (lu_event_debug_logging_mask_)
+#else
+#define lu_event_debug_get_logging_mask_() (0)
+#endif
+
+提供宏LU_EVENT__DISABLE_DEBUG_MODE 用于关闭调试日志输出。 LU_USE_DEBUG  用于控制是否编译调试日志输出代码。
+
+
+#define LU_EVENT_LOG_DEBUG  0
+#define LU_EVENT_LOG_MSG    1
+#define LU_EVENT_LOG_WARN   2
+#define LU_EVENT_LOG_ERROR  3

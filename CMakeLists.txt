@@ -20,6 +20,7 @@ set(SOURCES
     src/lu_mm-internal.c
     src/main.c    
     src/lu_error.c
+    src/lu_log.c
 )
 
  

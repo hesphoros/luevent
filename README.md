@@ -122,3 +122,11 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *fmt, ...) LU_EV_CHECK_FMT(
 LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
 LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap) LU_EV_CHECK_FMT(3,0);
 ~~~
+
+添加
+~~~c
+static void (*lu_mm_aligned_malloc_log_fn_)(const char* operationvoid* ptr, size_t size) = NULL;
+
+#define mm_memalign(size, alignment)    lu_event_mm_aligned_malloc_((size), (alignment))
+~~~
+

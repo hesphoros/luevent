@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include "lu_hash.h"
+#include "lu_mm-internal.h"
 
 
 //缓存存储
@@ -91,10 +92,10 @@ const char *lu_evutil_socket_error_to_string(int errcode){
     }
 
     // 创建新的缓存条目
-    newerr = (struct cached_sock_errs_entry *)malloc(sizeof(lu_cached_sock_errs_entry_t));
+    newerr = (lu_cached_sock_errs_entry_t *)mm_malloc(sizeof(lu_cached_sock_errs_entry_t));
     if (!newerr) {
         free(msg);
-        msg = strdup("malloc failed during socket error");
+        msg = mm_strdup("malloc failed during socket error");
         pthread_mutex_unlock(&linux_socket_errors_lock_);
         return msg;
     }

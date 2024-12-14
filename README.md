@@ -128,5 +128,9 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, con
 static void (*lu_mm_aligned_malloc_log_fn_)(const char* operationvoid* ptr, size_t size) = NULL;
 
 #define mm_memalign(size, alignment)    lu_event_mm_aligned_malloc_((size), (alignment))
+
+lu_event_debug_get_logging_mask_ //全局debug_mask 根据此mask 来判断是否进行日志输出
+
 ~~~
 
+完善了

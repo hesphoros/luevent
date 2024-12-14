@@ -111,3 +111,16 @@ void lu_event_warn(const char *fmt,...){
     lu_event_logv_(LU_EVENT_LOG_WARN, NULL, fmt, ap);
     va_end(ap);
 }
+
+
+
+
+void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...){
+    va_list ap;
+	int err = lu_evutil_socket_geterror(sock);
+
+	va_start(ap, fmt);
+	lu_event_logv_(LU_EVENT_LOG_ERROR, lu_evutil_socket_error_to_string(err), fmt, ap);
+	va_end(ap);
+	//event_exit(eval);
+}

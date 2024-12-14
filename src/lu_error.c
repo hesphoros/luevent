@@ -218,7 +218,7 @@ const char* lu_get_error_string_hash(int errno)  {
 
     lu_error_info_t* entry = get_or_create_error_entry_(index);
 
-    // 如果尚未加载错误信息，则进行加载
+    // 如果尚未加载错误信息，则进行加载 使用惰性加载机制
     if (!entry->is_loaded) {
         entry->error_code = errno;         
         entry->error_message = get_error_message_(errno);

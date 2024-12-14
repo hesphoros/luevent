@@ -133,4 +133,7 @@ lu_event_debug_get_logging_mask_ //全局debug_mask 根据此mask 来判断是�
 
 ~~~
 
-完善了
+完善了lu_evutil_socket_geterror 获取socket错误描述字符串。
+lu_evutil_socket_error_to_string 转换socket错误码到错误描述字符串。
+调用了uthash 库实现hash表。
+

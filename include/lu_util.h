@@ -14,9 +14,9 @@ extern "C" {
 
 
 // socket type
-#define lu_evutil_socket_t int
-
-
+#define lu_evutil_socket_t  int
+#define lu_evutil_socklen_t socklen_t
+ 
 /**
  * @name Standard integer types.
  * @{
@@ -148,6 +148,22 @@ LU_EVENT_EXPORT_SYMBOL int lu_evutil_vsnprintf(char *buf, size_t buflen, const c
 	__attribute__((format(printf, 3, 0)))
 #endif
 ;
+
+ 
+/**
+   @name Socket error functions
+   @{
+*/
+/** Return the most recent socket error to occur on sock. */
+LU_EVENT_EXPORT_SYMBOL int lu_evutil_socket_geterror(lu_evutil_socket_t sock_t);
+/** Convert a socket error to a string. */
+LU_EVENT_EXPORT_SYMBOL const char *lu_evutil_socket_error_to_string(int errcode);
+
+
+#define LU_EVUTIL_INVALID_SOCKET (-1)
+
+/**@}*/
+
 
 #ifdef __cplusplus  
 }

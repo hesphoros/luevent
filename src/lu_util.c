@@ -7,7 +7,7 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include "lu_hash.h"
-#include "lu_mm-internal.h"
+#include "lu_memory_manager.h"
 
 
 //缓存存储

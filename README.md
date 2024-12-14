@@ -135,7 +135,23 @@ lu_event_debug_get_logging_mask_ //全局debug_mask 根据此mask 来判断是�
 
 完善了lu_evutil_socket_geterror 获取socket错误描述字符串。
 lu_evutil_socket_error_to_string 转换socket错误码到错误描述字符串。
-调用了uthash 库实现hash表。
+lu_evutil_socket_error_to_string 内部采用了hash表实现字符串映射。
 
+调用了uthash 库实现hash表。
+临时存储结构为
+~~~c
+//缓存存储
+typedef struct lu_cached_sock_errs_entry_s {
+    int code;
+    char *msg;
+    UT_hash_handle hh;  // 用于 uthash 哈希表的处理
+}lu_cached_sock_errs_entry_t;
+~~~
 
 # Sunday 15 Dec 2024
+
+准备开始编写luevent内部的hash表实现，参考uthash 库。
+参考实现
+[6.1   哈希表 - Hello 算法](https://www.hello-algo.com/chapter_hashing/hash_map/)
+
+[Implementation of Hash Table in C/C++ using Separate Chaining - GeeksforGeeks](https://www.geeksforgeeks.org/implementation-of-hash-table-in-c-using-separate-chaining/#)

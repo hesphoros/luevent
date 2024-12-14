@@ -71,6 +71,7 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "lu_log-internal.h": "c"
+        "lu_log-internal.h": "c",
+        "pthread.h": "c"
     }
 }

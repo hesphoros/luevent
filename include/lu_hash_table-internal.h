@@ -17,10 +17,9 @@ typedef struct lu_hash_list_node_s {
 } lu_hash_list_node_t;
 
 typedef lu_hash_list_node_t *lu_hash_list_ptr_t;
-typedef lu_hash_list_node_t *element_t;
+typedef lu_hash_list_node_t *lu_hash_element_t;
 
-//typedef ListNode *List;
-//typedef ListNode *Elemen
+ 
 
 
 typedef struct lu_hash_table_s {
@@ -34,11 +33,13 @@ int luHash(int key,int table_size);
 lu_hash_table_t* luHashInit(int table_size);
 void luHashInsert(lu_hash_table_t* table, int key, void* value);
 /**从hash表中根据键zhi查找元素，返回元素指针，如果没有找到则返回NULL */
-element_t luFind(lu_hash_table_t* table, int key);
+lu_hash_element_t luFind(lu_hash_table_t* table, int key);
 
 void luDelele(lu_hash_table_t* table, int key);
 //hash表元素中提取数据
-void* luRetrieve(element_t e);
+void* luRetrieve(lu_hash_element_t e);
 
 void luDestroy(lu_hash_table_t* table);
+
+
 #endif /* LU_HASH_TABLE_INTERNAL_H */

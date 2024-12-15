@@ -155,3 +155,23 @@ typedef struct lu_cached_sock_errs_entry_s {
 [6.1   哈希表 - Hello 算法](https://www.hello-algo.com/chapter_hashing/hash_map/)
 
 [Implementation of Hash Table in C/C++ using Separate Chaining - GeeksforGeeks](https://www.geeksforgeeks.org/implementation-of-hash-table-in-c-using-separate-chaining/#)
+//参考实现
+[uthash - a lightweight hash table implementation for C](https://troydhanson.github.io/uthash/)
+
+封装了lu_hash_table.c lu_has_table-internal.h 提供以下hash接口
+
+~~~c
+int luHash(int key,int table_size);
+lu_hash_table_t* luHashInit(int table_size);
+void luHashInsert(lu_hash_table_t* table, int key, void* value);
+/**从hash表中根据键zhi查找元素，返回元素指针，如果没有找到则返回NULL */
+lu_hash_element_t luFind(lu_hash_table_t* table, int key);
+void luDelele(lu_hash_table_t* table, int key);
+//hash表元素中提取数据
+void* luRetrieve(lu_hash_element_t e);
+void luDestroy(lu_hash_table_t* table);
+~~~
+
+
+ git config --global credential.helper cache
+ 

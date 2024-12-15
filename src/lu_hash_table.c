@@ -45,11 +45,11 @@ lu_hash_table_t* luHashInit(int table_size){
 }
 
 void luHashInsert(lu_hash_table_t* table, int key, void* value){
-    element_t e = NULL,tmp = NULL;
+    lu_hash_element_t e = NULL,tmp = NULL;
     lu_hash_list_ptr_t list = NULL;
     e = luFind(table, key);
     if(NULL == e){
-        tmp = (element_t)malloc(sizeof(lu_hash_list_node_t));
+        tmp = (lu_hash_element_t)malloc(sizeof(lu_hash_list_node_t));
         if(NULL == tmp){
             printf("lu_hash_table_insert: malloc failed\n");
             return;
@@ -66,10 +66,10 @@ void luHashInsert(lu_hash_table_t* table, int key, void* value){
     }
 }
 
-element_t luFind(lu_hash_table_t* table, int key){
+lu_hash_element_t luFind(lu_hash_table_t* table, int key){
     int i = 0;
     lu_hash_list_ptr_t list = NULL;
-    element_t e      = NULL;
+    lu_hash_element_t e      = NULL;
     i = luHash(key, table->table_size);
     list = table->the_lists[i];
     //遍历链表 
@@ -82,7 +82,7 @@ element_t luFind(lu_hash_table_t* table, int key){
 
 
 void luDelele(lu_hash_table_t* table, int key){
-    element_t e = NULL,last = NULL;
+    lu_hash_element_t e = NULL,last = NULL;
     lu_hash_list_ptr_t list = NULL;
     int i = luHash(key,table->table_size);
     list = table->the_lists[i];
@@ -100,7 +100,7 @@ void luDelele(lu_hash_table_t* table, int key){
     }
 }
 
-void* luRetrieve(element_t e){
+void* luRetrieve(lu_hash_element_t e){
     return e? e->value : NULL;
 }
 
@@ -108,7 +108,7 @@ void* luRetrieve(element_t e){
 void luDestroy(lu_hash_table_t* table){
     int i = 0;
     lu_hash_list_ptr_t list = NULL;
-    element_t cur = NULL,next = NULL;
+    lu_hash_element_t cur = NULL,next = NULL;
     for(i = 0; i < table->table_size; i++)
     {
         list = table->the_lists[i];

@@ -45,5 +45,23 @@ lu_hash_table_t* luHashInit(int table_size){
 }
 
 void luHashInsert(lu_hash_table_t* table, int key, void* value){
-    
+    element_t e = NULL,tmp = NULL;
+    lu_hash_list_ptr_t list = NULL;
+    e = luFind(hash_table, key);
+    if(NULL == e){
+        tmp = (element_t)malloc(sizeof(lu_hash_list_node_t));
+        if(NULL == tmp){
+            printf("lu_hash_table_insert: malloc failed\n");
+            return;
+        }
+
+        list = table->the_lists[lu_Hash(key, table->table_size)];
+        tmp->key = key;
+        tmp->value = value;
+        tmp->next = list->next;
+        list->next = tmp;
+    }else{
+        printf("lu_hash_table_insert: key already exists\n");
+        return;
+    }
 }

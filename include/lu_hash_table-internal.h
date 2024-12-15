@@ -17,7 +17,7 @@ typedef struct lu_hash_list_node_s {
 } lu_hash_list_node_t;
 
 typedef lu_hash_list_node_t *lu_hash_list_ptr_t;
-typedef lu_hash_list_node_t *element_ptr_t;
+typedef lu_hash_list_node_t *element_t;
 
 //typedef ListNode *List;
 //typedef ListNode *Elemen
@@ -33,4 +33,6 @@ typedef struct lu_hash_table_s {
 int lu_Hash(int key,int table_size);
 lu_hash_table_t* luHashInit(int table_size);
 void luHashInsert(lu_hash_table_t* table, int key, void* value);
+element_t luFind(lu_hash_table_t* table, int key);
+
 #endif /* LU_HASH_TABLE_INTERNAL_H */

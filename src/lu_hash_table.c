@@ -103,3 +103,25 @@ void luDelele(lu_hash_table_t* table, int key){
 void* luRetrieve(element_t e){
     return e? e->value : NULL;
 }
+
+
+void luDestroy(lu_hash_table_t* table){
+    int i = 0;
+    lu_hash_list_ptr_t list = NULL;
+    element_t cur = NULL,next = NULL;
+    for(i = 0; i < table->table_size; i++)
+    {
+        list = table->the_lists[i];
+        cur = list->next;
+        while(cur != NULL)
+        {
+            next = cur->next;
+            free(cur);
+            cur = next;
+        }
+        free(list);
+    }
+    free(table->the_lists);
+    free(table);
+
+}

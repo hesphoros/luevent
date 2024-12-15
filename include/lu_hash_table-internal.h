@@ -39,4 +39,6 @@ element_t luFind(lu_hash_table_t* table, int key);
 void luDelele(lu_hash_table_t* table, int key);
 //hash表元素中提取数据
 void* luRetrieve(element_t e);
+
+void luDestroy(lu_hash_table_t* table);
 #endif /* LU_HASH_TABLE_INTERNAL_H */

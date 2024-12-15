@@ -33,6 +33,8 @@ typedef struct lu_hash_table_s {
 int lu_Hash(int key,int table_size);
 lu_hash_table_t* luHashInit(int table_size);
 void luHashInsert(lu_hash_table_t* table, int key, void* value);
+/**从hash表中根据键zhi查找元素，返回元素指针，如果没有找到则返回NULL */
 element_t luFind(lu_hash_table_t* table, int key);
+
 
 #endif /* LU_HASH_TABLE_INTERNAL_H */

@@ -65,3 +65,17 @@ void luHashInsert(lu_hash_table_t* table, int key, void* value){
         return;
     }
 }
+
+element_t luFind(lu_hash_table_t* table, int key){
+    int i = 0;
+    lu_hash_list_ptr_t list = NULL;
+    element_t e      = NULL;
+    i = lu_Hash(key, table->table_size);
+    list = table->the_lists[i];
+    //遍历链表 
+    //时间复杂度 O(n)
+    while(e!= NULL && e->key != key)
+        e = e->next;
+    return e;
+
+}

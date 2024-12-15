@@ -31,6 +31,19 @@ lu_hash_table_t* luHashInit(int table_size){
     //为 Hash 桶对应的指针数组初始化链表节点
     for(i = 0; i < table_size; i++){
         hash_table->the_lists[i] = (lu_hash_list_node_t *) malloc(sizeof(lu_hash_list_node_t));
+        if(NULL == hash_table->the_lists[i]){
+            printf("lu_hash_table_init: malloc the_lists[i] failed\n");
+            free(hash_table->the_lists);
+            free(hash_table);
+            return NULL;
+        }else{
+            memset(hash_table->the_lists[i], 0, sizeof(lu_hash_list_node_t));
+        }
+
     }
         
+}
+
+void luHashInsert(lu_hash_table_t* table, int key, void* value){
+    
 }

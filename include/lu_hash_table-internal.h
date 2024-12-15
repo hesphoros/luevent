@@ -32,5 +32,5 @@ typedef struct lu_hash_table_s {
 
 int lu_Hash(int key,int table_size);
 lu_hash_table_t* luHashInit(int table_size);
-
+void luHashInsert(lu_hash_table_t* table, int key, void* value);
 #endif /* LU_HASH_TABLE_INTERNAL_H */

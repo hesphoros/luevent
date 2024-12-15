@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <stdio.h>
 
-int lu_Hash(int key,int table_size)
+int luHash(int key,int table_size)
 {    
     return key % table_size;
 }
@@ -47,7 +47,7 @@ lu_hash_table_t* luHashInit(int table_size){
 void luHashInsert(lu_hash_table_t* table, int key, void* value){
     element_t e = NULL,tmp = NULL;
     lu_hash_list_ptr_t list = NULL;
-    e = luFind(hash_table, key);
+    e = luFind(table, key);
     if(NULL == e){
         tmp = (element_t)malloc(sizeof(lu_hash_list_node_t));
         if(NULL == tmp){
@@ -55,7 +55,7 @@ void luHashInsert(lu_hash_table_t* table, int key, void* value){
             return;
         }
 
-        list = table->the_lists[lu_Hash(key, table->table_size)];
+        list = table->the_lists[luHash(key, table->table_size)];
         tmp->key = key;
         tmp->value = value;
         tmp->next = list->next;
@@ -70,7 +70,7 @@ element_t luFind(lu_hash_table_t* table, int key){
     int i = 0;
     lu_hash_list_ptr_t list = NULL;
     element_t e      = NULL;
-    i = lu_Hash(key, table->table_size);
+    i = luHash(key, table->table_size);
     list = table->the_lists[i];
     //遍历链表 
     //时间复杂度 O(n)
@@ -78,4 +78,28 @@ element_t luFind(lu_hash_table_t* table, int key){
         e = e->next;
     return e;
 
+}
+
+
+void luDelele(lu_hash_table_t* table, int key){
+    element_t e = NULL,last = NULL;
+    lu_hash_list_ptr_t list = NULL;
+    int i = luHash(key,table->table_size);
+    list = table->the_lists[i];
+    last = list;
+    e = list->next;
+    while(e!= NULL && e->key != key){
+        last = e;
+        e = e->next;
+    }
+    if(e != NULL){
+        last->next = e->next;
+        free(e);
+    }else{
+        printf("lu_hash_table_delete: key not found\n");
+    }
+}
+
+void* luRetrieve(element_t e){
+    return e? e->value : NULL;
 }

@@ -35,7 +35,7 @@ void luHashInsert(lu_hash_table_t* table, int key, void* value);
 /**从hash表中根据键zhi查找元素，返回元素指针，如果没有找到则返回NULL */
 lu_hash_element_t luFind(lu_hash_table_t* table, int key);
 
-void luDelele(lu_hash_table_t* table, int key);
+void luDelete(lu_hash_table_t* table, int key);
 //hash表元素中提取数据
 void* luRetrieve(lu_hash_element_t e);
 

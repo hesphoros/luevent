@@ -177,6 +177,30 @@ src/lu_event.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_event.c.s
 .PHONY : src/lu_event.c.s
 
+src/lu_hash_table.o: src/lu_hash_table.c.o
+.PHONY : src/lu_hash_table.o
+
+# target to build an object file
+src/lu_hash_table.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_hash_table.c.o
+.PHONY : src/lu_hash_table.c.o
+
+src/lu_hash_table.i: src/lu_hash_table.c.i
+.PHONY : src/lu_hash_table.i
+
+# target to preprocess a source file
+src/lu_hash_table.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_hash_table.c.i
+.PHONY : src/lu_hash_table.c.i
+
+src/lu_hash_table.s: src/lu_hash_table.c.s
+.PHONY : src/lu_hash_table.s
+
+# target to generate assembly for a file
+src/lu_hash_table.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_hash_table.c.s
+.PHONY : src/lu_hash_table.c.s
+
 src/lu_log.o: src/lu_log.c.o
 .PHONY : src/lu_log.o
 
@@ -288,6 +312,9 @@ help:
 	@echo "... src/lu_event.o"
 	@echo "... src/lu_event.i"
 	@echo "... src/lu_event.s"
+	@echo "... src/lu_hash_table.o"
+	@echo "... src/lu_hash_table.i"
+	@echo "... src/lu_hash_table.s"
 	@echo "... src/lu_log.o"
 	@echo "... src/lu_log.i"
 	@echo "... src/lu_log.s"

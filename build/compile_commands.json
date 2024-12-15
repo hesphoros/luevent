@@ -34,5 +34,11 @@
   "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -std=gnu99 -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-deprecated-declarations -w -o CMakeFiles/luevent.dir/src/lu_util.c.o -c /root/luevent/src/lu_util.c",
   "file": "/root/luevent/src/lu_util.c",
   "output": "CMakeFiles/luevent.dir/src/lu_util.c.o"
+},
+{
+  "directory": "/root/luevent/build",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -std=gnu99 -Wall -Wextra -Wpedantic -Wno-unused-variable -Wno-deprecated-declarations -w -o CMakeFiles/luevent.dir/src/lu_hash_table.c.o -c /root/luevent/src/lu_hash_table.c",
+  "file": "/root/luevent/src/lu_hash_table.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_hash_table.c.o"
 }
 ]

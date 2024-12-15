@@ -14,6 +14,8 @@
 // 内存分配宏，若分配失败则打印错误并退出
 #define LU_MM_MALLOC(size) \
     ({ void* ptr = malloc(size); if (ptr == NULL) { printf("Memory allocation failed!\n"); exit(1); } ptr; })
+#define LU_MM_CALLOC(nmemb, size) \
+    ({ void* ptr = calloc(nmemb, size); if (ptr == NULL) { printf("Memory allocation failed!\n"); exit(1); } ptr; })
 
 // 内存释放宏
 #define LU_MM_FREE(ptr) \
@@ -81,6 +83,10 @@ typedef struct lu_hash_table_s {
 } lu_hash_table_t;
 
 
+// 哈希表句柄类型（对外提供的句柄）
+typedef struct lu_hash_table_handle_s {
+    lu_hash_table_t* table;  // 指向实际哈希表
+} lu_hash_table_handle_t;
 
 
 
@@ -107,6 +113,11 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
 void* lu_hash_table_find(lu_hash_table_t* table, int key);
 void lu_hash_table_delete(lu_hash_table_t* table, int key);
 void lu_hash_table_destroy(lu_hash_table_t* table);
+
+void lu_hash_table_insert_handle(lu_hash_table_handle_t* handle, int key, void* value);  // 通过句柄插入元素
+void* lu_hash_table_find_handle(lu_hash_table_handle_t* handle, int key);  // 通过句柄查找元素
+void lu_hash_table_delete_handle(lu_hash_table_handle_t* handle, int key);  // 通过句柄删除元素
+void lu_hash_table_destroy_handle(lu_hash_table_handle_t* handle);  // 销毁哈希表及句柄
 
 //rb_tree
 //lu_hash_table_t* lu_hash_table_init(int table_size);

@@ -23,6 +23,7 @@ set(SOURCES
     src/lu_error.c
     src/lu_log.c
     src/lu_util.c
+    src/lu_hash_table.c
 )
 
  

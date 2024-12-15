@@ -191,6 +191,11 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value) {
             }
             new_tree->nil->color = BLACK; // nil 节点的颜色总是黑色
             new_tree->root = new_tree->nil;  // 红黑树初始化为空树
+            //???
+            new_tree->nil->left = new_tree->nil;
+            new_tree->nil->right = new_tree->nil;
+            new_tree->nil->parent = new_tree->nil;  // nil 节点的父节点指向自己
+             
 
             // 插入链表中的所有元素到红黑树
             node = bucket->data.list_head;
@@ -402,6 +407,9 @@ void lu_rb_tree_insert_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node) {
                 lu_rb_tree_right_rotate(tree, grandparent);
             }
         } else {
+              // 在这里打印调试信息
+            printf("Parent: %p, Grandparent: %p, Uncle: %p\n", parent, grandparent, grandparent->left);
+
             // Symmetric case: node->parent is the right child of the grandparent
             lu_rb_tree_node_t* uncle = grandparent->left;
 

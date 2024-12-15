@@ -2,8 +2,11 @@
 #define LU_HASH_TABLE_INTERNAL_H
 
 
-#include <string.h>   /* memcmp, memset, strlen */
-#include <stddef.h>   /* ptrdiff_t */
-#include <stdlib.h>   /* exit */
+#include <string.h>   
+#include <stddef.h>   
+#include <stdlib.h>  
+
+
+
 
 #endif /* LU_HASH_TABLE_INTERNAL_H */

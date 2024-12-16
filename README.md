@@ -174,4 +174,9 @@ void luDestroy(lu_hash_table_t* table);
 
 
  git config --global credential.helper cache
+
+# Monday 16 Dec 2024
+ 
+进一步修复hash表内部的红黑树实现 
+完善lu_hash_table.c lu_has_table-internal.h  
  

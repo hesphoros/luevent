@@ -4,7 +4,7 @@
 #include <stdlib.h> // 为了使用malloc, free
 #include <string.h> // 为了使用memset
 
-
+void lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value);
 void lu_rb_tree_right_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
 void lu_rb_tree_left_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
 void lu_rb_tree_insert_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
@@ -18,6 +18,7 @@ void lu_rb_tree_destroy_node(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
 void lu_rb_tree_destroy(lu_rb_tree_t* tree);
 lu_rb_tree_node_t* lu_rb_tree_minimum(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
 lu_rb_tree_node_t* lu_rb_tree_maximum(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+lu_rb_tree_t* lu_rb_tree_init();
 
 // 哈希函数
 // 推荐的哈希函数（乘法哈希 + 位运算优化）
@@ -71,17 +72,17 @@ lu_hash_table_t* lu_hash_table_init(int table_size) {
 void lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value) {
     printf("Inserting key: %d into RB-tree\n", key);
 
-
+    if (tree == NULL || tree->nil == NULL) {
+        printf("Error: Tree or tree->nil is not initialized\n");
+        return;
+    }
     // 创建新节点
     lu_rb_tree_node_t* new_node = (lu_rb_tree_node_t*)malloc(sizeof(lu_rb_tree_node_t));
     if (new_node == NULL) {
         printf("Memory allocation failed for new node\n");
         return;
     }
-    if (tree == NULL || tree->nil == NULL) {
-        printf("Error: Tree or tree->nil is not initialized\n");
-        return;
-    }
+   
     printf("tree->nil address: %p\n", tree->nil);
 
 
@@ -197,50 +198,48 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value) {
             
             if (new_tree == NULL) {
                 printf("Memory allocation failed for new red-black tree\n"); 
-
                 return;
             }            
+
+            printf("RB-tree initialized. Tree address: %p, tree->nil: %p\n", new_tree, new_tree->nil);
+
 
             // 插入链表中的所有元素到红黑树
             node = bucket->data.list_head;
           
             while (node != NULL) {                           
-                lu_hash_bucket_node_ptr_t temp = node;
-                lu_rb_tree_insert(new_tree, node->key, node->value);
-                node = node->next;
-                free(temp); // 立即释放已转换的链表节点              
+               lu_rb_tree_insert(new_tree, node->key, node->value);
+               node = node->next;          
                 
-
             }
             
-            
 
-            // 将桶的类型修改为红黑树，并关联新创建的红黑树
-            bucket->type = LU_BUCKET_RBTREE;
-            bucket->data.rb_tree = new_tree;
-            bucket->data.list_head = NULL;
-            
-             // 清理链表内存
+            // 清理链表内存
             node = bucket->data.list_head;
             while (node != NULL) {
                 lu_hash_bucket_node_ptr_t temp = node;
                 node = node->next;
                 free(temp);
             }
-            if (bucket->data.list_head != NULL) {
-                printf("Warning: list_head is not NULL after cleanup\n");
-                bucket->data.list_head = NULL;
-            }
+            bucket->data.list_head = NULL; // 最后清空链表头指针，防止悬挂指针
 
-
-           
-           
+            // 将桶的类型修改为红黑树，并关联新创建的红黑树
+            bucket->type = LU_BUCKET_RBTREE;
+            bucket->data.rb_tree = new_tree;
+                    
 
             printf("Bucket converted successfully to red-black tree\n");
+            printf("RB-tree initialized. Tree address: %p, tree->nil: %p\n", new_tree, new_tree->nil);
+
         }
     } else if (bucket->type == LU_BUCKET_RBTREE) {
         // 在红黑树中插入
         printf("Inserting key %d into red-black tree\n", key);
+        if (bucket->data.rb_tree == NULL || bucket->data.rb_tree->nil == NULL) {
+            printf("Error: RB-tree or tree->nil is not initialized\n");
+            return;
+        }
+
         lu_rb_tree_insert(bucket->data.rb_tree, key, value);
     }
 }
@@ -266,7 +265,7 @@ void* lu_hash_table_find(lu_hash_table_t* table, int key) {
         // 在红黑树中查找
         lu_rb_tree_node_t* rb_node = lu_rb_tree_find(bucket->data.rb_tree, key);
         if (rb_node != NULL) {
-            return rb_node->value;  // 找到节点返回值
+            return rb_node->value;  
         }
     }
 
@@ -309,6 +308,9 @@ void* lu_hash_table_retrieve(lu_hash_bucket_element_t element) {
 
 // 销毁哈希表
 void lu_hash_table_destroy(lu_hash_table_t* table) {
+    if (table == NULL) {
+        return; // 安全处理空哈希表
+    }
     int i;
     for (i = 0; i < table->table_size; i++) {
         lu_hash_bucket_t* bucket = &table->buckets[i];
@@ -319,13 +321,21 @@ void lu_hash_table_destroy(lu_hash_table_t* table) {
                 node = node->next;
                 free(temp);
             }
+            bucket->data.list_head = NULL; // 防止悬挂指针
         } else if (bucket->type == LU_BUCKET_RBTREE) {
             
-            lu_rb_tree_destroy(bucket->data.rb_tree);
+            // 清理红黑树
+            if (bucket->data.rb_tree != NULL) {
+                lu_rb_tree_destroy(bucket->data.rb_tree);
+                bucket->data.rb_tree = NULL; // 防止悬挂指针
+            }
         }
     }
     free(table->buckets);
+    table->buckets = NULL;
     free(table);
+    table = NULL;
+
 }
 
  
@@ -453,6 +463,7 @@ void lu_rb_tree_insert_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node) {
 
 // 查找红黑树中的节点
 lu_rb_tree_node_t* lu_rb_tree_find(lu_rb_tree_t* tree, int key) {
+    
     lu_rb_tree_node_t* current = tree->root;
     while (current != tree->nil) {
         if (key == current->key) {
@@ -665,8 +676,7 @@ void lu_rb_tree_destroy(lu_rb_tree_t* tree) {
     if (tree->nil != NULL) {
             LU_MM_FREE(tree->nil);
     }
-
-    // 最后销毁树本身
+    
     LU_MM_FREE(tree);
 }
 

@@ -179,4 +179,48 @@ void luDestroy(lu_hash_table_t* table);
  
 进一步修复hash表内部的红黑树实现 
 完善lu_hash_table.c lu_has_table-internal.h  
- 
+修复了lu_hash_table 内存泄漏问题 在`lu_hash_table_inser`t函数中
+问题如下：
+1. 链表指针清理问题： 在转换桶内链表到红黑树时，先设置了
+
+~~~c
+bucket->data.list_head = NULL; // 清空链表头指针
+~~~
+
+2. 然后继续执行链表遍历代码：
+
+~~~c
+node = bucket->data.list_head;
+while (node != NULL) {
+    lu_hash_bucket_node_ptr_t temp = node;
+    node = node->next;  // 此处 node->next 导致错误
+    free(temp);
+}
+~~~
+
+这里 bucket->data.list_head 已被设置为 NULL，导致 node 也被初始化为 NULL。此时遍历链表时 node->next 会导致 Segmentation Fault。
+
+解决方案如下：
+~~~c
+// 插入链表中的所有元素到红黑树
+node = bucket->data.list_head;
+while (node != NULL) {                                              
+    lu_rb_tree_insert(new_tree, node->key, node->value);
+    node = node->next;
+}
+
+// 清理链表内存
+node = bucket->data.list_head;
+while (node != NULL) {
+    lu_hash_bucket_node_ptr_t temp = node;
+    node = node->next;
+    free(temp);
+}
+bucket->data.list_head = NULL; // 最后清空链表头指针，防止悬挂指针
+
+// 将桶的类型修改为红黑树，并关联新创建的红黑树
+bucket->type = LU_BUCKET_RBTREE;
+bucket->data.rb_tree = new_tree;
+~~~
+
+![alt text](image.png)

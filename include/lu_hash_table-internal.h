@@ -9,7 +9,7 @@
 #define LU_HASH_TABLE_DEFAULT_SIZE 16
 #define LU_HASH_TABLE_MAX_LOAD_FACTOR 0.75
 
-#define LU_BUCKET_LIST_THRESHOLD 8  // 链表转红黑树的阈值
+#define LU_BUCKET_LIST_THRESHOLD 10  // 链表转红黑树的阈值
 
 // 内存分配宏，若分配失败则打印错误并退出
 #define LU_MM_MALLOC(size) \
@@ -21,11 +21,7 @@
 #define LU_MM_FREE(ptr) \
     do { if (ptr) { free(ptr); ptr = NULL; } } while (0)
 
-// typedef enum  {
-//     LU_BUCKET_LIST,  // 链表节点
-//     LU_BUCKET_RB_TREE  // 红黑树节点
-// } lu_hash_bucket_type_t;
-
+ 
 typedef enum {
     LU_BUCKET_LIST,   // 使用链表
     LU_BUCKET_RBTREE , // 使用红黑树

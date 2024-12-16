@@ -22,15 +22,15 @@ lu_rb_tree_node_t* lu_rb_tree_maximum(lu_rb_tree_t* tree, lu_rb_tree_node_t* nod
 // 哈希函数
 // 推荐的哈希函数（乘法哈希 + 位运算优化）
 int lu_hash_function(int key, int table_size) {
-    const float A = 0.6180339887;  // 黄金比例的倒数
-    float temp = key * A;
-    int hash = (int)(table_size * (temp - (int)temp)); // 乘法哈希
+    // const float A = 0.6180339887;  // 黄金比例的倒数
+    // float temp = key * A;
+    // int hash = (int)(table_size * (temp - (int)temp)); // 乘法哈希
 
-    // 如果表大小是2的幂，使用位运算优化
-    if ((table_size & (table_size - 1)) == 0) {  // 判断table_size是否是2的幂
-        return hash & (table_size - 1);  // 位运算优化
-    }
-
+    // // 如果表大小是2的幂，使用位运算优化
+    // if ((table_size & (table_size - 1)) == 0) {  // 判断table_size是否是2的幂
+    //     return hash & (table_size - 1);  // 位运算优化
+    // }
+    int hash;
     return hash % table_size;  // 默认情况下使用取模
 }
 
@@ -89,7 +89,12 @@ void lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value) {
     // 如果树为空，初始化root为nil
     if (tree->root == tree->nil) {
         tree->root = new_node;
-        //new_node->parent = tree->nil;
+         
+        
+        new_node->color = BLACK;
+        new_node->left = tree->nil;
+        new_node->right = tree->nil;
+        new_node->parent = tree->nil;
     } else {
         lu_rb_tree_node_t* parent = tree->root;
         lu_rb_tree_node_t* current = tree->root;
@@ -160,26 +165,26 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value) {
         int count = 0;
         lu_hash_bucket_node_ptr_t node = bucket->data.list_head;
         
-        // 打印链表内容，确认每个节点
-        //printf("Current linked list:\n");
+     
         while (node != NULL) {
-            //printf("Node key: %d, Node address: %p, Next node address: %p\n", node->key, node, node->next);
-            
+            // if (node == new_node) {               
+            //     break;
+            // }
+            printf("Node key: %d, Node address: %p, Next node address: %p\n", node->key, node, node->next);            
             count++;
             node = node->next;
         }
+        printf("Bucket size before conversion: %d\n", count);
 
        if (count > LU_BUCKET_LIST_THRESHOLD) {
-            printf("Converting bucket to red-black tree\n");
-
-      
-
+           
+            printf("Converting bucket to red-black tree\n");      
        
             lu_rb_tree_t* new_tree = (lu_rb_tree_t*)malloc(sizeof(lu_rb_tree_t));
             
             if (new_tree == NULL) {
-                printf("Memory allocation failed for new red-black tree\n");
-                //free(new_node);  // 释放之前分配的内存
+                printf("Memory allocation failed for new red-black tree\n"); 
+
                 return;
             }
 
@@ -191,7 +196,7 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value) {
             }
             new_tree->nil->color = BLACK; // nil 节点的颜色总是黑色
             new_tree->root = new_tree->nil;  // 红黑树初始化为空树
-            //???
+            
             new_tree->nil->left = new_tree->nil;
             new_tree->nil->right = new_tree->nil;
             new_tree->nil->parent = new_tree->nil;  // nil 节点的父节点指向自己
@@ -199,12 +204,8 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value) {
 
             // 插入链表中的所有元素到红黑树
             node = bucket->data.list_head;
-            int first_insertion = 1;  // 新增标记第一次插入
-            while (node != NULL) {
-                if (first_insertion) {
-                    printf("First insertion into the tree\n");
-                    first_insertion = 0;  // 第一次插入后更新标志
-                }
+          
+            while (node != NULL) {                                              
                 lu_rb_tree_insert(new_tree, node->key, node->value);
                 node = node->next;
             }
@@ -228,6 +229,7 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value) {
         }
     } else if (bucket->type == LU_BUCKET_RBTREE) {
         // 在红黑树中插入
+        printf("Inserting key %d into red-black tree\n", key);
         lu_rb_tree_insert(bucket->data.rb_tree, key, value);
     }
 }
@@ -372,7 +374,7 @@ void lu_rb_tree_left_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node) {
         node->parent->left = right;
     } else {
         node->parent->right = right;
-    }
+    } printf("Inserting node with key: %d\n", node->key);
 
     // 执行左旋操作
     right->left = node;

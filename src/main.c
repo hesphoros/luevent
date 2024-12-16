@@ -39,6 +39,6 @@ void test_mm_memory(){
 
 
 int main(){
-    test_hash();
+  
     return 0;
 }

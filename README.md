@@ -224,3 +224,27 @@ bucket->data.rb_tree = new_tree;
 ~~~
 
 ![alt text](image.png)
+
+# Tuesday 17 Dec 2024
+
+基本完成了luevent内部的hash表实现，并测试通过。
+测试了
+
+
+==1155386==
+==1155386== HEAP SUMMARY:
+==1155386==     in use at exit: 0 bytes in 0 blocks
+==1155386==   total heap usage: 207 allocs, 207 frees, 8,592 bytes allocated
+==1155386==
+==1155386== All heap blocks were freed -- no leaks are possible
+==1155386==
+==1155386== For lists of detected and suppressed errors, rerun with: -s
+==1155386== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+
+
+TODO: 包装一个lu_hash_table_handl_t 类型，以便于外部调用，
+      以及hash内部链表与红黑树的转换调控算法，以便于扩展。
+      以及hash function 算法，以便于扩展。
+

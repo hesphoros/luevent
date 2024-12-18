@@ -238,3 +238,13 @@ TODO: 包装一个lu_hash_table_handl_t 类型，以便于外部调用，
       测试参数操作
 
 优化了hash function :（乘法哈希 + 位运算优化）
+
+# Wednesday 18 Dec 2024
+
+TODO:
+ 继续完成 17 Dec 2024 未完成的工作，包括：
+ 1. 包装一个lu_hash_table_handl_t 类型，以便于外部调用，
+ 2. hash内部链表与红黑树的转换调控算法，以便于扩展。
+ 3. hash function 算法，以便于扩展。
+  
+ 4. 编写测试用例

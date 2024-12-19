@@ -23,16 +23,18 @@ lu_rb_tree_t* lu_rb_tree_init();
 // 哈希函数
 // 推荐的哈希函数（乘法哈希 + 位运算优化）
 int lu_hash_function(int key, int table_size) {
-    const float A = 0.6180339887;  // 黄金比例的倒数
-    float temp = key * A;
-    int hash = (int)(table_size * (temp - (int)temp)); // 乘法哈希
+    static const double A = 0.6180339887;  // 黄金比例的倒数 
+    // 乘法哈希法
+    double temp = key * A;
+    double fractional_part = temp - (int)temp;  // 提取小数部分
+    int hash = (int)(table_size * fractional_part);
 
     // 如果表大小是2的幂，使用位运算优化
     if ((table_size & (table_size - 1)) == 0) {  // 判断table_size是否是2的幂
         return hash & (table_size - 1);  // 位运算优化
     }
     return hash % table_size;  // 默认情况下使用取模
-    //return key % table_size;  // 默认情况下使用取模
+    
 }
 
  

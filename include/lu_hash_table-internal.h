@@ -15,7 +15,7 @@
 #define LU_MM_MALLOC(size) \
     ({ void* ptr = malloc(size); if (ptr == NULL) { printf("Memory allocation failed!\n"); exit(1); } ptr; })
 #define LU_MM_CALLOC(nmemb, size) \
-    ({ void* ptr = calloc(nmemb, size); if (ptr == NULL) { printf("Memory allocation failed!\n"); exit(1); } ptr; })
+    ({ void* ptr = calloc(nmemb, size); if (ptr == NULL) { printf("Memory callocation failed!\n"); exit(1); } ptr; })
 
 // 内存释放宏
 #define LU_MM_FREE(ptr) \

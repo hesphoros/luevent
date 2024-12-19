@@ -1,6 +1,7 @@
 #ifndef LU_HASH_TABLE_INTERNAL_H
 #define LU_HASH_TABLE_INTERNAL_H
 
+#include <cerrno>
 #include <string.h>   
 #include <stddef.h>   
 #include <stdlib.h>  
@@ -21,6 +22,7 @@
 #define LU_MM_FREE(ptr) \
     do { if (ptr) { free(ptr); ptr = NULL; } } while (0)
 
+ 
  
 typedef enum {
     LU_BUCKET_LIST,   // 使用链表

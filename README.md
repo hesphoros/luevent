@@ -252,3 +252,11 @@ TODO:
  5. 测试删除、添加等操作
  6. 完善文档
 
+# Thursday 19 Dec 2024
+  TODO:
+  1. 修复lu_hash_insert 函数，需要判断重复是否来更新数据，而不是直接插入。
+
+# Friday 20 Dec 2024
+  TODO:
+  从lu_hash_table 更新hash_table的代码
+  1. 完善lu_rb_tree的封装

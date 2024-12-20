@@ -15,13 +15,9 @@
 
 // 内存分配宏，若分配失败则打印错误并退出
 #define LU_MM_MALLOC(size) lu_mm_malloc(size)
-   // ({ void* ptr = malloc(size); if (ptr == NULL) { printf("Memory allocation failed!\n"); exit(1); } ptr; })
 #define LU_MM_CALLOC(nmemb, size)  lu_mm_calloc(nmemb, size)
-   // ({ void* ptr = calloc(nmemb, size); if (ptr == NULL) { printf("Memory callocation failed!\n"); exit(1); } ptr; })
-
 // 内存释放宏
 #define LU_MM_FREE(ptr) lu_mm_free(ptr)
-  //  do { if (ptr) { free(ptr); ptr = NULL; } } while (0)
 
  
  

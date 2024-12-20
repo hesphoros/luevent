@@ -3,7 +3,8 @@
 
 //#include <errno.h>
 #include <string.h>   
-#include <stddef.h>   
+#include <stddef.h>  
+#include <stdio.h> 
 #include <stdlib.h>  
 
 // 默认哈希表大小与最大负载因子
@@ -13,14 +14,14 @@
 #define LU_BUCKET_LIST_THRESHOLD 8  // 链表转红黑树的阈值
 
 // 内存分配宏，若分配失败则打印错误并退出
-#define LU_MM_MALLOC(size) \
-    ({ void* ptr = malloc(size); if (ptr == NULL) { printf("Memory allocation failed!\n"); exit(1); } ptr; })
-#define LU_MM_CALLOC(nmemb, size) \
-    ({ void* ptr = calloc(nmemb, size); if (ptr == NULL) { printf("Memory callocation failed!\n"); exit(1); } ptr; })
+#define LU_MM_MALLOC(size) lu_mm_malloc(size)
+   // ({ void* ptr = malloc(size); if (ptr == NULL) { printf("Memory allocation failed!\n"); exit(1); } ptr; })
+#define LU_MM_CALLOC(nmemb, size)  lu_mm_calloc(nmemb, size)
+   // ({ void* ptr = calloc(nmemb, size); if (ptr == NULL) { printf("Memory callocation failed!\n"); exit(1); } ptr; })
 
 // 内存释放宏
-#define LU_MM_FREE(ptr) \
-    do { if (ptr) { free(ptr); ptr = NULL; } } while (0)
+#define LU_MM_FREE(ptr) lu_mm_free(ptr)
+  //  do { if (ptr) { free(ptr); ptr = NULL; } } while (0)
 
  
  
@@ -98,10 +99,30 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
 void* lu_hash_table_find(lu_hash_table_t* table, int key);
 void lu_hash_table_delete(lu_hash_table_t* table, int key);
 void lu_hash_table_destroy(lu_hash_table_t* table);
- 
 
-//rb_tree
-//lu_hash_table_t* lu_hash_table_init(int table_size);
+static inline void* lu_mm_malloc(size_t size) {
+	void* ptr = malloc(size);
+	if (ptr == NULL) {
+		printf("Memory allocation failed!\n");
+		exit(1);
+	}
+	return ptr;
+}
 
+static inline void lu_mm_free(void* ptr) {
+    if (ptr) {
+		free(ptr);
+        ptr = NULL;
+	}
+}
+
+static inline void* lu_mm_calloc(size_t nmemb, size_t size) {
+    void* ptr = calloc(nmemb, size);
+	if (ptr == NULL) {
+		printf("Memory allocation failed!\n");
+		exit(1);
+    }
+    return ptr;
+}
 
 #endif /* LU_HASH_TABLE_INTERNAL_H */

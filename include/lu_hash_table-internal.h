@@ -10,7 +10,7 @@
 #define LU_HASH_TABLE_DEFAULT_SIZE 16
 #define LU_HASH_TABLE_MAX_LOAD_FACTOR 0.75
 
-#define LU_BUCKET_LIST_THRESHOLD 10  // 链表转红黑树的阈值
+#define LU_BUCKET_LIST_THRESHOLD 8  // 链表转红黑树的阈值
 
 // 内存分配宏，若分配失败则打印错误并退出
 #define LU_MM_MALLOC(size) \
@@ -42,7 +42,7 @@ typedef struct lu_hash_bucket_node_s {
 typedef lu_hash_bucket_node_t *lu_hash_bucket_node_ptr_t;
 // 哈希表元素指针类型（哈希桶中的元素）
 typedef lu_hash_bucket_node_t *lu_hash_bucket_element_t;
-//typedef struct lu_rb_tree_s lu_rb_tree_t;
+
 
 typedef struct lu_rb_tree_node_s lu_rb_tree_node_t;
 

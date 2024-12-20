@@ -20,12 +20,24 @@ lu_rb_tree_node_t* lu_rb_tree_minimum(lu_rb_tree_t* tree, lu_rb_tree_node_t* nod
 lu_rb_tree_node_t* lu_rb_tree_maximum(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
 lu_rb_tree_t* lu_rb_tree_init();
 
-// 哈希函数
-// 推荐的哈希函数（乘法哈希 + 位运算优化）
+
+/**
+ * @brief Computes a hash value for a given key using the multiplication method.
+ *
+ * This function implements a hash function based on the multiplication method,
+ * using the fractional part of the product between the key and the constant
+ * A (the reciprocal of the golden ratio). If the table size is a power of two,
+ * the modulo operation is optimized using bitwise operations. Otherwise, a
+ * standard modulo operation is applied.
+ *
+ * @param key The integer key to be hashed.
+ * @param table_size The size of the hash table (number of buckets).
+ * @return The computed hash value, ranging from 0 to table_size - 1.
+ */
 int lu_hash_function(int key, int table_size) {
-    static const double A = 0.6180339887;  // 黄金比例的倒数 
+    static const double golden_rate_reciprocal = 0.6180339887;  // 黄金比例的倒数 
     // 乘法哈希法
-    double temp = key * A;
+    double temp = key * golden_rate_reciprocal;
     double fractional_part = temp - (int)temp;  // 提取小数部分
     int hash = (int)(table_size * fractional_part);
 

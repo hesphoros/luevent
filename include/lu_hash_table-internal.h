@@ -91,19 +91,6 @@ typedef struct lu_hash_table_handle_s {
 
 
 
-// // 函数声明
-// int lu_hash_function(int key, int table_size);
-// lu_hash_table_t* lu_hash_table_init(int table_size);
-// void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
-// /** 
-//  * 从哈希表中根据键值查找元素，返回元素指针，如果没有找到则返回NULL
-//  */
-// lu_hash_bucket_element_t lu_hash_table_find(lu_hash_table_t* table, int key);
-// void lu_hash_table_delete(lu_hash_table_t* table, int key);  // 删除元素
-// void* lu_hash_table_retrieve(lu_hash_bucket_element_t element);  // 提取哈希表元素中的值
-// void lu_hash_table_destroy(lu_hash_table_t* table);  // 销毁哈希表，释放内存
-
-
 // 函数声明
 int lu_hash_function(int key, int table_size);
 lu_hash_table_t* lu_hash_table_init(int table_size);

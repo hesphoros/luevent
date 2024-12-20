@@ -4,3 +4,4 @@ other/*
 *.out
 build/CMakeFiles/
 build/CMakeCache.txt
+key.pem

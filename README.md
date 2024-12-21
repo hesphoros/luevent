@@ -1,8 +1,8 @@
 # Development log
 
 # Monday 9 Dec 2024
-1.  封装lu_mm-internal.h 头文件
-    LU_EVENT__DISABLE_CUSTOM_MM_REPLACEMENT 宏 
+ - [x] 封装lu_mm-internal.h 头文件
+ - [x] LU_EVENT__DISABLE_CUSTOM_MM_REPLACEMENT 宏 
      
     
 ~~~c
@@ -108,7 +108,8 @@ static lu_event_fatal_cb 	lu_event_fatal_global_fn_ = NULL;
 
 完善lu_log.c lu_log-internal.h 
 
-TODO: 以下宏
+TODO: 
+ - [x] 以下宏
 ~~~c
 #define LU_EVENT_EXPORT_SYMBOL
 LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char *fmt,...) LU_EV_CHECK_FMT(2,3) LU_EV_NORETURN;
@@ -255,7 +256,7 @@ TODO:
 # Thursday 19 Dec 2024
 
 - [x] 完成lu_hash_table_handle_t 类型封装
- - [ ] 完善lu_rb_tree的封装
+- [x] 完善lu_rb_tree的封装
 
 
   TODO:

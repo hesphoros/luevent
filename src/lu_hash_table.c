@@ -4,21 +4,21 @@
 #include <stdlib.h> // 为了使用malloc, free
 #include <string.h> // 为了使用memset
 
-void lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value);
-void lu_rb_tree_right_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-void lu_rb_tree_left_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-void lu_rb_tree_insert_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-void lu_rb_tree_left_rotate_delete(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-void lu_rb_tree_delete(lu_rb_tree_t* tree, int key);
-void lu_rb_tree_right_rotate_delete(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-lu_rb_tree_node_t* lu_rb_tree_find(lu_rb_tree_t* tree, int key);
-void lu_rb_tree_delete_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-void lu_rb_tree_transplant(lu_rb_tree_t* tree, lu_rb_tree_node_t* u, lu_rb_tree_node_t* v);
-void lu_rb_tree_destroy_node(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-void lu_rb_tree_destroy(lu_rb_tree_t* tree);
-lu_rb_tree_node_t* lu_rb_tree_minimum(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-lu_rb_tree_node_t* lu_rb_tree_maximum(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-lu_rb_tree_t* lu_rb_tree_init();
+void                lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value);
+void                lu_rb_tree_right_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+void                lu_rb_tree_left_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+void                lu_rb_tree_insert_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+void                lu_rb_tree_left_rotate_delete(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+void                lu_rb_tree_delete(lu_rb_tree_t* tree, int key);
+void                lu_rb_tree_right_rotate_delete(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+lu_rb_tree_node_t*  lu_rb_tree_find(lu_rb_tree_t* tree, int key);
+void                lu_rb_tree_delete_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+void                lu_rb_tree_transplant(lu_rb_tree_t* tree, lu_rb_tree_node_t* u, lu_rb_tree_node_t* v);
+void                lu_rb_tree_destroy_node(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+void                lu_rb_tree_destroy(lu_rb_tree_t* tree);
+lu_rb_tree_node_t*  lu_rb_tree_minimum(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+lu_rb_tree_node_t*  lu_rb_tree_maximum(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
+lu_rb_tree_t*       lu_rb_tree_init();
 
 
 /**

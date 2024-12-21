@@ -24,6 +24,9 @@ QUESTION:
 
 # Wednesday 11 Dec 2024
 完善lu_error.h lu_error.c 提供宏
+
+使用数组实现以及hash表实现的字符串映射，采用惰性加载的方式，减少内存占用。
+
 ~~~c
  // 自定义错误码，从0x100开始
 #define LU_ERROR_OPERATION_NOT_PERMITTED 0x100
@@ -68,7 +71,7 @@ const char* lu_get_error_string(int errno);
 const char* lu_get_error_string_hash(int errno);
 ~~~
 
-使用数组实现以及hash表实现的字符串映射，采用惰性加载的方式，减少内存占用。
+
 
 # Friday 13 Dec 2024
 
@@ -98,8 +101,8 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t lu_event_debug_logging_mask_;
 static lu_event_log_cb 		lu_event_log_global_fn_ = NULL;
 static lu_event_fatal_cb 	lu_event_fatal_global_fn_ = NULL;
 ~~~
-提供lu_event_log_global_cb 回调函数，用于自定义输出日志。
-提供lu_event_fatal_global_fn_，用于自定义输出致命错误日志。
+提供lu_event_log_global_cb      回调函数，用于自定义输出日志。
+提供lu_event_fatal_global_fn_,  用于自定义输出致命错误日志。
 
 
 使用 inline 和符号导出结合可能导致编译器不能正确生成符号。
@@ -112,7 +115,7 @@ static lu_event_fatal_cb 	lu_event_fatal_global_fn_ = NULL;
 完善lu_log.c lu_log-internal.h 
 
 TODO: 
- - [x] 以下宏
+ - [ ] 逐步完善一下以下宏以及实现
 ~~~c
 #define LU_EVENT_EXPORT_SYMBOL
 LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char *fmt,...) LU_EV_CHECK_FMT(2,3) LU_EV_NORETURN;
@@ -137,9 +140,9 @@ lu_event_debug_get_logging_mask_ //全局debug_mask 根据此mask 来判断是�
 
 ~~~
 
-完善了lu_evutil_socket_geterror 获取socket错误描述字符串。
-lu_evutil_socket_error_to_string 转换socket错误码到错误描述字符串。
-lu_evutil_socket_error_to_string 内部采用了hash表实现字符串映射。
+ - [x] 完善了lu_evutil_socket_geterror 获取socket错误描述字符串。
+ - [x] lu_evutil_socket_error_to_string 转换socket错误码到错误描述字符串。
+ - [x] lu_evutil_socket_error_to_string 内部采用了hash表实现字符串映射。
 
 调用了uthash 库实现hash表。
 临时存储结构为
@@ -165,15 +168,12 @@ typedef struct lu_cached_sock_errs_entry_s {
 封装了lu_hash_table.c lu_has_table-internal.h 提供以下hash接口
 
 ~~~c
-int luHash(int key,int table_size);
-lu_hash_table_t* luHashInit(int table_size);
-void luHashInsert(lu_hash_table_t* table, int key, void* value);
-/**从hash表中根据键zhi查找元素，返回元素指针，如果没有找到则返回NULL */
-lu_hash_element_t luFind(lu_hash_table_t* table, int key);
-void luDelele(lu_hash_table_t* table, int key);
-//hash表元素中提取数据
-void* luRetrieve(lu_hash_element_t e);
-void luDestroy(lu_hash_table_t* table);
+int lu_hash_function(int key, int table_size);
+lu_hash_table_t* lu_hash_table_init(int table_size);
+void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
+void* lu_hash_table_find(lu_hash_table_t* table, int key);
+void lu_hash_table_delete(lu_hash_table_t* table, int key);
+void lu_hash_table_destroy(lu_hash_table_t* table);
 ~~~
 
 
@@ -181,9 +181,11 @@ void luDestroy(lu_hash_table_t* table);
 
 # Monday 16 Dec 2024
  
-进一步修复hash表内部的红黑树实现 
-完善lu_hash_table.c lu_has_table-internal.h  
-修复了lu_hash_table 内存泄漏问题 在`lu_hash_table_inser`t函数中
+ - [x] 进一步修复hash表内部的红黑树实现 
+ - [x] 完善lu_hash_table.c lu_has_table-internal.h  
+ - [x] 修复了lu_hash_table 内存泄漏问题 在`lu_hash_table_insert`函数中
+
+ ## 错误记录
 问题如下：
 1. 链表指针清理问题： 在转换桶内链表到红黑树时，先设置了
 
@@ -236,10 +238,9 @@ bucket->data.rb_tree = new_tree;
 ![alt text](image.png)
 
 
-TODO: 包装一个lu_hash_table_handl_t 类型，以便于外部调用，
-      以及hash内部链表与红黑树的转换调控算法，以便于扩展。
-      以及hash function 算法，以便于扩展。
-      测试参数操作
+TODO: 
+ - [x] 以及hash内部链表与红黑树的转换调控算法，以便于扩展。
+ - [x] 以及hash function 算法，以便于扩展。
 
 优化了hash function :（乘法哈希 + 位运算优化）
 
@@ -249,16 +250,14 @@ Habby Birthday !!!!
 
 TODO:
  继续完成 17 Dec 2024 未完成的工作，包括：
- 1. 包装一个lu_hash_table_handl_t 类型，以便于外部调用，
- 2. hash内部链表与红黑树的转换调控算法，以便于扩展。
- 3. hash function 算法，以便于扩展。  
- 4. 编写测试用例
- 5. 测试删除、添加等操作
- 6. 完善文档
+ - [ ] 包装一个lu_hash_table_handl_t 类型，以便于外部调用，
+ - [x] 编写测试用例
+ - [ ] 测试删除、添加等操作
+ - [x] 完善文档
 
 # Thursday 19 Dec 2024
 
-- [x] 完成lu_hash_table_handle_t 类型封装
+- [ ] 完成lu_hash_table_handle_t 类型封装
 - [x] 完善lu_rb_tree的封装
 
 
@@ -270,4 +269,8 @@ TODO:
   从lu_hash_table 更新hash_table的代码
  - [ ] 完善lu_rb_tree的封装
  - [ ] 完善lu_utils vnsprintf 以及socket error的内部实现
+
+# Saturday 21 Dec 2024
+
+- [x] 完善lu_hash_table的代码,对其单独封装成库
   

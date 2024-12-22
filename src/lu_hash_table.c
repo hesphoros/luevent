@@ -84,7 +84,7 @@ lu_hash_table_t* lu_hash_table_init(int table_size) {
 
 
 void lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value) {
-    printf("Inserting key: %d into RB-tree\n", key);
+    //printf("Inserting key: %d into RB-tree\n", key);
 
     if (tree == NULL || tree->nil == NULL) {
         printf("Error: Tree or tree->nil is not initialized\n");
@@ -97,7 +97,7 @@ void lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value) {
         return;
     }
    
-    printf("tree->nil address: %p\n", tree->nil);
+    //printf("tree->nil address: %p\n", tree->nil);
 
 
     
@@ -215,7 +215,7 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value) {
                 return;
             }            
 
-            printf("RB-tree initialized. Tree address: %p, tree->nil: %p\n", new_tree, new_tree->nil);
+            //printf("RB-tree initialized. Tree address: %p, tree->nil: %p\n", new_tree, new_tree->nil);
 
 
             // 插入链表中的所有元素到红黑树

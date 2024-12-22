@@ -273,4 +273,11 @@ TODO:
 # Saturday 21 Dec 2024
 
 - [x] 完善lu_hash_table的代码,对其单独封装成库
+
+# Sunday 22 Dec 2024
+- [x] 完成了lu_hash_table 的insert 封装
+- [x] lu_hash_table_t 内部添加了element_count 计数器，用于统计元素个数
+- [x] lu_hash_bucket_t 内部添加了esize_bucket 计数器，用于统计bucket内的元素个数
+
+
   

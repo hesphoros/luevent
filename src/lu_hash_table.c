@@ -1,4 +1,4 @@
-#include "lu_hash_table-inernal.h"
+#include "lu_hash_table-internal.h"
 
 /**
  * @file lu_hash.c

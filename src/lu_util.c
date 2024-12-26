@@ -6,19 +6,23 @@
 #include <assert.h>
 #include <arpa/inet.h>
 #include <errno.h>
-#include "lu_hash.h"
-#include "lu_memory_manager.h"
 
+#include "lu_memory_manager.h"
+#include "lu_hash_table-internal.h"
+
+
+lu_hash_table_t* lu_cached_sock_errs_map;
 
 //缓存存储
 typedef struct lu_cached_sock_errs_entry_s {
     int code;
     char *msg;
-    UT_hash_handle hh;  // 用于 uthash 哈希表的处理
+   
 }lu_cached_sock_errs_entry_t;
 
 static pthread_mutex_t linux_socket_errors_lock_ = PTHREAD_MUTEX_INITIALIZER;
-static lu_cached_sock_errs_entry_t  *lu_cached_sock_errs_map_ = NULL; 
+static lu_hash_table_t  *lu_cached_sock_errs_map_ = NULL; 
+//没有free
 
 int lu_evutil_snprintf(char *str, size_t size, const char *format,...){
     int ret;
@@ -68,8 +72,13 @@ const char *lu_evutil_socket_error_to_string(int errcode){
     // 锁定缓存，保证线程安全
     pthread_mutex_lock(&linux_socket_errors_lock_);
 
+    if(!lu_cached_sock_errs_map_){
+        lu_cached_sock_errs_map_ = lu_hash_table_init(LU_HASH_TABLE_DEFAULT_SIZE);
+    }
+
+    errs= (lu_cached_sock_errs_entry_t*) lu_hash_table_find(lu_cached_sock_errs_map_,errcode);
     // 查找缓存中的错误信息
-    HASH_FIND_INT(lu_cached_sock_errs_map_, &errcode, errs);
+   
     if (errs) {
         msg = errs->msg;
         pthread_mutex_unlock(&linux_socket_errors_lock_);
@@ -104,7 +113,7 @@ const char *lu_evutil_socket_error_to_string(int errcode){
     newerr->msg = msg;
 
     // 插入哈希表中
-    HASH_ADD_INT(lu_cached_sock_errs_map_, code, newerr);
+    //HASH_ADD_INT(lu_cached_sock_errs_map_, code, newerr);
 
     pthread_mutex_unlock(&linux_socket_errors_lock_);
     return msg;

@@ -1,3 +1,4 @@
+~~~c
  // 自定义错误码，从0x100开始
 #define LU_ERROR_OPERATION_NOT_PERMITTED                    0x100
 #define LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY                  0x101
@@ -34,3 +35,4 @@
 #define LU_ERROR_MATH_ARGUMENT_OUT_OF_DOMAIN_OF_FUNCTION    0x120
 #define LU_ERROR_RESULT_TOO_REPRESENTABLE                   0x121
 #define LU_MAX_ERROR_CODE                                   0x122  // 假设错误码的最大值
+~~~

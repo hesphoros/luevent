@@ -112,8 +112,8 @@ const char *lu_evutil_socket_error_to_string(int errcode){
     newerr->code = errcode;
     newerr->msg = msg;
 
-    // 插入哈希表中
-    //HASH_ADD_INT(lu_cached_sock_errs_map_, code, newerr);
+    // 插入缓存
+    lu_hash_table_insert(lu_cached_sock_errs_map_, errcode, newerr);
 
     pthread_mutex_unlock(&linux_socket_errors_lock_);
     return msg;

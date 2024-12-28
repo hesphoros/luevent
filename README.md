@@ -238,7 +238,7 @@ bucket->data.rb_tree = new_tree;
 ![alt text](image.png)
 
 
-TODO: 
+
  - [x] 以及hash内部链表与红黑树的转换调控算法，以便于扩展。
  - [x] 以及hash function 算法，以便于扩展。
 
@@ -248,27 +248,25 @@ TODO:
 
 Habby Birthday !!!!
 
-TODO:
+
  继续完成 17 Dec 2024 未完成的工作，包括：
- - [ ] 包装一个lu_hash_table_handl_t 类型，以便于外部调用，
+
  - [x] 编写测试用例
- - [ ] 测试删除、添加等操作
+ - [X] 测试删除、添加等操作
  - [x] 完善文档
 
 # Thursday 19 Dec 2024
 
-- [ ] 完成lu_hash_table_handle_t 类型封装
 - [x] 完善lu_rb_tree的封装
 
 
-  TODO:
-  1. 修复lu_hash_insert 函数，需要判断重复是否来更新数据，而不是直接插入。
+- [x] 修复lu_hash_insert 函数，需要判断重复是否来更新数据，而不是直接插入。
 
 # Friday 20 Dec 2024
-  TODO:
+  
   从lu_hash_table 更新hash_table的代码
- - [ ] 完善lu_rb_tree的封装
- - [ ] 完善lu_utils vnsprintf 以及socket error的内部实现
+ - [X] 完善lu_rb_tree的封装
+ - [X] 完善lu_utils vnsprintf 以及socket error的内部实现
 
 # Saturday 21 Dec 2024
 
@@ -280,5 +278,8 @@ TODO:
 - [x] lu_hash_bucket_t 内部添加了esize_bucket 计数器，用于统计bucket内的元素个数
 
 
-# Tuesday 24 Dec 2024
-vacation  
+# Saturday  28 Dec 2024
+
+- [X] 开源了lu_hash_table 库
+TODO:
+- [ ] 封装lu_hash_table_handle_t 类型

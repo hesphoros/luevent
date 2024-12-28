@@ -28,7 +28,7 @@ extern "C" {
 
 #define LU_EVENT_ERROR_ABORT_ ((int)0xdeaddead)
 
-
+// LU_EVENT_EXPORT_SYMBOL is used to mark functions as exported from the library.
 #if !defined(LU_EVENT__DISABLE_DEBUG_MODE) || defined(LU_USE_DEBUG)
 #define LU_EVENT_DEBUG_LOGGING_ENABLED
 #endif
@@ -43,10 +43,11 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t   lu_event_debug_logging_mask_;
 #ifdef LU_EVENT_DEBUG_LOGGING_ENABLED
 #define event_debug(x) do {			\
 	if (lu_event_debug_get_logging_mask_()) {	\
-		event_debugx_ x;		\
+		lu_event_debugx_ x;		\
 	}					\
 	} while (0)
 #else
+#define event_debug(x) ((void)0)
 #endif //LU_EVENT_DEBUG_LOGGING_ENABLED
 
 //Log severities defined in lu_utils.h

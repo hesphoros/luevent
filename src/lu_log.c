@@ -1,6 +1,6 @@
 /**
  * @file lu_log.c
- * @author <Lucifer gj3372819612@163.com>
+ * @author <hesphoros hesphoros@gmail.com>
  * @date 2025-12-13
  * @brief Log an event to the event log.
 */
@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h>
 #include "lu_log-internal.h"
+#include <stdlib.h>
 #include "lu_util.h"
 #include "lu_erron.h"
 //#include "lu_mm-internal.h"
@@ -113,6 +114,16 @@ void lu_event_warn(const char *fmt,...){
 }
 
 
+static void lu_event_exit(int errcode)
+{
+	if (lu_event_fatal_global_fn_) {
+		lu_event_fatal_global_fn_(errcode);
+		exit(errcode); /* should never be reached */
+	} else if (errcode == LU_EVENT_ERROR_ABORT_)
+		abort();
+	else
+		exit(errcode);
+}
 
 
 void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...){
@@ -122,5 +133,59 @@ void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...){
 	va_start(ap, fmt);
 	lu_event_logv_(LU_EVENT_LOG_ERROR, lu_evutil_socket_error_to_string(err), fmt, ap);
 	va_end(ap);
-	//event_exit(eval);
+	lu_event_exit(eval);
 }
+
+void lu_event_sock_warn(lu_evutil_socket_t sock,const char *fmt,...){
+    va_list ap;
+	int err = lu_evutil_socket_geterror(sock);
+
+	va_start(ap, fmt);
+	lu_event_logv_(LU_EVENT_LOG_ERROR, lu_evutil_socket_error_to_string(err), fmt, ap);
+	va_end(ap);
+}
+
+
+/**
+ * 
+ * 
+LU_EVENT_EXPORT_SYMBOL LU_EVENT_EXPORT_SYMBOL 
+
+LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
+LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
+LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap) LU_EV_CHECK_FMT(3,0);
+
+
+
+ */
+
+void lu_event_errorx(int eval, const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_logv_(LU_EVENT_LOG_ERROR, strerror(eval), fmt, ap);
+    va_end(ap);
+    lu_event_exit(eval);    
+}
+
+
+void lu_event_warnx(const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_logv_(LU_EVENT_LOG_WARN, NULL, fmt, ap);
+    va_end(ap);
+}
+
+void lu_event_msgx(const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_logv_(LU_EVENT_LOG_MSG, NULL, fmt, ap);
+    va_end(ap);
+}
+
+void lu_event_debugx_(const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_logv_(LU_EVENT_LOG_DEBUG, NULL, fmt, ap);
+    va_end(ap);
+}
+

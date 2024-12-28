@@ -114,8 +114,8 @@ static lu_event_fatal_cb 	lu_event_fatal_global_fn_ = NULL;
 
 完善lu_log.c lu_log-internal.h 
 
-TODO: 
- - [ ] 逐步完善一下以下宏以及实现
+
+ - [X] 逐步完善一下以下宏以及实现
 ~~~c
 #define LU_EVENT_EXPORT_SYMBOL
 LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char *fmt,...) LU_EV_CHECK_FMT(2,3) LU_EV_NORETURN;
@@ -279,3 +279,5 @@ Habby Birthday !!!!
 # Saturday  28 Dec 2024
 
 - [X] 开源了lu_hash_table 库
+- [X] 完善了log.c 日志输出接口
+![alt text](image-1.png)

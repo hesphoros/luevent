@@ -19,14 +19,15 @@
 
  - [x] 完成了mm-internal.h头文件的封装，实现了mm_malloc、mm_calloc、mm_strdup、mm_realloc、mm_free等函数。
  - [x] 完成了lu_memory_以及条件日志输出(默认输出到memory_management.log文件)
-QUESTION: 
+TODO: 
     - [ ] sizeof(*ptr) 无法准确反映动态分配的内存大小，可以考虑在内存分配时额外存储内存块大小，或者使用自定义的内存管理来追踪内存块大小。
 
 # Wednesday 11 Dec 2024
 完善lu_error.h lu_error.c 提供宏
 
 使用数组实现以及hash表实现的字符串映射，采用惰性加载的方式，减少内存占用。
-
+TODO:
+    - [ ] 改用lu_hash_internal.h 头文件封装的hash表
 ~~~c
  // 自定义错误码，从0x100开始
 #define LU_ERROR_OPERATION_NOT_PERMITTED 0x100

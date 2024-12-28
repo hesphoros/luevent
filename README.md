@@ -237,8 +237,6 @@ bucket->data.rb_tree = new_tree;
 测试了插入 查找 操作；以及内部链表与红黑树的转换.
 ![alt text](image.png)
 
-
-
  - [x] 以及hash内部链表与红黑树的转换调控算法，以便于扩展。
  - [x] 以及hash function 算法，以便于扩展。
 
@@ -281,5 +279,3 @@ Habby Birthday !!!!
 # Saturday  28 Dec 2024
 
 - [X] 开源了lu_hash_table 库
-TODO:
-- [ ] 封装lu_hash_table_handle_t 类型

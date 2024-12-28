@@ -20,8 +20,8 @@ static void			 lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value);
 static void lu_hash_rb_tree_delete(lu_hash_bucket_t* bucket, int key);
 
 static void lu_hash_list_delete(lu_hash_bucket_t* bucket, int key);
-static void* lu_hash_list_find(lu_hash_bucket_t* bucket, int key);
-static void* lu_hash_rb_tree_find(lu_rb_tree_t* tree, int key);
+static lu_hash_bucket_node_t* lu_hash_list_find(lu_hash_bucket_t* bucket, int key);
+static lu_rb_tree_node_t* lu_hash_rb_tree_find(lu_rb_tree_t* tree, int key);
 
 static void lu_rb_tree_insert_fixup(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
 static void lu_rb_tree_right_rotate(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
@@ -38,6 +38,8 @@ static void lu_rb_tree_destroy_node(lu_rb_tree_t* tree, lu_rb_tree_node_t* node)
 static void lu_hash_list_destory(lu_hash_bucket_t* bucket);
 static void lu_hash_rb_tree_destory(lu_hash_bucket_t* bucket);
 
+static int	lu_hash_function(int key, int table_size);
+
 /**
  * @brief Computes a hash value for a given key using the multiplication method.
  *
@@ -51,7 +53,7 @@ static void lu_hash_rb_tree_destory(lu_hash_bucket_t* bucket);
  * @param table_size The size of the hash table (number of buckets).
  * @return The computed hash value, ranging from 0 to table_size - 1.
  */
-int lu_hash_function(int key, int table_size)
+static int lu_hash_function(int key, int table_size)
 {
 	static const float golden_rate_reciprocal = 0.6180339887; // Reciprocal of the golden ratio
 
@@ -158,12 +160,12 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value)
 		// Check if the bucket's linked list length exceeds the threshold
 		if (bucket->esize_bucket > LU_HASH_BUCKET_LIST_THRESHOLD) {
 #ifdef LU_HASH_DEBUG
-			//printf("Bucket size exceeded threshold. Converting to red-black tree...\n");
+			printf("Bucket[%d] size exceeded threshold. Converting to red-black tree...\n", index);
 #endif // LU_HASH_DEBUG
 			//Convert the internal structure of bucket from list to rb_tree
-			if (lu_convert_bucket_to_rbtree(bucket) != 0) {
+			if (lu_convert_bucket_to_rbtree(bucket) != 1) {
 #ifdef LU_HASH_DEBUG
-				printf("Error: Failed to convert bucket to red-black tree.\n");
+				printf("Error: Bucket[%d] failed to convert bucket to red-black tree.\n", index);
 #endif // LU_HASH_DEBUG
 			}
 		}
@@ -210,16 +212,21 @@ void* lu_hash_table_find(lu_hash_table_t* table, int key)
 	// Check the bucket type and call the corresponding find function
 	if (bucket->type == LU_HASH_BUCKET_LIST) {
 		// Use linked list search if the bucket stores data as a list
-		return lu_hash_list_find(bucket, key);
+		lu_hash_bucket_node_ptr_t node = lu_hash_list_find(bucket, key);
+		if (NULL != node) {
+			return	node->value;
+		}
 	}
 	else if (bucket->type == LU_HASH_BUCKET_RBTREE) {
 		// Use red-black tree search if the bucket stores data as a tree
 		lu_rb_tree_node_t* rb_node = lu_hash_rb_tree_find(bucket->data.rb_tree, key);
-		if (rb_node != NULL) {
+		if (NULL != rb_node) {
 			return rb_node->value;
 		}
 	}
+#ifdef LU_HASH_DEBUG
 	printf("Key not found in hash table\n");
+#endif // LU_HASH_DEBUG
 
 	// Return NULL if no matching key is found
 	return NULL;
@@ -314,7 +321,7 @@ void lu_hash_table_destroy(lu_hash_table_t* table)
  * to use the red-black tree as its underlying data structure.
  *
  * @param bucket Pointer to the hash bucket to be converted.
- * @return 0 on success, -1 on failure (e.g., memory allocation error or invalid bucket).
+ * @return 1 on success, -1 on failure (e.g., memory allocation error or invalid bucket).
  */
 static int lu_convert_bucket_to_rbtree(lu_hash_bucket_t* bucket)
 {
@@ -352,9 +359,9 @@ static int lu_convert_bucket_to_rbtree(lu_hash_bucket_t* bucket)
 	bucket->type = LU_HASH_BUCKET_RBTREE;	// Update the bucket type
 	bucket->data.rb_tree = new_tree;		// Point to the new red-black tree
 #ifdef LU_HASH_DEBUG
-	//printf("Bucket[%p] successfully converted to red-black tree.\n", &bucket);
+	printf("Bucket[%p] successfully converted to red-black tree.\n", &bucket);
 #endif
-	return 0; // Indicate successful conversion
+	return 1; // Indicate successful conversion
 }
 
 /**
@@ -487,9 +494,9 @@ static void lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value)
  *
  * @param bucket A pointer to the hash bucket containing the linked list.
  * @param key A pointer to the key to search for in the linked list.
- * @return A pointer to the value associated with the key, or NULL if the key is not found.
+ * @return A point to the node
  */
-static void* lu_hash_list_find(lu_hash_bucket_t* bucket, int key)
+static lu_hash_bucket_node_t* lu_hash_list_find(lu_hash_bucket_t* bucket, int key)
 {
 	//When data internal type == LU_HASH_BUCKET_LIST
 
@@ -497,7 +504,7 @@ static void* lu_hash_list_find(lu_hash_bucket_t* bucket, int key)
 	while (node != NULL)
 	{
 		if (node->key == key) {
-			return node->value;
+			return node;
 		}
 		node = node->next;
 	}
@@ -522,7 +529,7 @@ static void* lu_hash_list_find(lu_hash_bucket_t* bucket, int key)
  * @param key A pointer to the key being searched for in the red-black tree.
  * @return A pointer to the tree node if the key is found, or NULL if the key does not exist in the tree.
  */
-static void* lu_hash_rb_tree_find(lu_rb_tree_t* tree, int key)
+static lu_rb_tree_node_t* lu_hash_rb_tree_find(lu_rb_tree_t* tree, int key)
 {
 	lu_rb_tree_node_t* current = tree->root;
 	while (current != tree->nil) {
@@ -536,7 +543,10 @@ static void* lu_hash_rb_tree_find(lu_rb_tree_t* tree, int key)
 			current = current->right;
 		}
 	}
+#ifdef LU_HASH_DEBUG
 	printf("Not find the element in the rb-tree\n");
+#endif // LU_HASH_DEBUG
+
 	return NULL;
 }
 
@@ -597,7 +607,7 @@ static void lu_hash_list_delete(lu_hash_bucket_t* bucket, int key)
 static void lu_hash_rb_tree_delete(lu_hash_bucket_t* bucket, int key)
 {
 	// Find the node with the given key in the red-black tree
-	lu_rb_tree_node_t* node = lu_hash_rb_tree_find(bucket, key);
+	lu_rb_tree_node_t* node = lu_hash_rb_tree_find(bucket->data.rb_tree, key);
 	if (node == NULL) {
 		return; // Key not found, no action needed
 	}

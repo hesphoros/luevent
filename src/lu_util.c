@@ -13,16 +13,22 @@
 
 lu_hash_table_t* lu_cached_sock_errs_map;
 
-//缓存存储
+//缓存存储 socket 错误信息
 typedef struct lu_cached_sock_errs_entry_s {
     int code;
     char *msg;
-   
 }lu_cached_sock_errs_entry_t;
 
 static pthread_mutex_t linux_socket_errors_lock_ = PTHREAD_MUTEX_INITIALIZER;
+
+
 static lu_hash_table_t  *lu_cached_sock_errs_map_ = NULL; 
-//没有free
+
+
+// 析构函数，释放缓存
+__attribute__((destructor)) void lu_util_sock_hash_table_destructor(void) {
+    lu_hash_table_destroy(lu_cached_sock_errs_map_);  // 清理哈希表
+}
 
 int lu_evutil_snprintf(char *str, size_t size, const char *format,...){
     int ret;

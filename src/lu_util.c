@@ -30,6 +30,10 @@ __attribute__((destructor)) void lu_util_sock_hash_table_destructor(void) {
     lu_hash_table_destroy(lu_cached_sock_errs_map_);  // 清理哈希表
 }
 
+__attribute__((constructor)) void lu_util_sock_hash_table_constructor(void) {
+    lu_cached_sock_errs_map_ = lu_hash_table_init(LU_HASH_TABLE_DEFAULT_SIZE);
+}
+
 int lu_evutil_snprintf(char *str, size_t size, const char *format,...){
     int ret;
     va_list ap;
@@ -78,11 +82,8 @@ const char *lu_evutil_socket_error_to_string(int errcode){
     // 锁定缓存，保证线程安全
     pthread_mutex_lock(&linux_socket_errors_lock_);
 
-    if(!lu_cached_sock_errs_map_){
-        lu_cached_sock_errs_map_ = lu_hash_table_init(LU_HASH_TABLE_DEFAULT_SIZE);
-    }
-
-    errs= (lu_cached_sock_errs_entry_t*) lu_hash_table_find(lu_cached_sock_errs_map_,errcode);
+    
+    errs= (lu_cached_sock_errs_entry_t*)LU_HASH_TABLE_FIND(lu_cached_sock_errs_map_,errcode);
     // 查找缓存中的错误信息
    
     if (errs) {
@@ -119,8 +120,11 @@ const char *lu_evutil_socket_error_to_string(int errcode){
     newerr->msg = msg;
 
     // 插入缓存
-    lu_hash_table_insert(lu_cached_sock_errs_map_, errcode, newerr);
+    LU_HASH_TABLE_INSERT(lu_cached_sock_errs_map_, errcode, newerr);
 
     pthread_mutex_unlock(&linux_socket_errors_lock_);
     return msg;
 }
+
+
+

@@ -42,7 +42,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * ev_cfg_t_) {
 
 
 void lu_event_config_free(lu_event_config_t * ev_cfg_t_) {
-	//TODO
+	//TODO:
 	return;
 }
 

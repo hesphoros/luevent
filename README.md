@@ -1,5 +1,8 @@
 ## Development Log
 
+### Friday 29 Dec 2024
+- [X] Finished implementing 'lu_hash_resize' function.
+
 ### Saturday 28 Dec 2024
 - [X] Open-sourced the `lu_hash_table` library.
 - [X] Improved the log.c log output interface.

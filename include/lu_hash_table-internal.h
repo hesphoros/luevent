@@ -2,7 +2,7 @@
 #define LU_LU_HASH_TABLE_INCLUDE_H_
 
 /**
- * @file lu_hash.h
+ * @file lu_hash_table-internal.h
  * @brief Header file for hash table implementation using linked lists and red-black trees.
  *
  * This file defines the data structures, enums, and function prototypes necessary for implementing a
@@ -40,6 +40,7 @@ extern "C" {
 #define LU_ERROR_TREE_OR_NIL_NOT_INIT   0x10C    // Error code for RB-tree or tree->nil isn't initialized
 #define LU_HASH_TABLE_DEFAULT_SIZE		16		 // Default size for hash tables
 #define LU_HASH_TABLE_MAX_LOAD_FACTOR	0.75	 // Maximum allowed load factor
+#define LU_HASH_TABLE_SHRINK_THRESHOLD	0.25     // Shink
 
 	/**
 	* Threshold for converting a hash bucket from a linked list to a red-black tree.
@@ -129,7 +130,7 @@ extern "C" {
 	typedef struct lu_hash_table_s {
 		lu_hash_bucket_t* buckets;
 		int				  table_size;
-		int				  element_count; // Current number of elements in the hash table
+		size_t		      element_count; // Current number of elements in the hash table
 	}lu_hash_table_t;
 
 	static inline void* lu_mm_malloc(size_t size) {
@@ -164,18 +165,17 @@ extern "C" {
 	}
 
 	/**Function definition*/
-	lu_hash_table_t* lu_hash_table_init(int table_size);
-	void			 lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
-
 	void* lu_hash_table_find(lu_hash_table_t* table, int key);
-	void			 lu_hash_table_delete(lu_hash_table_t* table, int key);
-	void			 lu_hash_table_destroy(lu_hash_table_t* table);
+	lu_hash_table_t* lu_hash_table_init(int table_size);
+	void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
+	void lu_hash_table_delete(lu_hash_table_t* table, int key);
+	void lu_hash_table_destroy(lu_hash_table_t* table);
 
-#define LU_HASH_TABLE_INIT(size) lu_hash_table_init(size)
-#define LU_HASH_TABLE_INSERT(table,key,value) lu_hash_table_insert(table,key,value)
-#define LU_HASH_TABLE_FIND(table,key) lu_hash_table_find(table,key)
-#define LU_HASH_TABLE_DELETE(table,key) lu_hash_table_delete(table,key)
-#define LU_HASH_TABLE_DESTROY(table) lu_hash_table_destroy(table)
+#define LU_HASH_TABLE_INIT(size)				lu_hash_table_init(size)
+#define LU_HASH_TABLE_INSERT(table,key,value)	lu_hash_table_insert(table,key,value)
+#define LU_HASH_TABLE_FIND(table,key)			lu_hash_table_find(table,key)
+#define LU_HASH_TABLE_DELETE(table,key)			lu_hash_table_delete(table,key)
+#define LU_HASH_TABLE_DESTROY(table)			lu_hash_table_destroy(table)
 
 #ifdef __cplusplus
 }

@@ -10,7 +10,8 @@
 #include <stdlib.h>
 
 
- 
+
+static void lu_event_config_entry_free(lu_event_config_entry_t * entry);
  
 lu_event_config_t * lu_event_config_new(void)
 {
@@ -32,7 +33,7 @@ lu_event_config_t * lu_event_config_new(void)
 static int
 gettime(struct event_base *base, struct timeval *tp)
 {
-	/** */
+	//TODO: to be implemented
   return 0;
 }
 
@@ -84,10 +85,21 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * ev_cfg_t_) {
   return (ev_base_t);
 }
 
+static void lu_event_config_entry_free(lu_event_config_entry_t * entry) {
+
+  if(entry->avoid_method != NULL)
+    mm_free((char*)entry->avoid_method);
+  mm_free(entry);
+}
 
 void lu_event_config_free(lu_event_config_t * ev_cfg_t_) {
-	//TODO:
-	return;
+	lu_event_config_entry_t *entry;
+  
+  while((entry = TAILQ_FIRST(&ev_cfg_t_->entries)!= NULL)){
+    TAILQ_REMOVE(&ev_cfg_t_->entries, entry, next);
+    lu_event_config_entry_free(entry);
+  }
+  mm_free(ev_cfg_t_);
 }
 
 
@@ -95,7 +107,7 @@ lu_event_base_t *lu_event_base_new(void) {
   lu_event_base_t *ev_base_t = NULL;
   lu_event_config_t *ev_cfg_t = lu_event_config_new();
   if (ev_cfg_t) {
-    //TODO: to be implemented
+    
     ev_base_t = lu_event_base_new_with_config(ev_cfg_t);
     lu_event_config_free(ev_cfg_t);
   }

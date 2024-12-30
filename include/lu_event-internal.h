@@ -16,12 +16,9 @@ extern "C" {
 
 
 typedef struct lu_event_op_s lu_event_op_t;
-typedef struct lu_event_s lu_event_t;
 
-typedef struct lu_evutil_monotonic_timer_s{
-    //TODO: to be implemented
-    int dummy;
-}lu_evutil_monotonic_timer_t;
+typedef struct lu_event_callback_s lu_event_callback_t;
+typedef struct lu_event_s lu_event_t;
 
 typedef enum lu_event_base_config_flag_u {
 
@@ -70,18 +67,166 @@ typedef enum lu_event_base_config_flag_u {
 
 }lu_event_base_config_flag_t;
 
+//TODO:
+TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
+
+typedef struct lu_event_changelist_s{
+//TODO:
+    int summyl;
+}lu_event_changelist_t;
+
+
+typedef struct lu_evsig_info_s{
+    //TODO:
+    int summyl;
+}lu_evsig_info_t;
+
+
+typedef struct lu_common_timeout_list_s {
+	//TODO:
+    int paser;
+}lu_common_timeout_list_t;
+
+
+
+typedef struct lu_event_io_map_s {
+    //TODO:
+    int summyl;
+}lu_event_io_map_t;
+
+typedef struct lu_event_signal_map_s{
+    //TODO:
+    int summyl;
+}lu_event_signal_map_t;
+
+typedef struct min_heap {
+    //TODO:
+    int paser;
+}min_heap_t;
+
+typedef struct evutil_weakrand_state_s{
+    //TODO:
+    int summy;
+} evutil_weakrand_state_t;
+
+typedef struct evwatch_list_s{
+    //TODO:
+    int summy;
+}evwatch_list_t;
+
+#define EVWATCH_MAX     2
 typedef struct lu_event_base_s {
     
     /** Function pointers and other data to describe this event_base's
 	 * backend. */
     const struct lu_event_op_s* evsel_op;  
     void* evbase;
+
+    //List of changes to tell backend about next dispatch.Only used bt O(1) backends.
+    lu_event_changelist_t changelist;
     /** Function pointers used to describe the backend that this event_base
 	 * uses for signals */
     const struct lu_event_op_s* evsigsel_op;
-	/** Flags that this base was configured with */
-	lu_event_base_config_flag_t flags;
+
+    /**Data to implement the common signal handler code */
+    lu_evsig_info_t evsig;
+
+    int virtual_event_count; //Number of virtual events in this event_base.
+    int virtual_event_count_max; // Maximum number of virtual events active
+    int event_count;//Number of total events added to this event_base.
+    int event_count_max;//Maximum number of events added to this event_base.
+    int event_count_active;//Number of active events in this event_base.
+    int event_count_active_max;//Maximum number of active events in this event_base.
+
+    /**Set if we should terminate the loop once we're done processing events.*/
+    int event_gotterm;//Set if we should terminate the loop once we're done processing events.
+
+    /**Set if we should terminate the loop immediately. */
+    int event_break;
+    /**Set if we should start a new instance of the loop immediately. */
+    int event_continue;
+
+    /**The currently running priority of events. */
+    int event_running_priority;
+
+    /** Set if we're running the event_base_loop function, to prevent
+	 * reentrant invocation. */    
+	int running_loop;
+
+    /** Set to the number of deferred_cbs we've made 'active' in the
+	 * loop.  This is a hack to prevent starvation; it would be smarter
+	 * to just use event_config_set_max_dispatch_interval's max_callbacks
+	 * feature */
+    //用于标记已deferred_cbs的数量
+    int n_deferred_queued;
+
+    struct lu_evcallback_list* active_queues;
+    /**Common timeout logic */
+    struct common_timeout_list** common_timeout_queues;
+    /** The number of entries used in common_timeout_queues */
+	int n_common_timeouts;
+   /** The total size of common_timeout_queues. */
+	int n_common_timeouts_allocated;
+
+    /**Mapping from file descriptor to enabled(added)   events */
+    lu_event_io_map_t io;
+    /**Mapping from signal number to enabled(added) events */
+    lu_event_signal_map_t signal;
+
+
+    /** Priority queue of events with timeouts. */
+	struct min_heap timeheap;
+    /** Stored timeval: used to avoid calling gettimeofday/clock_gettime
+	 * too often. */
+	struct timeval tv_cache;
+
     lu_evutil_monotonic_timer_t monotonic_timer;
+
+
+    /** Difference between internal time (maybe from clock_gettime) and
+	 * gettimeofday. */
+	struct timeval tv_clock_diff;
+	/** Second in which we last updated tv_clock_diff, in monotonic time. */
+	time_t last_updated_clock_diff;
+
+	
+
+#ifndef LU_EVENT_DISABLE_THREAD_SUPPORT
+/** Mutex protecting the event_base's state. */
+//TODO:
+#endif //LU_EVENT_DISABLE_THREAD_SUPPORT
+
+    lu_event_callback_t *current_event;
+    
+    /** Flags that this base was configured with */
+	lu_event_base_config_flag_t flags;
+
+    struct timeval max_dispatch_time;
+    int max_dispatch_callbacks;
+    int limit_callbacks_after_priority;
+    /* Notify main thread to wake up break, etc. */
+	/** True if the base already has a pending notify, and we don't need
+	 * to add any more. */
+	int is_notify_pending;
+	/** A socketpair used by some th_notify functions to wake up the main
+	 * thread. */
+    lu_evutil_socket_t th_notify_fd[2];
+   
+    lu_event_t th_notify;
+
+    //----
+    /** A function used to wake up the main thread from another thread. */
+	int (*th_notify_fn)(struct lu_event_base_s *base);
+
+	/** Saved seed for weak random number generator. Some backends use
+	 * this to produce fairness among sockets. Protected by th_base_lock. */
+	struct evutil_weakrand_state_s weakrand_seed;
+
+	/** List of event_onces that have not yet fired. */
+	LIST_HEAD(once_event_list, event_once) once_events;
+
+	/** "Prepare" and "check" watchers. */
+	struct evwatch_list_s watchers[EVWATCH_MAX];
 
 } lu_event_base_t;
 
@@ -165,7 +310,7 @@ typedef struct lu_event_config_s {
 
 
 typedef struct lu_event_callback_s{
-    //TODO: Understand this structure
+  
     TAILQ_ENTRY(lu_event_callback_s) evcb_active_next;
     short evcb_events;
     

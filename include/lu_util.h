@@ -171,6 +171,13 @@ LU_EVENT_EXPORT_SYMBOL const char *lu_evutil_socket_error_to_string(int errcode)
 #define LU_EVENT_MONOT_PRECISE  1 // 高精度
 #define LU_EVENT_MONOT_FALLBACK 2 // 低精度
 
+
+typedef struct lu_evutil_monotonic_timer_s{
+    //TODO: to be implemented
+    int dummy;
+}lu_evutil_monotonic_timer_t;
+
+
 const char * lu_evutil_getenv_(const char *varname);
 int lu_evutil_configure_monotonic_time_( lu_evutil_monotonic_timer_t *base,
     int flags)

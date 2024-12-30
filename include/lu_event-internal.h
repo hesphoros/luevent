@@ -2,6 +2,7 @@
 #define LU_EVENT_INTERNAL_H_INCLUDED_
 
 
+#include <bits/types/struct_timeval.h>
 #ifdef __cplusplus
 extern "C" {
 #endif  //__cplusplus
@@ -15,7 +16,7 @@ extern "C" {
 
 
 typedef struct lu_event_op_s lu_event_op_t;
-
+typedef struct lu_event_s lu_event_t;
 
 typedef struct lu_evutil_monotonic_timer_s{
     //TODO: to be implemented
@@ -23,6 +24,7 @@ typedef struct lu_evutil_monotonic_timer_s{
 }lu_evutil_monotonic_timer_t;
 
 typedef enum lu_event_base_config_flag_u {
+
     /**
      * 不要为event_base分配锁。
      * 设置这个选项可以为event_base节省一点用于锁定和解锁的时间，
@@ -70,19 +72,34 @@ typedef enum lu_event_base_config_flag_u {
 
 typedef struct lu_event_base_s {
     
+    /** Function pointers and other data to describe this event_base's
+	 * backend. */
     const struct lu_event_op_s* evsel_op;  
     void* evbase;
-
+    /** Function pointers used to describe the backend that this event_base
+	 * uses for signals */
+    const struct lu_event_op_s* evsigsel_op;
 	/** Flags that this base was configured with */
 	lu_event_base_config_flag_t flags;
     lu_evutil_monotonic_timer_t monotonic_timer;
 
 } lu_event_base_t;
 
+/**
+   A flag used to describe which features an event_base (must) provide.
 
+   Because of OS limitations, not every luevent backend supports every
+   possible feature.  You can use this type with
+   event_config_require_features() to tell luevent to only proceed if your
+   event_base implements a given feature, and you can receive this type from
+   event_base_get_features() to see which features are available.
+*/
 typedef enum lu_event_method_feature_u {
-    //TODO: to be implemented
-   DUNNM_FEATURE_NO_CACHE_TIME = 0x01,
+   
+    LU_EVENT_FEATURE_ET = 0x01,
+    LU_EVENT_FEATURE_O1 = 0x02,
+    LU_EVENT_FEATURE_FDS = 0x04,
+    LU_EVENT_FEATURE_EARLY_CLOSE = 0x08,
 }lu_event_method_feature_t;
 
 typedef struct lu_event_op_s {
@@ -106,6 +123,7 @@ typedef struct lu_event_op_s {
 
     /** 标志：如果我们在fork之后需要重新初始化事件基础结构，则设置此标志。 */
     int need_reinit;
+    /** 支持的事件方法特性的位数组。 */
     lu_event_method_feature_t features;
     /** 每个具有一个或多个活动事件的文件描述符应记录的额外信息的长度。
      * 此信息作为每个文件描述符的evmap条目的一部分记录，并作为参数传递给上述的
@@ -136,11 +154,69 @@ typedef struct lu_event_config_s {
     
     //用于限制在特定优先级之后的回调数量。Use to limit the number of callbacks after a specific priority.
 	int limit_callbacks_after_priority;
+
+    lu_event_method_feature_t required_features; //指定所需的事件方法特性。
+
+     //指定事件基础配置的标志
     lu_event_base_config_flag_t flags;
 
 }lu_event_config_t;
- 
 
+
+
+typedef struct lu_event_callback_s{
+    //TODO: Understand this structure
+    TAILQ_ENTRY(lu_event_callback_s) evcb_active_next;
+    short evcb_events;
+    
+    //Smaller numbers are higher priority.
+    lu_uint8_t evcb_pri;//优先级
+    lu_uint8_t evcb_closure;//闭包
+
+    /**Allows us to adopt for different types of events*/
+    union 
+    {
+        //used for io events
+        void (*evcb_callback)(lu_evutil_socket_t,short,void*);//回调函数
+        void (*evcb_selfcb)(struct lu_event_callback_s*,void*);//自身回调函数
+        void (*evcb_evfinialize)(struct lu_event_s*,void*);//事件最终化回调函数
+        void (*evcb_cbfinalize)(struct lu_event_callback_s*,void*);//回调最终化回调函数
+    }evcb_cb_union;
+    void *evcb_arg;//回调函数的参数
+
+}lu_event_callback_t;
+ 
+typedef struct lu_event_s{
+    lu_event_callback_t ev_callback;
+    union 
+    {
+        TAILQ_ENTRY(lu_event_s) ev_next_with_common_timeout;
+        lu_size_t min_heap_idx;
+    }ev_timeout_pos;
+    short ev_events;
+    short ev_res;//result passed to event callback
+
+    lu_event_base_t* ev_base;
+
+    union {
+        //used for io events
+        struct{
+            LIST_ENTRY(lu_event_s) ev_io_next;
+            struct timeval ev_timeout;
+        }ev_io;
+        //used for signal events
+        struct{
+            LIST_ENTRY(lu_event_s) ev_signal_next;
+            short ev_signum;
+            //Allow deletes in signal callback
+            short* ev_pncalls; 
+        }ev_signal;
+    }ev_;
+
+    struct timeval ev_timeout;
+    
+
+}lu_event_t;
 
 
 

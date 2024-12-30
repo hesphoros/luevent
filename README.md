@@ -1,5 +1,8 @@
 ## Development Log
 
+## Monday 30 Dec 2024
+TODO:
+
 ### Friday 29 Dec 2024
 - [X] Finished implementing 'lu_hash_resize' function.
 

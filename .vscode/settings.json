@@ -73,6 +73,7 @@
         "typeinfo": "cpp",
         "lu_log-internal.h": "c",
         "pthread.h": "c",
-        "lu_hash_table-internal.h": "c"
+        "lu_hash_table-internal.h": "c",
+        "memory.h": "c"
     }
 }

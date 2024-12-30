@@ -164,7 +164,7 @@ extern "C" {
 		return ptr;
 	}
 
-/**Function definition*/
+// /**Function definition*/
 void* lu_hash_table_find(lu_hash_table_t* table, int key);
 lu_hash_table_t* lu_hash_table_init(int table_size);
 void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);

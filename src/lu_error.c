@@ -65,14 +65,14 @@ static pthread_mutex_t  error_table_mutex;
 
 
 static const char*   get_error_message_(int error_code);
-const char*         load_error_string_(int error_code);
-lu_error_info_t*    get_or_create_error_entry_(int error_code) ;
-void                cleanup_error_table_(void) ;
+static const char*         load_error_string_(int error_code);
+static lu_error_info_t*    get_or_create_error_entry_(int error_code) ;
+static void                cleanup_error_table_(void) ;
 static void         initialize_error_table_(void) ;
 
 
 // 错误信息的加载函数
-const char* load_error_string_(int error_code) {
+static const char* load_error_string_(int error_code) {
     switch (error_code) {
         case 0x100: return "Operation not permitted";
         case 0x101: return "No such file or directory";
@@ -121,7 +121,6 @@ const char* lu_get_error_string(int errno) {
         snprintf(buffer, sizeof(buffer), "Unknown error: %d", errno);
         return buffer;
     }
-
      
     return get_error_message_(errno);
      
@@ -135,7 +134,7 @@ static const char* get_error_message_(int error_code) {
 
 
 
-lu_error_info_t* get_or_create_error_entry_(int error_code) {
+static lu_error_info_t* get_or_create_error_entry_(int error_code) {
    
    lu_error_info_t* entry = (lu_error_info_t*)LU_HASH_TABLE_FIND(lu_error_hash_table, error_code);
 
@@ -157,7 +156,7 @@ lu_error_info_t* get_or_create_error_entry_(int error_code) {
 
 
 // 错误表清理
-void cleanup_error_table_(void)  {
+static void cleanup_error_table_(void)  {
     pthread_mutex_lock(&error_table_mutex);  // 加锁
     LU_HASH_TABLE_DESTROY(lu_error_hash_table); // 销毁哈希表
     pthread_mutex_destroy(&error_table_mutex);  // 销毁锁

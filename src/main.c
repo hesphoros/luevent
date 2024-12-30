@@ -23,23 +23,23 @@ typedef struct {
 // 创建并初始化 Person 实例并插入哈希表
 void add_person_to_db(PersonDatabase* db, Person* person) {
     // 在哈希表中插入 Person 数据，使用 id 作为 key
-    lu_hash_table_insert(db->hash_table, person->id, person);
+    LU_HASH_TABLE_INSERT(db->hash_table, person->id, person);
 }
 
 // 查找指定 ID 的 Person 数据
 Person* find_person_by_id(PersonDatabase* db, int id) {
-    return (Person*)lu_hash_table_find(db->hash_table, id);
+    return (Person*)LU_HASH_TABLE_FIND(db->hash_table, id);
 }
 
 // 销毁数据库并释放内存
 void destroy_person_db(PersonDatabase* db) {
-    lu_hash_table_destroy(db->hash_table);
+    LU_HASH_TABLE_DESTROY(db->hash_table);
 }
 
 void test_hash(){
      // 初始化哈希表数据库
     PersonDatabase db;
-    db.hash_table = lu_hash_table_init(8);
+    db.hash_table = LU_HASH_TABLE_INIT(8);
 
   
     Person people[100] = {

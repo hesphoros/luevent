@@ -102,8 +102,8 @@ void test_hash(){
 
 void test_error_to_string(){
     lu_enable_default_memory_logging(1); 
-    printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
-    printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
+    // printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
+    // printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_BROKEN_PIPE));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY));
@@ -133,6 +133,7 @@ void test_mm_memory(){
 
 
 int main(){
-    test_hash();
+    //test_hash();
+    test_error_to_string();
     return 0;
 }

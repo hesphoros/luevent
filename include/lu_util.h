@@ -34,7 +34,7 @@ extern "C" {
 //UINT_PTR_T
 #define lu_uintptr_t    uintptr_t
 #define lu_intptr_t     intptr_t
-
+#define lu_size_t       size_t
 //ssize_t 
 #define lu_ssize_t      ssize_t
 //off_t
@@ -164,6 +164,9 @@ LU_EVENT_EXPORT_SYMBOL const char *lu_evutil_socket_error_to_string(int errcode)
 
 /**@}*/
 
+
+
+#define LU_EVENT_HASH_TABLE_SIZE 32  // 哈希表大小
 
 #ifdef __cplusplus  
 }

@@ -11,3 +11,19 @@
 [2024-12-14 00:16:03] __FREE__       0x21716b0      freed
 [2024-12-14 00:16:03] __FREE__       0x2171990      freed
 [2024-12-14 00:16:03] __FREE__       0x2171930      freed
+[2024-12-30 13:37:48] __MALLOC__     0x1aaab90      allocated           (size: 24 bytes)
+[2024-12-30 13:38:37] __MALLOC__     0x214bb90      allocated           (size: 24 bytes)
+[2024-12-30 13:39:38] __MALLOC__     0xec4b90       allocated           (size: 24 bytes)
+[2024-12-30 13:39:38] __MALLOC__     0xec4e30       allocated           (size: 24 bytes)
+[2024-12-30 13:39:38] __MALLOC__     0xec4e70       allocated           (size: 24 bytes)
+[2024-12-30 13:39:38] __MALLOC__     0xec4eb0       allocated           (size: 24 bytes)
+[2024-12-30 13:39:38] __MALLOC__     0xec4ef0       allocated           (size: 24 bytes)
+[2024-12-30 13:39:38] __MALLOC__     0xec4f30       allocated           (size: 24 bytes)
+[2024-12-30 13:39:38] __ALIGNED_M__  (nil)          aligned_malloc allocated (size: 100 bytes)
+[2024-12-30 13:40:54] __MALLOC__     0x1060780      allocated           (size: 24 bytes)
+[2024-12-30 13:40:54] __MALLOC__     0x1060e30      allocated           (size: 24 bytes)
+[2024-12-30 13:40:54] __MALLOC__     0x1060e70      allocated           (size: 24 bytes)
+[2024-12-30 13:40:54] __MALLOC__     0x1060eb0      allocated           (size: 24 bytes)
+[2024-12-30 13:40:54] __MALLOC__     0x1060ef0      allocated           (size: 24 bytes)
+[2024-12-30 13:40:54] __MALLOC__     0x1060f30      allocated           (size: 24 bytes)
+[2024-12-30 13:40:54] __ALIGNED_M__  (nil)          aligned_malloc allocated (size: 100 bytes)

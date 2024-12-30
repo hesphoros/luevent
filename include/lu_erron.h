@@ -43,11 +43,6 @@ extern "C" {
 #define LU_ERROR_RESULT_TOO_REPRESENTABLE 0x121
 #define LU_MAX_ERROR_CODE 0x122  // 假设错误码的最大值
 
-#define LU_HASH_TABLE_SIZE 256  // 哈希表大小
-
-
- 
- 
 
 
 const char* lu_get_error_string(int errno);

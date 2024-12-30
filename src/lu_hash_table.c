@@ -40,7 +40,7 @@ static void lu_hash_list_destory(lu_hash_bucket_t* bucket);
 static void lu_hash_rb_tree_destory(lu_hash_bucket_t* bucket);
 
 static lu_rb_tree_node_t* lu_rb_tree_successor(lu_rb_tree_t* tree, lu_rb_tree_node_t* node);
-static int	lu_hash_function(int key, int table_size);
+
 
 static void lu_hash_table_resize(lu_hash_table_t* table);
 
@@ -59,7 +59,7 @@ static void lu_rb_tree_rehash(lu_rb_tree_t* tree, lu_rb_tree_node_t* node, lu_ha
  * @param table_size The size of the hash table (number of buckets).
  * @return The computed hash value, ranging from 0 to table_size - 1.
  */
-static int lu_hash_function(int key, int table_size)
+int lu_hash_function(int key, int table_size)
 {
 	static const double golden_rate_reciprocal = 0.6180339887; // Reciprocal of the golden ratio
 
@@ -242,6 +242,14 @@ void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value)
  */
 void* lu_hash_table_find(lu_hash_table_t* table, int key)
 {
+
+	if (table == NULL) {
+		#ifdef LU_HASH_DEBUG
+		fprintf(stderr, "Error: Hash table is not initialized.\n");
+		#endif // LU_HASH_DEBUG
+		return NULL;
+	}
+
 	// Calculate the index of the bucket in the hash table using the hash function
 	int index = lu_hash_function(key, table->table_size);
 

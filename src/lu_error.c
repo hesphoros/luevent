@@ -2,10 +2,11 @@
 #include "lu_memory_manager.h"
 // #include "lu_mutex-internal.h"
 #include <stdio.h>
+#include "lu_util.h"
 #include <string.h>
+#include "lu_hash_table-internal.h"
 #include <pthread.h>
  
-
 
 
 static const char* lu_error_strings_global[LU_MAX_ERROR_CODE + 1] = {
@@ -47,7 +48,7 @@ static const char* lu_error_strings_global[LU_MAX_ERROR_CODE + 1] = {
  
 
 
-// 错误信息结构体
+// error info struct
 typedef struct lu_error_info_s{
     int error_code;       // 错误码
     const char* error_message;  // 错误信息
@@ -55,17 +56,17 @@ typedef struct lu_error_info_s{
 } lu_error_info_t;
 
 
-// 哈希表
-static lu_error_info_t* lu_error_hash_table[LU_HASH_TABLE_SIZE] = {0};
+// hash table for error strings
+static lu_hash_table_t* lu_error_hash_table = NULL;
 
 // 声明一个全局 Mutex 对象，来保护 error_table 的线程安全
 static pthread_mutex_t  error_table_mutex;
- 
 
-const char*         get_error_message_(int error_code);
+
+
+static const char*   get_error_message_(int error_code);
 const char*         load_error_string_(int error_code);
-unsigned int        hash_(int error_code);
-lu_error_info_t*    get_or_create_error_entry_(int index) ;
+lu_error_info_t*    get_or_create_error_entry_(int error_code) ;
 void                cleanup_error_table_(void) ;
 static void         initialize_error_table_(void) ;
 
@@ -111,10 +112,6 @@ const char* load_error_string_(int error_code) {
     }
 }
  
-unsigned int hash_(int error_code) {
-    return error_code % LU_HASH_TABLE_SIZE;
-}
-
 
 
 // 错误码字符串访问函数 采用数组形式
@@ -130,66 +127,66 @@ const char* lu_get_error_string(int errno) {
      
 }
 
-const char* get_error_message_(int error_code) {
+static const char* get_error_message_(int error_code) {
     
     return lu_error_strings_global[error_code];
-    
 }
 
 
 
 
-lu_error_info_t* get_or_create_error_entry_(int index) {
-    //unsigned int index = hash_(error_code);  // 使用index计算哈希值
-    //printf("Enter get_or_create_error_entry_ function\n");
+lu_error_info_t* get_or_create_error_entry_(int error_code) {
+   
+   lu_error_info_t* entry = (lu_error_info_t*)LU_HASH_TABLE_FIND(lu_error_hash_table, error_code);
 
-    // 如果哈希表条目为空，则初始化
-    if (!lu_error_hash_table[index]) {
-        lu_error_hash_table[index] = (lu_error_info_t*) mm_malloc(sizeof(lu_error_info_t));
-        if (!lu_error_hash_table[index]) {
+ // 如果哈希表中没有找到该条目，则创建新条目
+    if (!entry) {
+        entry = (lu_error_info_t*)mm_malloc(sizeof(lu_error_info_t));
+        if (!entry) {
             fprintf(stderr, "Memory allocation failed for error entry\n");
-            printf("Memory allocation failed for error entry\n");
             exit(EXIT_FAILURE);
         }
-        memset(lu_error_hash_table[index], 0, sizeof(lu_error_info_t));  // 初始化条目
+        memset(entry, 0, sizeof(lu_error_info_t));  // 初始化条目
+
+        // 插入哈希表
+        LU_HASH_TABLE_INSERT(lu_error_hash_table, error_code, entry);
     }
 
-    return lu_error_hash_table[index];
+    return entry;
 }
 
 
 // 错误表清理
 void cleanup_error_table_(void)  {
     pthread_mutex_lock(&error_table_mutex);  // 加锁
-    for (int i = 0; i < LU_HASH_TABLE_SIZE; i++) {
-        if (lu_error_hash_table[i]) {
-            mm_free(lu_error_hash_table[i]);  // 释放内存
-            lu_error_hash_table[i] = NULL;  // 防止重复释放
-        }
-    }
-    pthread_mutex_destroy(&error_table_mutex);
-    // printf("cleanup_error_table_ function is called.\n");
+    LU_HASH_TABLE_DESTROY(lu_error_hash_table); // 销毁哈希表
+    pthread_mutex_destroy(&error_table_mutex);  // 销毁锁
 }
 
-
+static int initialized = 0;
 static void initialize_error_table_(void) {
-    static int initialized = 0;
-    //printf("initialize_error_table_ function is called.\n");
-    if (!initialized) {
-        // 初始化锁
-        if (pthread_mutex_init(&error_table_mutex, NULL) != 0) {
-            fprintf(stderr, "Failed to initialize mutex\n");
-            exit(EXIT_FAILURE);
-        }
 
+  if (!initialized) {
+        // 使用互斥锁保护初始化过程
+        pthread_mutex_lock(&error_table_mutex);
+        if (!initialized) {  // 再次检查
+            if (pthread_mutex_init(&error_table_mutex, NULL) != 0) {
+                fprintf(stderr, "Failed to initialize mutex\n");
+                exit(EXIT_FAILURE);
+            }
+            // 初始化哈希表
+            if (lu_error_hash_table == NULL) 
+             lu_error_hash_table = LU_HASH_TABLE_INIT(LU_EVENT_HASH_TABLE_SIZE);
         
-
-        initialized = 1;
+            initialized = 1;
+        }
+        pthread_mutex_unlock(&error_table_mutex);
     }
 }
 
 // constructor函数，用于初始化静态变量
 __attribute__((constructor)) void error_table_initializer(void){
+   
     initialize_error_table_();
 }
 
@@ -206,17 +203,14 @@ const char* lu_get_error_string_hash(int errno)  {
     if (errno < 0 || errno > LU_MAX_ERROR_CODE) {
         return "Unknown error";
     }
-
-    unsigned int index = hash_(errno);  // 使用index计算哈希值
-              
+ 
     int lock_status = pthread_mutex_lock(&error_table_mutex);
     if (lock_status != 0) {
         // printf("Failed to lock error_table_mutex: %d\n", lock_status);
         return "Lock failed";           
-    }
-   
+}   
 
-    lu_error_info_t* entry = get_or_create_error_entry_(index);
+    lu_error_info_t* entry = get_or_create_error_entry_(errno);
 
     // 如果尚未加载错误信息，则进行加载 使用惰性加载机制
     if (!entry->is_loaded) {

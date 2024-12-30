@@ -164,18 +164,20 @@ extern "C" {
 		return ptr;
 	}
 
-	/**Function definition*/
-	void* lu_hash_table_find(lu_hash_table_t* table, int key);
-	lu_hash_table_t* lu_hash_table_init(int table_size);
-	void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
-	void lu_hash_table_delete(lu_hash_table_t* table, int key);
-	void lu_hash_table_destroy(lu_hash_table_t* table);
+/**Function definition*/
+void* lu_hash_table_find(lu_hash_table_t* table, int key);
+lu_hash_table_t* lu_hash_table_init(int table_size);
+void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
+void lu_hash_table_delete(lu_hash_table_t* table, int key);
+void lu_hash_table_destroy(lu_hash_table_t* table);
+int	 lu_hash_function(int key, int table_size);
 
 #define LU_HASH_TABLE_INIT(size)				lu_hash_table_init(size)
 #define LU_HASH_TABLE_INSERT(table,key,value)	lu_hash_table_insert(table,key,value)
 #define LU_HASH_TABLE_FIND(table,key)			lu_hash_table_find(table,key)
 #define LU_HASH_TABLE_DELETE(table,key)			lu_hash_table_delete(table,key)
 #define LU_HASH_TABLE_DESTROY(table)			lu_hash_table_destroy(table)
+#define LU_HASH_FUNCTION(key,size)				lu_hash_function(key,size)
 
 #ifdef __cplusplus
 }

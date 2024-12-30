@@ -2,6 +2,7 @@
 #define LU_EVENT_INTERNAL_H_INCLUDED_
 
 
+#include "lu_changelist-internal.h"
 #include <bits/types/struct_timeval.h>
 #ifdef __cplusplus
 extern "C" {
@@ -12,9 +13,12 @@ extern "C" {
 #include "lu_util.h"
 #include <sys/time.h>
 #include "lu_mm-internal.h"
+#include "lu_changelist-internal.h"
+
+TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
 
 
-
+typedef struct lu_event_base_s lu_event_base_t;
 typedef struct lu_event_op_s lu_event_op_t;
 
 typedef struct lu_event_callback_s lu_event_callback_t;
@@ -68,11 +72,13 @@ typedef enum lu_event_base_config_flag_u {
 }lu_event_base_config_flag_t;
 
 //TODO:
-TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
+
 
 typedef struct lu_event_changelist_s{
 //TODO:
-    int summyl;
+    lu_event_change_t *changes;
+    int n_changes;
+	int changes_size;
 }lu_event_changelist_t;
 
 
@@ -114,6 +120,67 @@ typedef struct evwatch_list_s{
     int summy;
 }evwatch_list_t;
 
+
+ 
+
+
+typedef struct lu_event_callback_s{
+  
+    TAILQ_ENTRY(lu_event_callback_s) evcb_active_next;
+    short evcb_events;
+    
+    //Smaller numbers are higher priority.
+    lu_uint8_t evcb_pri;//优先级
+    lu_uint8_t evcb_closure;//闭包
+
+    /**Allows us to adopt for different types of events*/
+    union 
+    {
+        //used for io events
+        void (*evcb_callback)(lu_evutil_socket_t,short,void*);//回调函数
+        void (*evcb_selfcb)(struct lu_event_callback_s*,void*);//自身回调函数
+        void (*evcb_evfinialize)(struct lu_event_s*,void*);//事件最终化回调函数
+        void (*evcb_cbfinalize)(struct lu_event_callback_s*,void*);//回调最终化回调函数
+    }evcb_cb_union;
+    void *evcb_arg;//回调函数的参数
+
+}lu_event_callback_t;
+
+
+
+typedef struct lu_event_s{
+    lu_event_callback_t ev_callback_;
+    union 
+    {
+        TAILQ_ENTRY(lu_event_s) ev_next_with_common_timeout;
+        lu_size_t min_heap_idx;
+    }ev_timeout_pos;
+    short ev_events;
+    short ev_res;//result passed to event callback
+
+    lu_event_base_t* ev_base;
+
+    union {
+        //used for io events
+        struct{
+            LIST_ENTRY(lu_event_s) ev_io_next;
+            struct timeval ev_timeout;
+        }ev_io;
+        //used for signal events
+        struct{
+            LIST_ENTRY(lu_event_s) ev_signal_next;
+            short ev_signum;
+            //Allow deletes in signal callback
+            short* ev_pncalls; 
+        }ev_signal;
+    }ev_;
+
+    struct timeval ev_timeout;
+    
+
+}lu_event_t;
+
+
 #define EVWATCH_MAX     2
 typedef struct lu_event_base_s {
     
@@ -142,7 +209,7 @@ typedef struct lu_event_base_s {
     int event_gotterm;//Set if we should terminate the loop once we're done processing events.
 
     /**Set if we should terminate the loop immediately. */
-    int event_break;
+    int event_break ;
     /**Set if we should start a new instance of the loop immediately. */
     int event_continue;
 
@@ -191,10 +258,6 @@ typedef struct lu_event_base_s {
 
 	
 
-#ifndef LU_EVENT_DISABLE_THREAD_SUPPORT
-/** Mutex protecting the event_base's state. */
-//TODO:
-#endif //LU_EVENT_DISABLE_THREAD_SUPPORT
 
     lu_event_callback_t *current_event;
     
@@ -306,62 +369,6 @@ typedef struct lu_event_config_s {
     lu_event_base_config_flag_t flags;
 
 }lu_event_config_t;
-
-
-
-typedef struct lu_event_callback_s{
-  
-    TAILQ_ENTRY(lu_event_callback_s) evcb_active_next;
-    short evcb_events;
-    
-    //Smaller numbers are higher priority.
-    lu_uint8_t evcb_pri;//优先级
-    lu_uint8_t evcb_closure;//闭包
-
-    /**Allows us to adopt for different types of events*/
-    union 
-    {
-        //used for io events
-        void (*evcb_callback)(lu_evutil_socket_t,short,void*);//回调函数
-        void (*evcb_selfcb)(struct lu_event_callback_s*,void*);//自身回调函数
-        void (*evcb_evfinialize)(struct lu_event_s*,void*);//事件最终化回调函数
-        void (*evcb_cbfinalize)(struct lu_event_callback_s*,void*);//回调最终化回调函数
-    }evcb_cb_union;
-    void *evcb_arg;//回调函数的参数
-
-}lu_event_callback_t;
- 
-typedef struct lu_event_s{
-    lu_event_callback_t ev_callback;
-    union 
-    {
-        TAILQ_ENTRY(lu_event_s) ev_next_with_common_timeout;
-        lu_size_t min_heap_idx;
-    }ev_timeout_pos;
-    short ev_events;
-    short ev_res;//result passed to event callback
-
-    lu_event_base_t* ev_base;
-
-    union {
-        //used for io events
-        struct{
-            LIST_ENTRY(lu_event_s) ev_io_next;
-            struct timeval ev_timeout;
-        }ev_io;
-        //used for signal events
-        struct{
-            LIST_ENTRY(lu_event_s) ev_signal_next;
-            short ev_signum;
-            //Allow deletes in signal callback
-            short* ev_pncalls; 
-        }ev_signal;
-    }ev_;
-
-    struct timeval ev_timeout;
-    
-
-}lu_event_t;
 
 
 

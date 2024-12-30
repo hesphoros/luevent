@@ -2,7 +2,8 @@
 
 ## Monday 30 Dec 2024
 - [X] In the lu_error.c file,replace the internal-struct error_map to lu_hash_table.
-TODO:
+- [X] In the lu_event.c lu_event-internal.h file,imple the structure "lu_event_t" "lu_event_base_t" "lu_event_change_t" and so on.
+- [X] In the lu_event.c file,imple the function "lu_event_new_with_config()" (but not the implementation)
 
 ### Friday 29 Dec 2024
 - [X] Finished implementing 'lu_hash_resize' function.

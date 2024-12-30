@@ -1,10 +1,12 @@
 ## Development Log
 
 ## Monday 30 Dec 2024
+- [X] In the lu_error.c file,replace the internal-struct error_map to lu_hash_table.
 TODO:
 
 ### Friday 29 Dec 2024
 - [X] Finished implementing 'lu_hash_resize' function.
+
 
 ### Saturday 28 Dec 2024
 - [X] Open-sourced the `lu_hash_table` library.

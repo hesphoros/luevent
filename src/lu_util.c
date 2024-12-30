@@ -127,4 +127,32 @@ const char *lu_evutil_socket_error_to_string(int errcode){
 }
 
 
+static int
+lu_evutil_issetugid(void)
+{
 
+    // 检查当前进程的有效用户 ID（euid）和有效组 ID（egid）
+    // 如果 euid 不等于 real uid 或 egid 不等于 real gid，说明进程已经调用了 setuid() 或 setgid()
+    if (getuid() != geteuid() || getgid() != getegid()) {
+        return 1;  // 返回 1，表示进程已经调用了 setuid() 或 setgid()
+    }
+    return 0;  // 否则返回 0，表示进程未调用 setuid() 或 setgid()
+}
+
+
+const char *lu_evutil_getenv_(const char *varname)
+{
+    //如果是非 root 用户，则不允许获取环境变量
+    if (lu_evutil_issetugid())
+		return NULL;
+    return getenv(varname);
+}
+
+
+int lu_evutil_configure_monotonic_time_(lu_evutil_monotonic_timer_t *base,
+    int flags)
+{
+    //TODO: to be implemented
+
+ return 0;
+}

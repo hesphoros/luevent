@@ -134,6 +134,6 @@ void test_mm_memory(){
 
 int main(){
     //test_hash();
-    test_error_to_string();
+    //test_error_to_string();
     return 0;
 }

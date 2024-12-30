@@ -1,6 +1,7 @@
 #ifndef LU_EVENT_UTIL_H
 #define LU_EVENT_UTIL_H
 
+
 #include "lu_visibility.h"
 //#include <time.h>
 #include <stdarg.h>
@@ -167,7 +168,12 @@ LU_EVENT_EXPORT_SYMBOL const char *lu_evutil_socket_error_to_string(int errcode)
 
 
 #define LU_EVENT_HASH_TABLE_SIZE 32  // 哈希表大小
+#define LU_EVENT_MONOT_PRECISE  1 // 高精度
+#define LU_EVENT_MONOT_FALLBACK 2 // 低精度
 
+const char * lu_evutil_getenv_(const char *varname);
+int lu_evutil_configure_monotonic_time_( lu_evutil_monotonic_timer_t *base,
+    int flags)
 #ifdef __cplusplus  
 }
 #endif

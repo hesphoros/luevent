@@ -190,6 +190,7 @@ typedef struct lu_event_base_s {
     void* evbase;
 
     //List of changes to tell backend about next dispatch.Only used bt O(1) backends.
+
     lu_event_changelist_t changelist;
     /** Function pointers used to describe the backend that this event_base
 	 * uses for signals */

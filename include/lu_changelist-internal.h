@@ -21,9 +21,10 @@
        unintended consequences: in kqueue, this makes pending events get
        reported spuriously.
  */
+#include "lu_event-internal.h"
 #include "lu_util.h"
 
-typedef struct lu_event_change {
+typedef struct lu_event_change_s {
     /**The fd or signal whose events are to be changed. */    
     lu_evutil_socket_t fd;
     /* The events that were enabled on the fd before any of these changes
@@ -39,21 +40,42 @@ typedef struct lu_event_change {
 
 
 
-// /** Set up the data fields in a changelist. */
-// void event_changelist_init_(struct event_changelist *changelist);
-// /** Remove every change in the changelist, and make corresponding changes
-//  * in the event maps in the base.  This function is generally used right
-//  * after making all the changes in the changelist. */
-// void event_changelist_remove_all_(struct event_changelist *changelist,
-//     struct event_base *base);
-// /** Free all memory held in a changelist. */
-// void event_changelist_freemem_(struct event_changelist *changelist);
 
-// /** Implementation of eventop_add that queues the event in a changelist. */
-// int event_changelist_add_(struct event_base *base, lu_evutil_socket_t fd, short old, short events,
-//     void *p);
-// /** Implementation of eventop_del that queues the event in a changelist. */
-// int event_changelist_del_(struct event_base *base, lu_evutil_socket_t fd, short old, short events,
-//     void *p);
+/* Flags for read_change and write_change. */
+
+// /* If set, add the event. */
+// #define EV_CHANGE_ADD     0x01
+// /* If set, delete the event.  Exclusive with EV_CHANGE_ADD */
+// #define EV_CHANGE_DEL     0x02
+// /* If set, this event refers a signal, not an fd. */
+// #define EV_CHANGE_SIGNAL  EV_SIGNAL
+// /* Set for persistent events.  Currently not used. */
+// #define EV_CHANGE_PERSIST EV_PERSIST
+// /* Set for adding edge-triggered events. */
+// #define EV_CHANGE_ET      EV_ET
+
+
+
+/* The value of fdinfo_size that a backend should use if it is letting
+ * changelist handle its add and delete functions. */
+// #define EVENT_CHANGELIST_FDINFO_SIZE sizeof(int)
+
+
+//TODO: to be implemented
+/** Set up the data fields in a changelist. */
+void lu_event_changelist_init_(lu_event_changelist_t *changelist);
+/** Remove every change in the changelist, and make corresponding changes
+ * in the event maps in the base.  This function is generally used right
+ * after making all the changes in the changelist. */
+void lu_event_changelist_remove_all_(lu_event_changelist_t *changelist, lu_event_base_t *base);
+/** Free all memory held in a changelist. */
+void lu_event_changelist_freemem_(lu_event_changelist_t *changelist);
+
+/** Implementation of eventop_add that queues the event in a changelist. */
+int lu_event_changelist_add_(lu_event_base_t *base, lu_evutil_socket_t fd, short old, short events,
+    void *p);
+/** Implementation of eventop_del that queues the event in a changelist. */
+int lu_event_changelist_del_(lu_event_base_t *base, lu_evutil_socket_t fd, short old, short events,
+    void *p);
 
 #endif /* LU_CHANGELIST_INTERNAL_H */

@@ -95,7 +95,7 @@ static void lu_event_config_entry_free(lu_event_config_entry_t * entry) {
 void lu_event_config_free(lu_event_config_t * ev_cfg_t_) {
 	lu_event_config_entry_t *entry;
   
-  while((entry = TAILQ_FIRST(&ev_cfg_t_->entries)!= NULL)){
+  while((entry = TAILQ_FIRST(&ev_cfg_t_->entries))!= NULL){
     TAILQ_REMOVE(&ev_cfg_t_->entries, entry, next);
     lu_event_config_entry_free(entry);
   }

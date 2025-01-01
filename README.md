@@ -3,6 +3,7 @@
 ## Wednesday 1 Jan 2025
 Happy New Year!
 
+
 ## Monday 30 Dec 2024
 - [X] In the lu_error.c file,replace the internal-struct error_map to lu_hash_table.
 - [X] In the lu_event.c lu_event-internal.h file,imple the structure "lu_event_t" "lu_event_base_t" "lu_event_change_t" and so on.

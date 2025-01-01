@@ -75,7 +75,7 @@ typedef enum lu_event_base_config_flag_u {
 
 
 typedef struct lu_event_changelist_s{
-//TODO:
+
     lu_event_change_t *changes;
     int n_changes;
 	int changes_size;
@@ -197,7 +197,7 @@ typedef struct lu_event_base_s {
     const struct lu_event_op_s* evsigsel_op;
 
     /**Data to implement the common signal handler code */
-    lu_evsig_info_t evsig;
+    lu_evsig_info_t evsig_info_s;
 
     int virtual_event_count; //Number of virtual events in this event_base.
     int virtual_event_count_max; // Maximum number of virtual events active
@@ -219,6 +219,8 @@ typedef struct lu_event_base_s {
 
     /** Set if we're running the event_base_loop function, to prevent
 	 * reentrant invocation. */    
+    /** 设置是否运行 event_base_loop 函数，以防止
+    * 重入调用。 */
 	int running_loop;
 
     /** Set to the number of deferred_cbs we've made 'active' in the

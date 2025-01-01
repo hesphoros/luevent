@@ -4,10 +4,10 @@
 /**
  * @file lu_visibility.h 
  * @brief 定义符号导出
- * @author <Lucifer gj3372819612@gmail>
+ * @author <hesphoros hesphoros@gmail>
  * @version 1.0
  * @date 2024-12-13
- * @copyright Copyright (c) 2024, <Lucifer gj3372819612@gmail>. All rights reserved.
+ * @copyright Copyright (c) 2024, <hesphoros hesphoros@gmail>. All rights reserved.
  * @details 定义符号导出，用于控制符号的可见性。
 */
 

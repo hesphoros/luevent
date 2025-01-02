@@ -1,5 +1,7 @@
 # lu_event_base_config_flag_u
 ![alt text](img/image.png)
+
+结构图见draw_image下的lu_event_base_t.drawio文件。
 EVENT_BASE_FLAG_STARTUP_IOCP : Windows only.
 
 EVENT_BASE_FLAG_EPOLL_USE_CHANGELIST:

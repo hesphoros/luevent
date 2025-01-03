@@ -1,7 +1,14 @@
 ## Development Log
 
+## Friday 3 Jan 2025
+- [ ]Complete the 'lu_evutil_configure_monotonic_time_' implementation.
+
+## Tuesday 2 Jan 2025
+Update README.md and draw.io diagrams.
+
 ## Wednesday 1 Jan 2025
 Happy New Year!
+
 
 
 ## Monday 30 Dec 2024

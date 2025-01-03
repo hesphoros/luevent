@@ -2,8 +2,8 @@
 #define LU_EVENT_INTERNAL_H_INCLUDED_
 
 
-#include "lu_changelist-internal.h"
-#include <bits/types/struct_timeval.h>
+
+//#include <bits/types/struct_timeval.h>
 #ifdef __cplusplus
 extern "C" {
 #endif  //__cplusplus
@@ -150,10 +150,11 @@ typedef struct lu_event_callback_s{
 
 typedef struct lu_event_s{
     lu_event_callback_t ev_callback_;
+    //表示事件在不同类型的超时列表中的位置。根据事件类型，这个成员的不同部分会被使用。
     union 
     {
         TAILQ_ENTRY(lu_event_s) ev_next_with_common_timeout;
-        lu_size_t min_heap_idx;
+        lu_size_t min_heap_idx;//该事件在最小堆（min heap）中的索引，用于快速查找最早的超时事件。
     }ev_timeout_pos;
     short ev_events;
     short ev_res;//result passed to event callback

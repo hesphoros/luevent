@@ -1,5 +1,6 @@
 #include "lu_log-internal.h"
 #include "lu_memory_manager.h"
+#include "lu_changelist-internal.h"
 #include "lu_event-internal.h"
 #include "lu_event.h"
 #include "lu_util.h"

@@ -75,6 +75,15 @@
         "pthread.h": "c",
         "lu_hash_table-internal.h": "c",
         "memory.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "lu_changelist-internal.h": "c",
+        "struct_timeval.h": "c",
+        "error.h": "c",
+        "limits.h": "c",
+        "fcntl.h": "c",
+        "unistd.h": "c",
+        "stdint.h": "c",
+        "types.h": "c",
+        "queue.h": "c"
     }
 }

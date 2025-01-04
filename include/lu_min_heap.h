@@ -50,9 +50,19 @@ void lu_min_heap_element_init_(lu_event_t *event) {
   event->ev_timeout_pos.min_heap_idx = LU_SIZE_MAX;
 }
 
-void lu_min_heap_empty_(lu_min_heap_t * heap){
-  
+int lu_min_heap_empty_(lu_min_heap_t * heap){
+    return 0 == heap->n;
 }
+
+size_t lu_min_heaps_size_(lu_min_heap_t * heap){
+  return heap->n;
+}
+
+lu_event_t * lu_min_heap_top_(lu_min_heap_t * heap){
+  //Explanaition: If the heap is empty, return NULL. Otherwise, return the first element of the heap.  
+  return heap->n ? *heap->elements : NULL;
+}
+
 
 
 #endif /* LU_INCLUDE_MIN_HEAP_H */

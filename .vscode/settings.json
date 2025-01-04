@@ -84,6 +84,8 @@
         "unistd.h": "c",
         "stdint.h": "c",
         "types.h": "c",
-        "queue.h": "c"
+        "queue.h": "c",
+        "stdbool.h": "c",
+        "stdarg.h": "c"
     }
 }

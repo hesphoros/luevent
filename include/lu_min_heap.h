@@ -18,7 +18,7 @@ typedef struct lu_min_heap_s {
 static inline void lu_min_heap_constructor_(lu_min_heap_t * heap);
 static inline void lu_min_heap_destructor_(lu_min_heap_t * heap);
 static inline void lu_min_heap_element_init_(lu_event_t * event);
-static inline int  lu_min_heap_elt_is_top_(const lu_event_t * event);
+static inline int  lu_min_heap_element_is_top_(const lu_event_t * event);
 static inline int  lu_min_heap_empty_(lu_min_heap_t * heap);
 static inline size_t lu_min_heaps_size_(lu_min_heap_t * heap);
 static inline lu_event_t * lu_min_heap_top_(lu_min_heap_t * heap);
@@ -63,6 +63,22 @@ lu_event_t * lu_min_heap_top_(lu_min_heap_t * heap){
   return heap->n ? *heap->elements : NULL;
 }
 
-int 
+int lu_min_heap_element_is_top_(const lu_event_t *event){
+  return event->ev_timeout_pos.min_heap_idx == 0;
+}
+
+
+int lu_min_heap_reserve_(lu_min_heap_t * heap, size_t n){
+  if (heap->capacity < n){
+    lu_event_t** new_elements;
+    size_t new_capacity = heap->capacity ? heap->capacity*2 : 8;
+    if(new_capacity < n){
+      new_capacity = n;
+    }
+    if(!(new_elements = (lu_event_t**)mm_realloc(heap->elements, new_capacity * sizeof(*new_elements)))){
+      return -1;
+    }
+  }
+}
 
 #endif /* LU_INCLUDE_MIN_HEAP_H */

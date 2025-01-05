@@ -63,6 +63,6 @@ lu_event_t * lu_min_heap_top_(lu_min_heap_t * heap){
   return heap->n ? *heap->elements : NULL;
 }
 
-
+int 
 
 #endif /* LU_INCLUDE_MIN_HEAP_H */

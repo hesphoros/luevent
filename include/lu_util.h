@@ -181,6 +181,13 @@ typedef struct lu_evutil_monotonic_timer_s{
 const char * lu_evutil_getenv_(const char *varname);
 int lu_evutil_configure_monotonic_time_( lu_evutil_monotonic_timer_t *base,int flags);
 
+//lu_evutil_timercmp
+#define lu_evutil_timercmp(tvp,uvp,cmp) \
+    (((tvp)->tv_sec == (uvp)->tv_sec) ? \
+    ((tvp)->tv_usec cmp (uvp)->tv_usec) :       \
+     ((tvp)->tv_sec cmp (uvp)->tv_sec))
+
+
 #ifdef __cplusplus  
 }
 #endif

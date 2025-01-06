@@ -78,7 +78,10 @@ int lu_min_heap_reserve_(lu_min_heap_t * heap, size_t n){
     if(!(new_elements = (lu_event_t**)mm_realloc(heap->elements, new_capacity * sizeof(*new_elements)))){
       return -1;
     }
+    heap->elements = new_elements;
+    heap->capacity = new_capacity;
   }
+  return 0;
 }
 
 #endif /* LU_INCLUDE_MIN_HEAP_H */

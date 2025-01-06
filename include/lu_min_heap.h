@@ -81,9 +81,6 @@ int lu_min_heap_reserve_(lu_min_heap_t * heap, size_t n){
     heap->elements = new_elements;
     heap->capacity = new_capacity;
   }
-<<<<<<< HEAD
-  return 0;
-=======
   
   return 0;
 }
@@ -99,7 +96,6 @@ void lu_min_heap_shift_up_unconditional_(lu_min_heap_t *heap,size_t hole_index, 
   }while(hole_index && lu_min_heap_element_greater(heap->elements[parent], event));
    (heap->elements[hole_index] = event)->ev_timeout_pos.min_heap_idx = hole_index;
 
->>>>>>> ad4f8694043e763768fb3a68319d0edb7b47619e
 }
 
 #endif /* LU_INCLUDE_MIN_HEAP_H */

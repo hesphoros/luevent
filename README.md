@@ -1,5 +1,8 @@
 ## Development Log
 
+## Monday 6 Jan 2025
+- [X] Finihed the implementation of "lu_min_heap"
+
 ## Friday 3 Jan 2025
 - [ ]Complete the 'lu_evutil_configure_monotonic_time_' implementation.
 

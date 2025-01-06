@@ -86,6 +86,7 @@
         "types.h": "c",
         "queue.h": "c",
         "stdbool.h": "c",
-        "stdarg.h": "c"
+        "stdarg.h": "c",
+        "lu_visibility.h": "c"
     }
 }

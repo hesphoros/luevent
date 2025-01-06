@@ -31,7 +31,7 @@ static inline void lu_min_heap_shift_up_(lu_min_heap_t * heap, size_t hole_index
 static inline void lu_min_heap_shift_up_unconditional_(lu_min_heap_t * heap, size_t hole_index, lu_event_t * event);
 static inline void lu_min_heap_shift_down_(lu_min_heap_t * heap, size_t hole_index, lu_event_t * event);
 
-#define lu_min_heap_element_greater_(a, b) \
+#define lu_min_heap_element_greater(a, b) \
   (lu_evutil_timercmp(&(a)->ev_timeout, &(b)->ev_timeout, >))//TODO:
 
 void lu_min_heap_constructor_(lu_min_heap_t *heap) {
@@ -81,7 +81,25 @@ int lu_min_heap_reserve_(lu_min_heap_t * heap, size_t n){
     heap->elements = new_elements;
     heap->capacity = new_capacity;
   }
+<<<<<<< HEAD
   return 0;
+=======
+  
+  return 0;
+}
+
+
+void lu_min_heap_shift_up_unconditional_(lu_min_heap_t *heap,size_t hole_index, lu_event_t *event)
+{
+  size_t parent = (hole_index - 1) / 2;
+  do{
+    (heap->elements[hole_index] = heap->elements[parent])->ev_timeout_pos.min_heap_idx = hole_index;
+    hole_index = parent;
+    parent = (hole_index - 1) / 2;
+  }while(hole_index && lu_min_heap_element_greater(heap->elements[parent], event));
+   (heap->elements[hole_index] = event)->ev_timeout_pos.min_heap_idx = hole_index;
+
+>>>>>>> ad4f8694043e763768fb3a68319d0edb7b47619e
 }
 
 #endif /* LU_INCLUDE_MIN_HEAP_H */

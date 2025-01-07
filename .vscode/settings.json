@@ -87,6 +87,9 @@
         "queue.h": "c",
         "stdbool.h": "c",
         "stdarg.h": "c",
-        "lu_visibility.h": "c"
+        "lu_visibility.h": "c",
+        "mem_core.h": "c",
+        "stat.h": "c",
+        "mman.h": "c"
     }
 }

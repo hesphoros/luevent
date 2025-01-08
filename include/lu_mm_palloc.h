@@ -31,7 +31,6 @@
 typedef struct ngx_pool_large_s  ngx_pool_large_t;
 
 
-
 struct ngx_pool_large_s {
     ngx_pool_large_t     *next;     // 指向下一块大内存块的指针
     void                 *alloc;    // 大内存块的起始地址

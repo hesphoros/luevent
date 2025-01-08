@@ -5,6 +5,9 @@
 #include "lu_visibility.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <time.h>
+
+#define LU_LUEVENT_LOG_VERSION "1.0.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -77,10 +80,57 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t   lu_event_debug_logging_mask_;
 #endif
 
 
- 
+/*
+#define lu_log_trace(...) lu_log_log(LU_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_debug(...) lu_log_log(LU_LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_info(...) lu_log_log(LU_LOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_warn(...) lu_log_log(LU_LOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_error(...) lu_log_log(LU_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_fatal(...) lu_log_log(LU_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
+
+*/
+
+typedef enum lu_log_level_e {
+    LU_LOG_TRACE,
+    LU_LOG_DEBUG,
+    LU_LOG_INFO,
+    LU_LOG_WARN,
+    LU_LOG_ERROR,
+    LU_LOG_FATAL,
+}lu_log_level_t;
+
+typedef struct lu_log_event_s {
+	va_list ap;
+	const char* fmt;
+	const char* file;
+	struct tm* time_info;
+	void* data;
+	int line;
+	lu_log_level_t level;
+}lu_log_event_t;
+
+typedef void (*lu_log_handler_t)(lu_log_event_t* event);
+typedef void (*lu_log_lock_fn)(int lock, void* data);
+
+#define lu_log_trace(...) lu_log_log(LU_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_debug(...) lu_log_log(LU_LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_info(...) lu_log_log(LU_LOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_warn(...) lu_log_log(LU_LOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_error(...) lu_log_log(LU_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
+#define lu_log_fatal(...) lu_log_log(LU_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
+
+const char* lu_log_level_to_string(lu_log_level_t level);
+void lu_log_set_lock(lu_log_lock_fn lock, void* data);
+void lu_log_set_level(lu_log_level_t level);
+void lu_log_set_quiet(int enable);
+int  lu_log_add_handler(lu_log_handler_t handler, void* data, lu_log_level_t level);
+int	 lu_log_add_fp(FILE* fp, lu_log_level_t level);
+
+void lu_log_log(lu_log_level_t level, const char* file, int line, const char* fmt, ...);
+
+
 
 LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char *fmt,...) LU_EV_CHECK_FMT(2,3) LU_EV_NORETURN;
-
 LU_EVENT_EXPORT_SYMBOL void lu_event_warn(const char *fmt,...) LU_EV_CHECK_FMT(1,2);
 LU_EVENT_EXPORT_SYMBOL void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...) LU_EV_CHECK_FMT(3,4) LU_EV_NORETURN;
 LU_EVENT_EXPORT_SYMBOL void lu_event_sock_warn(lu_evutil_socket_t sock,const char *fmt,...) LU_EV_CHECK_FMT(2,3);

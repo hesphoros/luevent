@@ -5,3 +5,5 @@ other/*
 build/CMakeFiles/
 build/CMakeCache.txt
 key.pem
+.cache/
+.vscode/

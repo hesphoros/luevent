@@ -106,7 +106,7 @@ typedef struct lu_log_event_s {
 	struct tm* time_info;
 	void* data;
 	int line;
-	lu_log_level_t level;
+	int severity;
 }lu_log_event_t;
 
 typedef void (*lu_log_handler_t)(lu_log_event_t* event);
@@ -119,8 +119,9 @@ typedef void (*lu_log_lock_fn)(int lock, void* data);
 #define lu_log_error(...) lu_log_log(LU_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
 #define lu_log_fatal(...) lu_log_log(LU_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
 
+
 const char* lu_log_level_to_string(lu_log_level_t level);
-void lu_log_set_lock(lu_log_lock_fn lock, void* data);
+
 void lu_log_set_level(lu_log_level_t level);
 void lu_log_set_quiet(int enable);
 int  lu_log_add_handler(lu_log_handler_t handler, void* data, lu_log_level_t level);

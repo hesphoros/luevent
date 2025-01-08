@@ -90,6 +90,8 @@
         "lu_visibility.h": "c",
         "mem_core.h": "c",
         "stat.h": "c",
-        "mman.h": "c"
+        "mman.h": "c",
+        "inttypes.h": "c",
+        "mutex": "c"
     }
 }

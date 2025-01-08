@@ -13,6 +13,9 @@
 #include <unistd.h>
 #include "lu_util.h"
 #include "lu_erron.h"
+
+#include <pthread.h>
+#include <errno.h>
 //#include "lu_mm-internal.h"
 
 
@@ -42,25 +45,30 @@ LU_EVENT_EXPORT_SYMBOL lu_uint32_t lu_event_debug_logging_mask_ = DEFAULT_MASK;
 typedef struct lu_log_callback_s {
 	lu_log_handler_t handler;
 	void* data;
-	lu_log_level_t level;
+	int severity;
 }lu_log_callback_t;
 
 static  struct {
 	void* data;
-	lu_log_lock_fn lock;
-	lu_log_level_t level;
+		
+	int severity;
 	int quiet;
 	lu_log_callback_t callbacks[MAX_CALLBACKS];
 }lu_log_config_t;
 
-static const char* lu_log_level_strings[] = {
-	"TRACE",
-	"DEBUG",
-	"INFO",
-	"WARN",
-	"ERROR",
-	"FATAL",
-};
+//添加lu_log_config_t 的锁的逻辑 使用pthread_mutex_t
+static pthread_mutex_t lu_log_config_lock = PTHREAD_MUTEX_INITIALIZER;
+
+
+
+// static const char* lu_log_level_strings[] = {
+// 	"TRACE",
+// 	"DEBUG",
+// 	"INFO",
+// 	"WARN",
+// 	"ERROR",
+// 	"FATAL",
+// };
 
 #ifdef LU_LOG_USE_COLOR
 static const char* lu_level_colors[] = {
@@ -81,21 +89,22 @@ static void lu_event_log_(int severity, const char *msg) {
         const char * severity_str;
         switch(severity){
             case LU_EVENT_LOG_DEBUG:
-                severity_str = "debug";
+                severity_str = "DEBUG";
                 break;
             case LU_EVENT_LOG_MSG:
-                severity_str = "msg";
+                severity_str = "MSG";
                 break;
             case LU_EVENT_LOG_WARN:
-                severity_str = "warn";
+                severity_str = "WARN";
                 break;
             case LU_EVENT_LOG_ERROR:
-                severity_str = "error";
+                severity_str = "ERROR";
                 break;
             default:
-                severity_str = "unknown_severity";
+                severity_str = "UNKNOWN_LEVEL";
                 break;
-        }
+        }		
+			
         //void to avoid unused variable warning
         (void)fprintf(stderr, "[%s] %s\n", severity_str, msg);
     }
@@ -116,6 +125,8 @@ void lu_event_enable_debug_logging(lu_uint32_t which_mask)
 void lu_event_set_fatal_callback(lu_event_fatal_cb fatal_cb){
     lu_event_fatal_global_fn_ = fatal_cb;
 }
+
+//#define lu_log_trace(...) lu_log_log(LU_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
 
 void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap){
     char buff[1024];
@@ -235,13 +246,13 @@ static void lu_stdout_handler(lu_log_event_t* log_event) {
 	if (isatty(fileno(log_event->data))) {
 		fprintf(
 			log_event->data, "%s %s%-5s\x1b[0m \x1b[90m%s:%d:\x1b[0m ",
-			buf, lu_level_colors[log_event->level], lu_log_level_strings[log_event->level],
+			buf, lu_level_colors[log_event->severity], lu_log_level_strings[log_event->severity],
 			log_event->file, log_event->line);
 	}
 	else {
 		fprintf(
 			log_event->data, "%s %-5s %s:%d: ",
-			buf, lu_log_level_strings[log_event->level], log_event->file, log_event->line);
+			buf, lu_log_level_strings[log_event->severity], log_event->file, log_event->line);
 	}
 #else
 	fprintf(
@@ -259,7 +270,7 @@ static void lu_file_handler(lu_log_event_t* log_event) {
 	buf[strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", log_event->time_info)] = '\0';
 	fprintf(
 		log_event->data, "%s %-5s %s:%d: ",
-		buf, lu_log_level_strings[log_event->level], log_event->file, log_event->line);
+		buf, lu_log_level_strings[log_event->severity], log_event->file, log_event->line);
 	vfprintf(log_event->data, log_event->fmt, log_event->ap);
 	fprintf(log_event->data, "\n");
 	fflush(log_event->data);
@@ -267,28 +278,24 @@ static void lu_file_handler(lu_log_event_t* log_event) {
 
 
 static void lu_lock(void) {
-	if (lu_log_config_t.lock) { lu_log_config_t.lock(1, lu_log_config_t.data); }
+	pthread_mutex_lock(&lu_log_config_lock);
 }
 
 static void lu_unlock(void) {
-	if (lu_log_config_t.lock) { lu_log_config_t.lock(0, lu_log_config_t.data); }
+		pthread_mutex_unlock(&lu_log_config_lock);
 }
 
-const char* lu_log_level_to_string(lu_log_level_t level)
-{
-	return lu_log_level_strings[level];
-}
+// const char* lu_log_level_to_string(lu_log_level_t level)
+// {
+// 	return lu_log_level_strings[level];
+// }
 
-void lu_log_set_lock(lu_log_lock_fn lock, void* data)
-{
-	lu_log_config_t.lock = lock;
-	lu_log_config_t.data = data;
-}
 
-void lu_log_set_level(lu_log_level_t level)
-{
-	lu_log_config_t.level = level;
-}
+
+// void lu_log_set_level(lu_log_level_t level)
+// {
+// 	lu_log_config_t.level = level;
+// }
 
 
 void lu_log_set_quiet(int enable)
@@ -324,12 +331,12 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 
 void lu_log_log(lu_log_level_t level, const char* file, int line, const char* fmt, ...)
 {
-	//
+	
 	lu_log_event_t log_event = {
 		.fmt = fmt,
 		.file = file,
 		.line = line,
-		.level = level,
+		.severity = level,
 	};
 
 	lu_lock();
@@ -352,3 +359,49 @@ void lu_log_log(lu_log_level_t level, const char* file, int line, const char* fm
 	lu_unlock();
 }
 
+
+
+void lu_event_log_logv_(int severity,const char* errstr,const char *file,int line,const char* fmt, va_list ap) {
+	char buff[1024];
+	size_t len;
+
+	if(severity == LU_EVENT_LOG_DEBUG && !(lu_event_debug_get_logging_mask_()))
+		return;
+	if(NULL != fmt)
+		len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap); 
+	else
+		buff[0] = '\0';
+
+	if(errstr){
+        len = strlen(buff);
+        if(len < sizeof(buff)-1){
+            lu_evutil_snprintf(buff+len, sizeof(buff)-len, ": %s", errstr);
+        }        
+    }
+
+	lu_log_event_t log_event = {
+		.fmt = fmt,
+		.file = file,
+		.line = line,
+		.severity = severity,
+		};
+	lu_lock();
+		if (!lu_log_config_t.quiet && severity >= lu_log_config_t.level) {
+		lu_init_event(&log_event, stderr);
+		va_start(log_event.ap, fmt);
+		lu_stdout_handler(&log_event);
+		va_end(log_event.ap);
+	}
+
+	for (size_t i = 0; i <= MAX_CALLBACKS && lu_log_config_t.callbacks[i].handler; i++) {
+		lu_log_callback_t* cb = &lu_log_config_t.callbacks[i];
+		if (level >= cb->level) {
+			lu_init_event(&log_event, cb->data);
+			va_start(log_event.ap, fmt);
+			cb->handler(&log_event);
+			va_end(log_event.ap);
+		}
+	}
+	lu_unlock();
+
+}

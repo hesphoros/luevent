@@ -329,6 +329,8 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 }
 
 
+
+
 void lu_log_log(lu_log_level_t level, const char* file, int line, const char* fmt, ...)
 {
 	
@@ -361,47 +363,66 @@ void lu_log_log(lu_log_level_t level, const char* file, int line, const char* fm
 
 
 
-void lu_event_log_logv_(int severity,const char* errstr,const char *file,int line,const char* fmt, va_list ap) {
+void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, ...) {
+	
+	va_list ap;	
 	char buff[1024];
 	size_t len;
 
+	//// 如果是调试级别并且日志调试掩码为 0，跳过日志记录
 	if(severity == LU_EVENT_LOG_DEBUG && !(lu_event_debug_get_logging_mask_()))
 		return;
+
+	
+    // 使用 va_start 来处理变长参数
+    va_start(ap, fmt);
+
+	 // 使用 vsnprintf 格式化日志消息
 	if(NULL != fmt)
 		len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap); 
 	else
 		buff[0] = '\0';
 
-	if(errstr){
-        len = strlen(buff);
-        if(len < sizeof(buff)-1){
-            lu_evutil_snprintf(buff+len, sizeof(buff)-len, ": %s", errstr);
-        }        
+	
+   
+
+	  // 如果有 errstr，附加到日志消息
+    if (errstr) {
+        size_t errstr_len = strlen(errstr);
+        if (len + errstr_len + 2 < sizeof(buff)) {  // +2 for ": " separator
+            lu_evutil_snprintf(buff + len, sizeof(buff) - len, ": %s", errstr);
+            len += errstr_len + 2;  // 更新 len 以包含 errstr 长度
+        }
     }
 
 	lu_log_event_t log_event = {
-		.fmt = fmt,
+		.fmt = buff,
 		.file = file,
 		.line = line,
 		.severity = severity,
 		};
 	lu_lock();
-		if (!lu_log_config_t.quiet && severity >= lu_log_config_t.level) {
-		lu_init_event(&log_event, stderr);
-		va_start(log_event.ap, fmt);
-		lu_stdout_handler(&log_event);
-		va_end(log_event.ap);
-	}
+   // 只输出符合日志级别的日志
+    if (!lu_log_config_t.quiet && severity >= lu_log_config_t.severity) {
+        // 初始化事件并输出到标准输出
+        lu_init_event(&log_event, stderr);
+        lu_stdout_handler(&log_event);
+    }
 
-	for (size_t i = 0; i <= MAX_CALLBACKS && lu_log_config_t.callbacks[i].handler; i++) {
-		lu_log_callback_t* cb = &lu_log_config_t.callbacks[i];
-		if (level >= cb->level) {
-			lu_init_event(&log_event, cb->data);
-			va_start(log_event.ap, fmt);
-			cb->handler(&log_event);
-			va_end(log_event.ap);
-		}
-	}
-	lu_unlock();
+    // 调用各个回调处理日志
+    for (size_t i = 0; i < MAX_CALLBACKS && lu_log_config_t.callbacks[i].handler; i++) {
+        lu_log_callback_t* cb = &lu_log_config_t.callbacks[i];
+        if (severity >= cb->severity) {
+            lu_init_event(&log_event, cb->data);
+            cb->handler(&log_event);  // 调用回调函数处理日志
+        }
+    }
+
+    // 解锁日志操作
+    lu_unlock();
+
+    // 结束变长参数处理
+    va_end(ap);
+	
 
 }

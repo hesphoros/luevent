@@ -92,6 +92,8 @@
         "stat.h": "c",
         "mman.h": "c",
         "inttypes.h": "c",
-        "mutex": "c"
+        "mutex": "c",
+        "netdb.h": "c",
+        "socket.h": "c"
     }
 }

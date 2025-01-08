@@ -10,6 +10,7 @@
 #include <time.h>
 #include "lu_log-internal.h"
 #include <stdlib.h>
+#include <unistd.h>
 #include "lu_util.h"
 #include "lu_erron.h"
 //#include "lu_mm-internal.h"
@@ -74,7 +75,7 @@ static const char* lu_level_colors[] = {
 
 static void lu_event_log_(int severity, const char *msg) { 
         
-    if(lu_event_log_global_fn_)
+    if(lu_event_log_global_fn_)	
         lu_event_log_global_fn_(severity, msg);
     else{
         const char * severity_str;

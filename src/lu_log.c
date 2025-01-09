@@ -332,7 +332,7 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 
 
 
-
+//int severity, const char *errstr, const char *fmt, va_list ap
 void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, ...) {
 	
 	va_list ap;	

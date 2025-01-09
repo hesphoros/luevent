@@ -120,14 +120,14 @@ typedef void (*lu_log_lock_fn)(int lock, void* data);
 #define lu_log_fatal(...) lu_log_log(LU_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
 
 
-const char* lu_log_level_to_string(lu_log_level_t level);
+const char* lu_log_level_to_string(int level);
 
-void lu_log_set_level(lu_log_level_t level);
+void lu_log_set_level(int level);
 void lu_log_set_quiet(int enable);
-int  lu_log_add_handler(lu_log_handler_t handler, void* data, lu_log_level_t level);
-int	 lu_log_add_fp(FILE* fp, lu_log_level_t level);
+int  lu_log_add_handler(lu_log_handler_t handler, void* data, int level);
+int	 lu_log_add_fp(FILE* fp, int level);
 
-void lu_log_log(lu_log_level_t level, const char* file, int line, const char* fmt, ...);
+void lu_log_log(int level, const char* file, int line, const char* fmt, ...);
 
 
 
@@ -144,6 +144,10 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *fmt, ...) LU_EV_CHECK_F
 LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap) LU_EV_CHECK_FMT(3,0);
 
 
+/**New log func implementation*/
+void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap);
+ 
+LU_EVENT_EXPORT_SYMBOL void lu_event_warnvnew_(const char * fmt,...)LU_EV_CHECK_FMT(1,2);
 
 
 /**

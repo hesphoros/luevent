@@ -61,14 +61,14 @@ static pthread_mutex_t lu_log_config_lock = PTHREAD_MUTEX_INITIALIZER;
 
 
 
-// static const char* lu_log_level_strings[] = {
-// 	"TRACE",
-// 	"DEBUG",
-// 	"INFO",
-// 	"WARN",
-// 	"ERROR",
-// 	"FATAL",
-// };
+static const char* lu_log_level_strings[] = {
+	"TRACE",
+	"DEBUG",
+	"INFO",
+	"WARN",
+	"ERROR",
+	"FATAL",
+};
 
 #ifdef LU_LOG_USE_COLOR
 static const char* lu_level_colors[] = {
@@ -330,36 +330,6 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 
 
 
-
-void lu_log_log(lu_log_level_t level, const char* file, int line, const char* fmt, ...)
-{
-	
-	lu_log_event_t log_event = {
-		.fmt = fmt,
-		.file = file,
-		.line = line,
-		.severity = level,
-	};
-
-	lu_lock();
-	if (!lu_log_config_t.quiet && level >= lu_log_config_t.level) {
-		lu_init_event(&log_event, stderr);
-		va_start(log_event.ap, fmt);
-		lu_stdout_handler(&log_event);
-		va_end(log_event.ap);
-	}
-
-	for (size_t i = 0; i <= MAX_CALLBACKS && lu_log_config_t.callbacks[i].handler; i++) {
-		lu_log_callback_t* cb = &lu_log_config_t.callbacks[i];
-		if (level >= cb->level) {
-			lu_init_event(&log_event, cb->data);
-			va_start(log_event.ap, fmt);
-			cb->handler(&log_event);
-			va_end(log_event.ap);
-		}
-	}
-	lu_unlock();
-}
 
 
 

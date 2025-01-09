@@ -2,6 +2,7 @@ root
 root.pub
 other/*
 *.out
+./clangd
 build/CMakeFiles/
 build/CMakeCache.txt
 key.pem

@@ -1,4 +1,0 @@
-2025-01-10 00:17:16 INFO  /root/luevent/src/lu_log.c:336: test 100 hello
-2025-01-10 00:17:35 INFO  /root/luevent/src/lu_log.c:336: test 100 hello
-2025-01-10 00:17:52 INFO  /root/luevent/src/lu_log.c:336: test 100 hello
-2025-01-10 00:17:55 INFO  /root/luevent/src/lu_log.c:336: test 100 hello

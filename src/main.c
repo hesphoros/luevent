@@ -3,6 +3,12 @@
 #include "lu_erron.h"
 #include <memory.h>
 #include "lu_hash_table-internal.h"
+#include "lu_log-internal.h"
+#include "lu_util.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
 //#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
@@ -132,8 +138,15 @@ void test_mm_memory(){
 }
 
 
+void test_logging(){
+    FILE *fp = fopen("test.log","a");
+    lu_log_add_fp(fp, LU_EVENT_LOG_DEBUG);
+    lu_event_warnvnew_("test %d %s",100,"hello");
+}
+
 int main(){
     //test_hash();
     //test_error_to_string();
+    test_logging();
     return 0;
 }

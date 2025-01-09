@@ -1,8 +1,15 @@
 ## Development Log
 
+
+## Friday 10 Jan 2025
+- [X] Initial update of lu_log module
+- [X] Updated lu_utils module
+
 ## Wednesday 8 Jan 2025
 
 - [X] Use lu_log in luevent log model.
+
+
 
 ## Monday 6 Jan 2025
 - [X] Finihed the implementation of "lu_min_heap"

@@ -1,11 +1,13 @@
 #include "lu_util.h"
 #include <stdio.h>
-#include <sys/socket.h>
-#include <netdb.h> 
+
 #include <pthread.h>
 #include <assert.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "lu_memory_manager.h"
 #include "lu_hash_table-internal.h"
@@ -155,4 +157,42 @@ int lu_evutil_configure_monotonic_time_(lu_evutil_monotonic_timer_t *base,
     //TODO: to be implemented
 
  return 0;
+}
+
+
+int lu_evutil_create_dictionay(const char * path){
+    //TODO: Add some error code checking here
+     if (path == NULL || strlen(path) == 0) {
+        return -1; 
+    }
+
+    // 创建目录
+    char temp_path[1024];
+    snprintf(temp_path, sizeof(temp_path), "%s", path);
+
+    // 去掉路径末尾的斜杠
+    size_t len = strlen(temp_path);
+    if (temp_path[len - 1] == '/') {
+        temp_path[len - 1] = '\0';
+    }
+
+    // 尝试创建目录
+    if (mkdir(temp_path, 0755) == 0) {
+        return 0; // 成功创建
+    }
+
+    // 如果目录创建失败，且是因为父目录不存在
+    if (errno == ENOENT) {
+        // 递归创建父目录
+        char *last_slash = strrchr(temp_path, '/');
+        if (last_slash) {
+            *last_slash = '\0'; // 切割路径
+            if (lu_evutil_create_dictionay(temp_path) == 0) {
+                // 父目录创建成功后，再次尝试创建目标目录
+                return mkdir(path, 0755) == 0 ? 0 : -1;
+            }
+        }
+    }
+
+    return -1; // 目录创建失败
 }

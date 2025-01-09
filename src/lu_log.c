@@ -303,7 +303,7 @@ void lu_log_set_quiet(int enable)
 	lu_log_config_t.quiet = enable;
 }
 
-int lu_log_add_handler(lu_log_handler_t handler, void* data, lu_log_level_t level)
+int lu_log_add_handler(lu_log_handler_t handler, void* data, int level)
 {
 	for (size_t i = 0; i < MAX_CALLBACKS; i++)
 	{
@@ -315,7 +315,7 @@ int lu_log_add_handler(lu_log_handler_t handler, void* data, lu_log_level_t leve
 	return -1;
 }
 
-int lu_log_add_fp(FILE* fp, lu_log_level_t level)
+int lu_log_add_fp(FILE* fp, int level)
 {
 	return lu_log_add_handler(lu_file_handler, fp, level);
 }
@@ -330,10 +330,10 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 
 
 
-void lu_event_warnv_(const char * fmt,...){
+void lu_event_warnvnew_(const char * fmt,...){
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_WARN, NULL, fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_WARN, NULL, __FILE__, __LINE__, fmt, ap);
     va_end(ap);
 }
 
@@ -341,7 +341,9 @@ void lu_event_warnv_(const char * fmt,...){
 
 
 //int severity, const char *errstr, const char *fmt, va_list ap
-void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap) {
+
+void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap){
+    
     // Declare the buffer for formatted log message
     char buff[1024];
     size_t len = 0; // Initialize len to zero
@@ -351,9 +353,7 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
         return;
     }
 
-    // Use va_start to process the variable argument list
-    va_start(ap, fmt);
-
+    
     // If fmt is not NULL, format the log message using vsnprintf
     if (fmt != NULL) {
         len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap);
@@ -400,7 +400,6 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
     // Unlock the logging mechanism
     lu_unlock();
 
-    // End the variable argument list processing
-    va_end(ap);
+    
 }
 

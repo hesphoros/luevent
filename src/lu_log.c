@@ -330,69 +330,77 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 
 
 
+void lu_event_warnv_(const char * fmt,...){
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_logv_(LU_EVENT_LOG_WARN, NULL, fmt, ap);
+    va_end(ap);
+}
+
+ 
 
 
 //int severity, const char *errstr, const char *fmt, va_list ap
-void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, ...) {
-	
-	va_list ap;	
-	char buff[1024];
-	size_t len;
+void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap) {
+    // Declare the buffer for formatted log message
+    char buff[1024];
+    size_t len = 0; // Initialize len to zero
 
-	//// 如果是调试级别并且日志调试掩码为 0，跳过日志记录
-	if(severity == LU_EVENT_LOG_DEBUG && !(lu_event_debug_get_logging_mask_()))
-		return;
+    // If the severity is DEBUG and the debug logging mask is not set, skip logging
+    if (severity == LU_EVENT_LOG_DEBUG && !(lu_event_debug_get_logging_mask_())) {
+        return;
+    }
 
-	
-    // 使用 va_start 来处理变长参数
+    // Use va_start to process the variable argument list
     va_start(ap, fmt);
 
-	 // 使用 vsnprintf 格式化日志消息
-	if(NULL != fmt)
-		len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap); 
-	else
-		buff[0] = '\0';
+    // If fmt is not NULL, format the log message using vsnprintf
+    if (fmt != NULL) {
+        len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap);
+    } else {
+        buff[0] = '\0'; // If fmt is NULL, set buff to empty string
+    }
 
-	
-   
-
-	  // 如果有 errstr，附加到日志消息
+    // If there is an error string, append it to the log message
     if (errstr) {
         size_t errstr_len = strlen(errstr);
         if (len + errstr_len + 2 < sizeof(buff)) {  // +2 for ": " separator
             lu_evutil_snprintf(buff + len, sizeof(buff) - len, ": %s", errstr);
-            len += errstr_len + 2;  // 更新 len 以包含 errstr 长度
+            len += errstr_len + 2;  // Update len to include errstr length
         }
     }
 
-	lu_log_event_t log_event = {
-		.fmt = buff,
-		.file = file,
-		.line = line,
-		.severity = severity,
-		};
-	lu_lock();
-   // 只输出符合日志级别的日志
+    // Initialize the log event structure
+    lu_log_event_t log_event = {
+        .fmt = buff,
+        .file = file,
+        .line = line,
+        .severity = severity,
+    };
+
+    // Lock the logging mechanism for thread safety
+    lu_lock();
+
+    // Only output logs that match the current severity level and are not in quiet mode
     if (!lu_log_config_t.quiet && severity >= lu_log_config_t.severity) {
-        // 初始化事件并输出到标准输出
+        // Initialize event and output to standard error
         lu_init_event(&log_event, stderr);
         lu_stdout_handler(&log_event);
     }
 
-    // 调用各个回调处理日志
+    // Call the registered callback handlers for logging
     for (size_t i = 0; i < MAX_CALLBACKS && lu_log_config_t.callbacks[i].handler; i++) {
         lu_log_callback_t* cb = &lu_log_config_t.callbacks[i];
         if (severity >= cb->severity) {
             lu_init_event(&log_event, cb->data);
-            cb->handler(&log_event);  // 调用回调函数处理日志
+            cb->handler(&log_event);  // Call the callback function to handle the log
         }
     }
 
-    // 解锁日志操作
+    // Unlock the logging mechanism
     lu_unlock();
 
-    // 结束变长参数处理
+    // End the variable argument list processing
     va_end(ap);
-	
-
 }
+

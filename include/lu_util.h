@@ -128,6 +128,7 @@ extern "C" {
 #define LU_EVENT_LOG_MSG    1
 #define LU_EVENT_LOG_WARN   2
 #define LU_EVENT_LOG_ERROR  3
+#define LU_EVENT_LOG_FATAL  4
 /**@}*/
 
 /*

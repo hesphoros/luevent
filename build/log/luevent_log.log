@@ -1,0 +1,7 @@
+2025-01-10 18:32:03 WARN  /root/luevent/src/main.c:145: test 100 hello
+2025-01-10 18:32:37 WARN  /root/luevent/src/main.c:145: test 100 hello
+2025-01-10 18:33:06 WARN  /root/luevent/src/main.c:145: test 100 hello
+2025-01-10 18:34:33 WARN  /root/luevent/src/main.c:145: test 100 hello
+2025-01-10 18:34:33 WARN  /root/luevent/src/main.c:146: Test definations  100 hello
+2025-01-10 18:34:37 WARN  /root/luevent/src/main.c:145: test 100 hello
+2025-01-10 18:34:37 WARN  /root/luevent/src/main.c:146: Test definations  100 hello

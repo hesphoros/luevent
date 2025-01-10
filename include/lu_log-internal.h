@@ -90,14 +90,14 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t   lu_event_debug_logging_mask_;
 
 */
 
-typedef enum lu_log_level_e {
-    LU_LOG_TRACE,
-    LU_LOG_DEBUG,
-    LU_LOG_INFO,
-    LU_LOG_WARN,
-    LU_LOG_ERROR,
-    LU_LOG_FATAL,
-}lu_log_level_t;
+// typedef enum lu_log_level_e {
+//     LU_LOG_TRACE,
+//     LU_LOG_DEBUG,
+//     LU_LOG_INFO,
+//     LU_LOG_WARN,
+//     LU_LOG_ERROR,
+//     LU_LOG_FATAL,
+// }lu_log_level_t;
 
 typedef struct lu_log_event_s {
 	va_list ap;
@@ -149,7 +149,8 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
  
 LU_EVENT_EXPORT_SYMBOL 
 void lu_event_warnvnew_(const char *file, int line, const char *fmt, ...) ;
- 
+
+#define LU_LOG_WARN(fmt, ...) lu_event_warnvnew_(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
 
 /**

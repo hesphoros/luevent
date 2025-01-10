@@ -139,11 +139,12 @@ void test_mm_memory(){
 
 
 void test_logging(){
-    FILE *fp = fopen("test.log","a");
+    FILE *fp = fopen("./log/luevent_log.log","a");
     lu_log_add_fp(fp, LU_EVENT_LOG_DEBUG);
 
     lu_event_warnvnew_(__FILE__, __LINE__, "test %d %s", 100, "hello");
-
+    LU_LOG_WARN("Test definations  %d %s", 100, "hello");
+    
     fclose(fp);
 }
 

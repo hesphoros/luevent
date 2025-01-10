@@ -62,9 +62,8 @@ static pthread_mutex_t lu_log_config_lock = PTHREAD_MUTEX_INITIALIZER;
 
 
 static const char* lu_log_level_strings[] = {
-	"TRACE",
 	"DEBUG",
-	"INFO",
+	"MSG",
 	"WARN",
 	"ERROR",
 	"FATAL",
@@ -72,7 +71,7 @@ static const char* lu_log_level_strings[] = {
 
 #ifdef LU_LOG_USE_COLOR
 static const char* lu_level_colors[] = {
-	"\x1b[94m",  // TRACE
+	
 	"\x1b[36m",  // DEBUG
 	"\x1b[32m",  // INFO
 	"\x1b[33m",  // WARN
@@ -126,7 +125,6 @@ void lu_event_set_fatal_callback(lu_event_fatal_cb fatal_cb){
     lu_event_fatal_global_fn_ = fatal_cb;
 }
 
-//#define lu_log_trace(...) lu_log_log(LU_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
 
 void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap){
     char buff[1024];

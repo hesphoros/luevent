@@ -29,9 +29,12 @@
 */
 static void lu_event_log_(int severity, const char *msg);
 
-
+//TODO: DELELTE ME
+#define LU_EVENT_DEBUG_LOGGING_ENABLED
+#define LU_USE_DEBUG
 
 #ifdef LU_EVENT_DEBUG_LOGGING_ENABLED
+
 #ifdef LU_USE_DEBUG
 #define DEFAULT_MASK LU_EVENT_DBG_ALL
 #else
@@ -87,16 +90,16 @@ static void lu_event_log_(int severity, const char *msg) {
     else{
         const char * severity_str;
         switch(severity){
-            case LU_EVENT_LOG_DEBUG:
+            case LU_EVENT_LOG_LEVEL_DEBUG:
                 severity_str = "DEBUG";
                 break;
-            case LU_EVENT_LOG_MSG:
+            case LU_EVENT_LOG_LEVEL_MSG:
                 severity_str = "MSG";
                 break;
-            case LU_EVENT_LOG_WARN:
+            case LU_EVENT_LOG_LEVEL_WARN:
                 severity_str = "WARN";
                 break;
-            case LU_EVENT_LOG_ERROR:
+            case LU_EVENT_LOG_LEVEL_ERROR:
                 severity_str = "ERROR";
                 break;
             default:
@@ -130,8 +133,8 @@ void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list a
     char buff[1024];
     size_t len;
 
-    // if severity is LU_EVENT_LOG_DEBUG and lu_event_debug_get_logging_mask_ is 0(LU_EVENT_DBG_NONE),return
-    if(LU_EVENT_LOG_DEBUG == severity && !(lu_event_debug_get_logging_mask_()))
+    // if severity is LU_EVENT_LOG_LEVEL_DEBUG and lu_event_debug_get_logging_mask_ is 0(LU_EVENT_DBG_NONE),return
+    if(LU_EVENT_LOG_LEVEL_DEBUG == severity && !(lu_event_debug_get_logging_mask_()))
         return;
 
     if(NULL != fmt)
@@ -148,17 +151,21 @@ void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list a
     lu_event_log_(severity, buff);
 }
 
-void lu_event_error(int errnum, const char *fmt,...) {
+//void lu_event_error(int errnum, const char *fmt,...)
+void lu_event_error(int errnum, const char* file, int line, const char *fmt,...) {
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_ERROR, strerror(errnum), fmt, ap);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), file, line, fmt, ap);
     va_end(ap);
 }
 
-void lu_event_warn(const char *fmt,...){
+//void lu_event_warn(const char *fmt,...) 
+void lu_event_warn(const char *file, int line, const char *fmt,...){
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_WARN, NULL, fmt, ap);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_WARN, NULL, fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_WARN, NULL, file, line, fmt, ap);
     va_end(ap);
 }
 
@@ -174,23 +181,26 @@ static void lu_event_exit(int errcode)
 		exit(errcode);
 }
 
-
-void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...){
+//void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...)
+void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char* file,int line,const char *fmt,...){
     va_list ap;
 	int err = lu_evutil_socket_geterror(sock);
 
 	va_start(ap, fmt);
-	lu_event_logv_(LU_EVENT_LOG_ERROR, lu_evutil_socket_error_to_string(err), fmt, ap);
+	//lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, lu_evutil_socket_error_to_string(err), fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, lu_evutil_socket_error_to_string(err), file, line, fmt, ap);
 	va_end(ap);
 	lu_event_exit(eval);
 }
 
-void lu_event_sock_warn(lu_evutil_socket_t sock,const char *fmt,...){
+//void lu_event_sock_warn(lu_evutil_socket_t sock,const char *fmt,...)
+void lu_event_sock_warn(lu_evutil_socket_t sock,const char* file,int line,const char *fmt,...){
     va_list ap;
 	int err = lu_evutil_socket_geterror(sock);
 
 	va_start(ap, fmt);
-	lu_event_logv_(LU_EVENT_LOG_ERROR, lu_evutil_socket_error_to_string(err), fmt, ap);
+	//lu_event_logv_(LU_EVENT_LOG_LEVEL_WARN, lu_evutil_socket_error_to_string(err), fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_WARN, lu_evutil_socket_error_to_string(err), file, line, fmt, ap);
 	va_end(ap);
 }
 
@@ -206,34 +216,41 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, con
 
 
  */
-
-void lu_event_errorx(int eval, const char *fmt, ...) {
+//void lu_event_errorx(int eval, const char *fmt, ...)
+void lu_event_errorx(int eval, const char* file, int line,const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_ERROR, strerror(eval), fmt, ap);
+    lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(eval), fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR,  strerror(eval), file ,line, fmt, ap);
     va_end(ap);
     lu_event_exit(eval);    
 }
 
-
-void lu_event_warnx(const char *fmt, ...) {
+//void lu_event_warnx(const char *fmt, ...) 
+void lu_event_warnx(const char *file, int line,const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_WARN, NULL, fmt, ap);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_WARN, NULL, fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_WARN, NULL, file, line, fmt, ap);
     va_end(ap);
 }
 
-void lu_event_msgx(const char *fmt, ...) {
+//void lu_event_msgx(const char *fmt, ...)
+void lu_event_msgx(const char *file, int line,const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_MSG, NULL, fmt, ap);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_MSG, NULL, fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_MSG,NULL, file, line, fmt, ap);
     va_end(ap);
 }
 
-void lu_event_debugx_(const char *fmt, ...) {
+
+//void lu_event_debugx_(const char *fmt, ...)
+void lu_event_debugx_(const char *file, int line,const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_DEBUG, NULL, fmt, ap);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_DEBUG, NULL, fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_DEBUG, NULL, file, line, fmt, ap);
     va_end(ap);
 }
 
@@ -319,19 +336,12 @@ int lu_log_add_fp(FILE* fp, int level)
 }
 
 static void lu_init_event(lu_log_event_t* log_event, void* data) {
+   if (!log_event) return;
 	if (!log_event->time_info) {
 		time_t t = time(NULL);
 		log_event->time_info = localtime(&t);
 	}
 	log_event->data = data;
-}
-
-//TODO:
-void lu_event_warnvnew_(const char *file, int line, const char *fmt, ...) {
-    va_list ap;
-    va_start(ap, fmt);
-    lu_event_log_logv_(LU_EVENT_LOG_WARN, NULL, file, line, fmt, ap);
-    va_end(ap);
 }
 
  
@@ -346,7 +356,10 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
     size_t len = 0; // Initialize len to zero
 
     // If the severity is DEBUG and the debug logging mask is not set, skip logging
-    if (severity == LU_EVENT_LOG_DEBUG && !(lu_event_debug_get_logging_mask_())) {
+    
+
+    if (severity == LU_EVENT_LOG_LEVEL_DEBUG && !(lu_event_debug_get_logging_mask_())) {
+        printf("DEBUG logging is disabled is %d\n", lu_event_debug_get_logging_mask_());
         return;
     }
 

@@ -53,23 +53,6 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t   lu_event_debug_logging_mask_;
 #define event_debug(x) ((void)0)
 #endif //LU_EVENT_DEBUG_LOGGING_ENABLED
 
-//Log severities defined in lu_utils.h
-#ifndef LU_EVENT_LOG_DEBUG
-#define LU_EVENT_LOG_DEBUG  0
-#endif
-
-#ifndef LU_EVENT_LOG_MSG
-#define LU_EVENT_LOG_MSG	1
-#endif
-
-#ifndef LU_EVENT_LOG_WARN
-#define LU_EVENT_LOG_WARN	2
-#endif
-
-
-#ifndef LU_EVENT_LOG_ERROR
-#define LU_EVENT_LOG_ERROR	3
-#endif
 
 #ifndef LU_EVENT_DBG_NONE
 #define LU_EVENT_DBG_NONE 0
@@ -80,15 +63,6 @@ LU_EVENT_EXPORT_SYMBOL extern lu_uint32_t   lu_event_debug_logging_mask_;
 #endif
 
 
-/*
-#define lu_log_trace(...) lu_log_log(LU_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_debug(...) lu_log_log(LU_LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_info(...) lu_log_log(LU_LOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_warn(...) lu_log_log(LU_LOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_error(...) lu_log_log(LU_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_fatal(...) lu_log_log(LU_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
-
-*/
 
 // typedef enum lu_log_level_e {
 //     LU_LOG_TRACE,
@@ -112,12 +86,6 @@ typedef struct lu_log_event_s {
 typedef void (*lu_log_handler_t)(lu_log_event_t* event);
 typedef void (*lu_log_lock_fn)(int lock, void* data);
 
-#define lu_log_trace(...) lu_log_log(LU_LOG_TRACE, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_debug(...) lu_log_log(LU_LOG_DEBUG, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_info(...) lu_log_log(LU_LOG_INFO, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_warn(...) lu_log_log(LU_LOG_WARN, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_error(...) lu_log_log(LU_LOG_ERROR, __FILE__, __LINE__, __VA_ARGS__)
-#define lu_log_fatal(...) lu_log_log(LU_LOG_FATAL, __FILE__, __LINE__, __VA_ARGS__)
 
 
 const char* lu_log_level_to_string(int level);
@@ -131,26 +99,32 @@ void lu_log_log(int level, const char* file, int line, const char* fmt, ...);
 
 
 
-LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char *fmt,...) LU_EV_CHECK_FMT(2,3) LU_EV_NORETURN;
-LU_EVENT_EXPORT_SYMBOL void lu_event_warn(const char *fmt,...) LU_EV_CHECK_FMT(1,2);
-LU_EVENT_EXPORT_SYMBOL void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char *fmt,...) LU_EV_CHECK_FMT(3,4) LU_EV_NORETURN;
-LU_EVENT_EXPORT_SYMBOL void lu_event_sock_warn(lu_evutil_socket_t sock,const char *fmt,...) LU_EV_CHECK_FMT(2,3);
+LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char* file, int line, const char *fmt,...) LU_EV_CHECK_FMT(4,5) LU_EV_NORETURN;
+LU_EVENT_EXPORT_SYMBOL void lu_event_warn(const char *file, int line, const char *fmt,...) LU_EV_CHECK_FMT(3,4);
+LU_EVENT_EXPORT_SYMBOL void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char* file,int line,const char *fmt,...) LU_EV_CHECK_FMT(5,6) LU_EV_NORETURN;
+LU_EVENT_EXPORT_SYMBOL void lu_event_sock_warn(lu_evutil_socket_t sock,const char* file,int line,const char *fmt,...) LU_EV_CHECK_FMT(4,5);
 
 
-LU_EVENT_EXPORT_SYMBOL void lu_event_errorx(int eval, const char *fmt, ...) LU_EV_CHECK_FMT(2,3) LU_EV_NORETURN;
-LU_EVENT_EXPORT_SYMBOL void lu_event_warnx(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
-LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
-LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
+LU_EVENT_EXPORT_SYMBOL void lu_event_errorx(int eval, const char* file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(4,5) LU_EV_NORETURN;
+LU_EVENT_EXPORT_SYMBOL void lu_event_warnx(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);
+LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);
+LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);
 LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap) LU_EV_CHECK_FMT(3,0);
 
 
 /**New log func implementation*/
-void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap);
- 
-LU_EVENT_EXPORT_SYMBOL 
-void lu_event_warnvnew_(const char *file, int line, const char *fmt, ...) ;
+LU_EVENT_EXPORT_SYMBOL void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap) LU_EV_CHECK_FMT(5,0);
 
-#define LU_LOG_WARN(fmt, ...) lu_event_warnvnew_(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_ERROR(errnum, fmt, ...) lu_event_error(errnum, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_WARN(fmt, ...) lu_event_warn(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_SOCK_ERROR(eval, sock, fmt, ...) lu_event_sock_error(eval, sock, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_SOCK_WARN(sock, fmt, ...) lu_event_sock_warn(sock, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+
+#define LU_EVENT_LOG_ERRORX(errnum, fmt, ...) lu_event_errorx(errnum, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_WARNX(fmt, ...) lu_event_warnx(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_MSGX(fmt, ...) lu_event_msgx(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_DEBUGX(fmt, ...) lu_event_debugx_(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+
 
 
 /**
@@ -172,7 +146,7 @@ static lu_event_fatal_cb 	lu_event_fatal_global_fn_ = NULL;
 /**
  * Redirect luevent's log messages to a custom callback function.
  * @param log_cb The callback function to use. If NULL, the default log handler is used.
-   two arguments: severity (between LU_EVENT_LOG_DEBUG to LU_EVENT_LOG_ERROR) and message (a string)
+   two arguments: severity (between LU_EVENT_LOG_LEVEL_DEBUG to LU_EVENT_LOG_LEVEL_ERROR) and message (a string)
  */
 LU_EVENT_EXPORT_SYMBOL void lu_event_set_log_callback(lu_event_log_cb log_cb);
 

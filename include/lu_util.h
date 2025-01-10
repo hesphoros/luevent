@@ -124,11 +124,11 @@ extern "C" {
 /** @name Log severities
  */
 /**@{*/
-#define LU_EVENT_LOG_DEBUG  0
-#define LU_EVENT_LOG_MSG    1
-#define LU_EVENT_LOG_WARN   2
-#define LU_EVENT_LOG_ERROR  3
-#define LU_EVENT_LOG_FATAL  4
+#define LU_EVENT_LOG_LEVEL_DEBUG  0
+#define LU_EVENT_LOG_LEVEL_MSG    1
+#define LU_EVENT_LOG_LEVEL_WARN   2
+#define LU_EVENT_LOG_LEVEL_ERROR  3
+#define LU_EVENT_LOG_LEVEL_FATAL  4
 /**@}*/
 
 /*

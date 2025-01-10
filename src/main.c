@@ -1,3 +1,5 @@
+#define LU_EVENT_DEBUG_LOGGING_ENABLED
+#define LU_USE_DEBUG
 #include "lu_memory_manager.h"
 #include <stdio.h>
 #include "lu_erron.h"
@@ -140,11 +142,12 @@ void test_mm_memory(){
 
 void test_logging(){
     FILE *fp = fopen("./log/luevent_log.log","a");
-    lu_log_add_fp(fp, LU_EVENT_LOG_DEBUG);
-
-    lu_event_warnvnew_(__FILE__, __LINE__, "test %d %s", 100, "hello");
-    LU_LOG_WARN("Test definations  %d %s", 100, "hello");
+    lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
     
+    LU_EVENT_LOG_ERROR(2,"error message");
+    LU_EVENT_LOG_WARN("This is a warning message");
+    LU_EVENT_LOG_DEBUGX("This is a debug message");   
+    LU_EVENT_LOG_MSGX("This is a  msg message");      
     fclose(fp);
 }
 

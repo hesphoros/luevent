@@ -155,8 +155,8 @@ void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list a
 void lu_event_error(int errnum, const char* file, int line, const char *fmt,...) {
     va_list ap;
     va_start(ap, fmt);
-    //lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), fmt, ap);
-    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), file, line, fmt, ap);
+    lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), fmt, ap);
+    //lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), file, line, fmt, ap);
     va_end(ap);
 }
 
@@ -220,7 +220,7 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, con
 void lu_event_errorx(int eval, const char* file, int line,const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(eval), fmt, ap);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(eval), fmt, ap);
     lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR,  strerror(eval), file ,line, fmt, ap);
     va_end(ap);
     lu_event_exit(eval);    
@@ -343,7 +343,6 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 	}
 	log_event->data = data;
 }
-
  
 
 

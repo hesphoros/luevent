@@ -144,10 +144,10 @@ void test_logging(){
     FILE *fp = fopen("./log/luevent_log.log","a");
     lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
     
-    LU_EVENT_LOG_ERROR(2,"error message");
-    LU_EVENT_LOG_WARN("This is a warning message");
-    LU_EVENT_LOG_DEBUGX("This is a debug message");   
-    LU_EVENT_LOG_MSGX("This is a  msg message");      
+    //LU_EVENT_LOG_ERROR(1000,"error message");
+    LU_EVENT_LOG_ERRORX(1000,"error message error");
+   
+      
     fclose(fp);
 }
 

@@ -1,7 +1,10 @@
 ## Development Log
 
 
+
 ## Friday 10 Jan 2025
+- [X] Repair the sgementation fault in  LU_EVENT_LOG_ERROR function.
+## Thursday 9 Jan 2025
 - [X] Initial update of lu_log module
 - [X] Updated lu_utils module
 

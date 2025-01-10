@@ -147,7 +147,9 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, con
 /**New log func implementation*/
 void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap);
  
-LU_EVENT_EXPORT_SYMBOL void lu_event_warnvnew_(const char * fmt,...)LU_EV_CHECK_FMT(1,2);
+LU_EVENT_EXPORT_SYMBOL 
+void lu_event_warnvnew_(const char *file, int line, const char *fmt, ...) ;
+ 
 
 
 /**

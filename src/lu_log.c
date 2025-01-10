@@ -328,12 +328,11 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 	log_event->data = data;
 }
 
-
-
-void lu_event_warnvnew_(const char * fmt,...){
+//TODO:
+void lu_event_warnvnew_(const char *file, int line, const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    lu_event_log_logv_(LU_EVENT_LOG_WARN, NULL, __FILE__, __LINE__, fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_WARN, NULL, file, line, fmt, ap);
     va_end(ap);
 }
 

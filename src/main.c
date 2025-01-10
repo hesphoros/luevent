@@ -141,7 +141,10 @@ void test_mm_memory(){
 void test_logging(){
     FILE *fp = fopen("test.log","a");
     lu_log_add_fp(fp, LU_EVENT_LOG_DEBUG);
-    lu_event_warnvnew_("test %d %s",100,"hello");
+
+    lu_event_warnvnew_(__FILE__, __LINE__, "test %d %s", 100, "hello");
+
+    fclose(fp);
 }
 
 int main(){

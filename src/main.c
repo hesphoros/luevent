@@ -44,6 +44,69 @@ void destroy_person_db(PersonDatabase* db) {
     LU_HASH_TABLE_DESTROY(db->hash_table);
 }
 
+
+void test_error_to_string(){
+    lu_enable_default_memory_logging(1); 
+    // printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
+    // printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_BROKEN_PIPE));
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY));
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_PROCESS));
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE));
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE_OR_ADDRESS));    
+    void *p = mm_memalign(100,100);
+}
+
+void test_mm_memory(){
+    
+    void *p = mm_malloc(100);
+    printf("%p size: %d\n",p,sizeof(*p));
+   
+    p = mm_realloc(p,200);
+    printf("%p size: %d\n",p,sizeof(p));
+
+    p = mm_calloc(1,200);
+    printf("%p %s size: %d\n",p,*(int*)p,sizeof(p));
+
+    p = mm_strdup("hello");
+    printf("%p %s\n",p,(char*)p);
+    
+    mm_free(p);
+
+}
+
+
+void test_logging(){
+   
+    
+    
+  
+    //LU_EVENT_LOG_ERRORX(1000,"error message error");
+    // LU_EVENT_LOG_WARN("zheshiyigeg jingao  message");
+    LU_EVENT_LOG_DEBUGX("debug message");
+    LU_EVENT_LOG_ERRORV("zheshiyige cuowwu xiaoxi  message %d %s",100,"hello");
+    //LU_EVENT_LOG_ERRORX(2,"error message error");
+      
+  
+}
+
+int main(){
+    FILE *fp = fopen("test.log","a");
+    if (fp == NULL) {
+        perror("Failed to open log file");
+       
+    }
+    lu_log_set_level(LU_EVENT_LOG_LEVEL_DEBUG);
+    lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
+    //test_hash();
+    //test_error_to_string();
+    test_logging();
+    fclose(fp);
+    return 0;
+}
+
+
 void test_hash(){
      // 初始化哈希表数据库
     PersonDatabase db;
@@ -106,54 +169,4 @@ void test_hash(){
     // 销毁哈希表数据库，释放内存
     destroy_person_db(&db);
 
-}
-
-void test_error_to_string(){
-    lu_enable_default_memory_logging(1); 
-    // printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
-    // printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_BROKEN_PIPE));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_PROCESS));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE_OR_ADDRESS));    
-    void *p = mm_memalign(100,100);
-}
-
-void test_mm_memory(){
-    
-    void *p = mm_malloc(100);
-    printf("%p size: %d\n",p,sizeof(*p));
-   
-    p = mm_realloc(p,200);
-    printf("%p size: %d\n",p,sizeof(p));
-
-    p = mm_calloc(1,200);
-    printf("%p %s size: %d\n",p,*(int*)p,sizeof(p));
-
-    p = mm_strdup("hello");
-    printf("%p %s\n",p,(char*)p);
-    
-    mm_free(p);
-
-}
-
-
-void test_logging(){
-    FILE *fp = fopen("./log/luevent_log.log","a");
-    lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
-    
-    //LU_EVENT_LOG_ERROR(1000,"error message");
-    LU_EVENT_LOG_ERRORX(1000,"error message error");
-   
-      
-    fclose(fp);
-}
-
-int main(){
-    //test_hash();
-    //test_error_to_string();
-    test_logging();
-    return 0;
 }

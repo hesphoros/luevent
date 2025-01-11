@@ -11,12 +11,13 @@
 #include "lu_log-internal.h"
 #include <stdlib.h>
 #include <unistd.h>
+//#include "lu_mm-internal.h"
 #include "lu_util.h"
 #include "lu_erron.h"
 
 #include <pthread.h>
 #include <errno.h>
-//#include "lu_mm-internal.h"
+#include "lu_memory_manager.h"
 
 
 #define LU_LOG_USE_COLOR
@@ -126,6 +127,12 @@ void lu_event_enable_debug_logging(lu_uint32_t which_mask)
 
 void lu_event_set_fatal_callback(lu_event_fatal_cb fatal_cb){
     lu_event_fatal_global_fn_ = fatal_cb;
+}
+
+
+void lu_log_set_level(int level)
+{
+	lu_log_config_t.severity = level;
 }
 
 
@@ -263,8 +270,16 @@ void lu_event_debugx_(const char *file, int line,const char *fmt, ...) {
     va_end(ap);
 }
 
+
+void lu_event_errorv_(const char* file, int line, const char* fmt, ...){
+    va_list ap;
+    va_start(ap, fmt);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, NULL, file, line, fmt, ap);
+    va_end(ap);
+}
+
 static void lu_stdout_handler(lu_log_event_t* log_event) {
-	char buf[16];
+	char buf[32];
 	buf[strftime(buf, sizeof(buf), "%H:%M:%S", log_event->time_info)] = '\0';
 #ifdef LU_LOG_USE_COLOR
 	if (isatty(fileno(log_event->data))) {
@@ -341,13 +356,33 @@ int lu_log_add_fp(FILE* fp, int level)
 }
 
 static void lu_init_event(lu_log_event_t* log_event, void* data) {
-   if (!log_event) return;
-	if (!log_event->time_info) {
-		time_t t = time(NULL);
-		log_event->time_info = localtime(&t);
-	}
-	log_event->data = data;
+    if (!log_event) return;
+
+    // 为每个 log_event 分配独立的 time_info
+    struct tm* time_info = (struct tm*)mm_malloc(sizeof(struct tm));
+    if (!time_info) {
+        fprintf(stderr, "Error: Failed to allocate memory for time_info.\n");
+        return;
+    }
+
+    time_t t = time(NULL);
+    if (localtime_r(&t, time_info) == NULL) {
+        fprintf(stderr, "Error: localtime_r failed, check TZ environment variable.\n");
+        free(time_info);  // 避免内存泄漏
+        return;
+    }
+
+
+    // 将 time_info 赋值给 log_event，确保每个事件有独立的时间结构
+    log_event->time_info = time_info;
+    if (!data) {
+        fprintf(stderr, "Warning: data pointer is NULL.\n");
+    }
+
+
+    log_event->data = data;
 }
+
  
 
 
@@ -397,6 +432,7 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
     // Only output logs that match the current severity level and are not in quiet mode
     if (!lu_log_config_t.quiet && severity >= lu_log_config_t.severity) {
         // Initialize event and output to standard error
+        
         lu_init_event(&log_event, stderr);
         lu_stdout_handler(&log_event);
     }

@@ -128,6 +128,7 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_log_logv_(int severity, const char* errstr,
 #define LU_EVENT_LOG_ERRORV(fmt,...) lu_event_errorv(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
 
+void lu_log_set_level(int level);
 /**
   A callback function used to intercept lu_event's log messages.
 

@@ -173,6 +173,8 @@ LU_EVENT_EXPORT_SYMBOL const char *lu_evutil_socket_error_to_string(int errcode)
 #define LU_EVENT_MONOT_FALLBACK 2 // 低精度
 
 
+#define LU_UNUSED(x) (void)(x)
+
 typedef struct lu_evutil_monotonic_timer_s{
     //TODO: to be implemented
     int dummy;

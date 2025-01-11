@@ -331,10 +331,6 @@ static void lu_unlock(void) {
 
 
 
-void lu_log_set_level(int level)
-{
-	lu_log_config_t.severity = level;
-}
 
 
 void lu_log_set_quiet(int enable)
@@ -379,8 +375,9 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
         fprintf(stderr, "Warning: data pointer is NULL.\n");
     }
 
-
+    
     log_event->data = data;
+    mm_free(time_info);
 }
 
  

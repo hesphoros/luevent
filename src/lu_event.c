@@ -34,6 +34,8 @@ lu_event_config_t * lu_event_config_new(void)
 static int
 gettime(struct event_base *base, struct timeval *tp)
 {
+  LU_UNUSED(base);
+  LU_UNUSED(tp);
 	//TODO: to be implemented
   return 0;
 }
@@ -47,9 +49,9 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * ev_cfg_t_) {
   int should_check_enviroment;
 
   // 安全分配内存用于存储 event_base 结构体，并初始化为 0
-  if(NULL == (ev_base_t == mm_calloc(1, sizeof(lu_event_base_t)))) {
+  if(NULL == (ev_base_t = mm_calloc(1, sizeof(lu_event_base_t)))) {
       // 内存分配失败
-      lu_event_warn("%s:%d: calloc failed", __func__,sizeof(lu_event_base_t));
+      lu_event_warn("%s:%d: calloc failed", __func__,(int) sizeof(lu_event_base_t));
       return (NULL);
   }
   if(ev_cfg_t_)

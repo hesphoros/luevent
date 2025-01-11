@@ -57,11 +57,7 @@ int lu_evutil_vsnprintf(char *str, size_t size, const char *format, va_list ap){
         str[size - 1] = '\0';
     }
 
-<<<<<<< HEAD
    
-=======
-    //str[size-1] = '\0';
->>>>>>> aba37cf4f30ca22b54343eab488e08ec26ba486a
     return ret;
 }
 

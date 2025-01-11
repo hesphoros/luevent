@@ -154,7 +154,11 @@ void lu_event_mm_free_(void* ptr){
 
 void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment) {
     void* ptr = NULL;
-
+    // 检查对齐值是否符合要求（必须是 2 的幂并且是 sizeof(void*) 的倍数）
+    if (alignment % 2 != 0 || alignment % sizeof(void*) != 0) {
+        // 如果不符合要求，返回 NULL 或者报错
+        return NULL;
+    }
     if(lu_mm_aligned_malloc_fn_){
         int ret = lu_mm_aligned_malloc_fn_(&ptr, size, alignment);
         if (ret == 0 && lu_mm_aligned_malloc_log_fn_) {

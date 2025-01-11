@@ -158,7 +158,18 @@ static lu_error_info_t* get_or_create_error_entry_(int error_code) {
 // 错误表清理
 static void cleanup_error_table_(void)  {
     pthread_mutex_lock(&error_table_mutex);  // 加锁
+    //清理 entries
+      // 遍历哈希表并清理每个条目
+    for (int i = 0; i < LU_MAX_ERROR_CODE + 1; i++) {
+        lu_error_info_t* entry = LU_HASH_TABLE_FIND(lu_error_hash_table, i);  // 获取每个条目
+        if (entry) {
+            mm_free(entry);  // 释放条目的内存
+            LU_HASH_TABLE_DELETE(lu_error_hash_table, i);  // 从哈希表中删除该条目
+        }
+    }
+
     LU_HASH_TABLE_DESTROY(lu_error_hash_table); // 销毁哈希表
+    pthread_mutex_unlock(&error_table_mutex); 
     pthread_mutex_destroy(&error_table_mutex);  // 销毁锁
 }
 
@@ -207,7 +218,7 @@ const char* lu_get_error_string_hash(int errno)  {
     if (lock_status != 0) {
         // printf("Failed to lock error_table_mutex: %d\n", lock_status);
         return "Lock failed";           
-}   
+    }   
 
     lu_error_info_t* entry = get_or_create_error_entry_(errno);
 

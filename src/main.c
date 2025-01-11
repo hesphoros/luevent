@@ -58,23 +58,7 @@ void test_error_to_string(){
     void *p = mm_memalign(100,100);
 }
 
-void test_mm_memory(){
-    
-    void *p = mm_malloc(100);
-    printf("%p size: %d\n",p,sizeof(*p));
-   
-    p = mm_realloc(p,200);
-    printf("%p size: %d\n",p,sizeof(p));
 
-    p = mm_calloc(1,200);
-    printf("%p %s size: %d\n",p,*(int*)p,sizeof(p));
-
-    p = mm_strdup("hello");
-    printf("%p %s\n",p,(char*)p);
-    
-    mm_free(p);
-
-}
 
 
 
@@ -147,11 +131,10 @@ void test_hash(){
 //test_hash();
 //test_error_to_string();
 
-<<<<<<< HEAD
 void test_mm_memory(){
     
     void *p = mm_malloc(100);
-    printf("%p size: %d\n",p,sizeof(*p));
+    printf("%p size: %d\n",p, sizeof(*p));
    
     p = mm_realloc(p,200);
     printf("%p size: %d\n",p,sizeof(p));
@@ -185,24 +168,5 @@ int main(){
    
     test_logging();
     test_error_to_string();
-=======
-
-int main(){
-     
-    FILE *fp = fopen("test1.log","a");
-    if (fp == NULL) {
-        perror("Failed to open log file");
-       
-    }
-    lu_log_set_level(LU_EVENT_LOG_LEVEL_DEBUG);
-    lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
-
-    //LU_EVENT_LOG_ERRORX(1000,"error message error");
-    LU_EVENT_LOG_WARN("Test warning message");
-    //LU_EVENT_LOG_DEBUGX("debug message");
-    LU_EVENT_LOG_ERRORV("Test error message");
-    //LU_EVENT_LOG_ERRORX(2,"error message error");
-    fclose(fp);
->>>>>>> aba37cf4f30ca22b54343eab488e08ec26ba486a
     return 0;
 }

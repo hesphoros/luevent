@@ -99,13 +99,13 @@ void lu_log_log(int level, const char* file, int line, const char* fmt, ...);
 
 
 
-LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char* file, int line, const char *fmt,...) LU_EV_CHECK_FMT(4,5) LU_EV_NORETURN;
+LU_EVENT_EXPORT_SYMBOL void lu_event_error(int errnum, const char* file, int line, const char *fmt,...) LU_EV_CHECK_FMT(4,5) ;
 LU_EVENT_EXPORT_SYMBOL void lu_event_warn(const char *file, int line, const char *fmt,...) LU_EV_CHECK_FMT(3,4);
 LU_EVENT_EXPORT_SYMBOL void lu_event_sock_error(int eval,lu_evutil_socket_t sock,const char* file,int line,const char *fmt,...) LU_EV_CHECK_FMT(5,6) LU_EV_NORETURN;
 LU_EVENT_EXPORT_SYMBOL void lu_event_sock_warn(lu_evutil_socket_t sock,const char* file,int line,const char *fmt,...) LU_EV_CHECK_FMT(4,5);
 
 
-LU_EVENT_EXPORT_SYMBOL void lu_event_errorx(int eval, const char* file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(4,5) LU_EV_NORETURN;
+LU_EVENT_EXPORT_SYMBOL void lu_event_errorx(int eval, const char* file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(4,5) ;
 LU_EVENT_EXPORT_SYMBOL void lu_event_warnx(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);
 LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);
 LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);

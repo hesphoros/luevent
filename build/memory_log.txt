@@ -1,7 +1,24 @@
-[2025-01-11 13:53:04] __MALLOC__     0x17679f0      allocated           (size: 24 bytes)
-[2025-01-11 13:53:04] __MALLOC__     0x1768040      allocated           (size: 24 bytes)
-[2025-01-11 13:53:04] __MALLOC__     0x1768080      allocated           (size: 24 bytes)
-[2025-01-11 13:53:04] __MALLOC__     0x17680c0      allocated           (size: 24 bytes)
-[2025-01-11 13:53:04] __MALLOC__     0x1768100      allocated           (size: 24 bytes)
-[2025-01-11 13:53:04] __MALLOC__     0x1768140      allocated           (size: 24 bytes)
-[2025-01-11 13:53:04] __ALIGNED_M__  (nil)          aligned_malloc allocated (size: 100 bytes)
+[2025-01-11 14:23:07] __MALLOC__     0x603000000100 allocated           (size: 24 bytes)
+[2025-01-11 14:23:07] __MALLOC__     0x603000000160 allocated           (size: 24 bytes)
+[2025-01-11 14:23:07] __MALLOC__     0x6030000001c0 allocated           (size: 24 bytes)
+[2025-01-11 14:23:07] __MALLOC__     0x603000000220 allocated           (size: 24 bytes)
+[2025-01-11 14:23:07] __MALLOC__     0x603000000280 allocated           (size: 24 bytes)
+[2025-01-11 14:23:07] __MALLOC__     0x6030000002e0 allocated           (size: 24 bytes)
+[2025-01-11 14:30:19] __MALLOC__     0x603000000100 allocated           (size: 24 bytes)
+[2025-01-11 14:30:19] __MALLOC__     0x603000000160 allocated           (size: 24 bytes)
+[2025-01-11 14:30:19] __MALLOC__     0x6030000001c0 allocated           (size: 24 bytes)
+[2025-01-11 14:30:19] __MALLOC__     0x603000000220 allocated           (size: 24 bytes)
+[2025-01-11 14:30:19] __MALLOC__     0x603000000280 allocated           (size: 24 bytes)
+[2025-01-11 14:30:19] __MALLOC__     0x6030000002e0 allocated           (size: 24 bytes)
+[2025-01-11 14:32:09] __MALLOC__     0x603000000100 allocated           (size: 24 bytes)
+[2025-01-11 14:32:09] __MALLOC__     0x603000000160 allocated           (size: 24 bytes)
+[2025-01-11 14:32:09] __MALLOC__     0x6030000001c0 allocated           (size: 24 bytes)
+[2025-01-11 14:32:09] __MALLOC__     0x603000000220 allocated           (size: 24 bytes)
+[2025-01-11 14:32:09] __MALLOC__     0x603000000280 allocated           (size: 24 bytes)
+[2025-01-11 14:32:09] __MALLOC__     0x6030000002e0 allocated           (size: 24 bytes)
+[2025-01-11 14:32:09] __FREE__       0x6030000001c0 freed
+[2025-01-11 14:32:09] __FREE__       0x603000000220 freed
+[2025-01-11 14:32:09] __FREE__       0x6030000002e0 freed
+[2025-01-11 14:32:09] __FREE__       0x603000000100 freed
+[2025-01-11 14:32:09] __FREE__       0x603000000280 freed
+[2025-01-11 14:32:09] __FREE__       0x603000000160 freed

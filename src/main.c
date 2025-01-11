@@ -77,34 +77,7 @@ void test_mm_memory(){
 }
 
 
-void test_logging(){
-   
-    
-    
-  
-    //LU_EVENT_LOG_ERRORX(1000,"error message error");
-    // LU_EVENT_LOG_WARN("zheshiyigeg jingao  message");
-    LU_EVENT_LOG_DEBUGX("debug message");
-    LU_EVENT_LOG_ERRORV("zheshiyige cuowwu xiaoxi  message %d %s",100,"hello");
-    //LU_EVENT_LOG_ERRORX(2,"error message error");
-      
-  
-}
 
-int main(){
-    FILE *fp = fopen("test.log","a");
-    if (fp == NULL) {
-        perror("Failed to open log file");
-       
-    }
-    lu_log_set_level(LU_EVENT_LOG_LEVEL_DEBUG);
-    lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
-    //test_hash();
-    //test_error_to_string();
-    test_logging();
-    fclose(fp);
-    return 0;
-}
 
 
 void test_hash(){
@@ -169,4 +142,27 @@ void test_hash(){
     // 销毁哈希表数据库，释放内存
     destroy_person_db(&db);
 
+}
+
+//test_hash();
+//test_error_to_string();
+
+
+int main(){
+     
+    FILE *fp = fopen("test1.log","a");
+    if (fp == NULL) {
+        perror("Failed to open log file");
+       
+    }
+    lu_log_set_level(LU_EVENT_LOG_LEVEL_DEBUG);
+    lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
+
+    //LU_EVENT_LOG_ERRORX(1000,"error message error");
+    LU_EVENT_LOG_WARN("Test warning message");
+    //LU_EVENT_LOG_DEBUGX("debug message");
+    LU_EVENT_LOG_ERRORV("Test error message");
+    //LU_EVENT_LOG_ERRORX(2,"error message error");
+    fclose(fp);
+    return 0;
 }

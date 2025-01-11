@@ -1,4 +1,14 @@
 
+rm -rf build
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+make
+
+
+
+lu_event_log_logv_ 和 lu_evutil_vsnprintf 的完整代码。
+日志相关全局变量的定义和初始化。
+多线程使用的场景描述。
 
 lu_log.c 文件第 357 行：
 确保 lu_init_event 函数中传递的参数 log_event 和 data 都是有效指针。

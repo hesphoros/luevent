@@ -126,7 +126,7 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_log_logv_(int severity, const char* errstr,
 #define LU_EVENT_LOG_DEBUGX(fmt, ...) lu_event_debugx_(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
 //New
-void lu_event_errorv_(const char* file, int line, const char* fmt, ...)LU_EV_CHECK_FMT(3,0) LU_EV_NORETURN;
+LU_EVENT_EXPORT_SYMBOL void lu_event_errorv_(const char* file, int line, const char* fmt, ...)LU_EV_CHECK_FMT(3,0) LU_EV_NORETURN;
 #define LU_EVENT_LOG_ERRORV(fmt,... ) lu_event_errorv_( __FILE__, __LINE__, fmt, ##__VA_ARGS__) 
 
 

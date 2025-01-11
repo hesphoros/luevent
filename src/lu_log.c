@@ -450,4 +450,3 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
 
     
 }
-

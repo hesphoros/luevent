@@ -1,8 +1,0 @@
-2025-01-11 09:01:24 WARN  /root/luevent/src/main.c:162: Test warning message
-2025-01-11 09:01:24 ERROR /root/luevent/src/main.c:164: Test error message
-2025-01-11 09:03:01 WARN  /root/luevent/src/main.c:162: Test warning message
-2025-01-11 09:03:01 ERROR /root/luevent/src/main.c:164: Test error message
-2025-01-11 09:03:11 WARN  /root/luevent/src/main.c:162: Test warning message
-2025-01-11 09:03:11 ERROR /root/luevent/src/main.c:164: Test error message
-2025-01-11 09:04:43 WARN  /root/luevent/src/main.c:162: Test warning message
-2025-01-11 09:04:43 ERROR /root/luevent/src/main.c:164: Test error message

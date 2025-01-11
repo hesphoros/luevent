@@ -1,3 +1,0 @@
-/root/luevent/CMakeFiles/luevent.dir
-/root/luevent/CMakeFiles/edit_cache.dir
-/root/luevent/CMakeFiles/rebuild_cache.dir

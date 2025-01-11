@@ -21,7 +21,7 @@ TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
 typedef struct lu_event_base_s lu_event_base_t;
 typedef struct lu_event_op_s lu_event_op_t;
 
-typedef struct lu_event_callback_s lu_event_callback_t;
+struct lu_event_callback_s ;
 typedef struct lu_event_s lu_event_t;
 
 typedef enum lu_event_base_config_flag_u {

@@ -1,0 +1,44 @@
+[
+{
+  "directory": "/root/luevent",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -std=gnu17 -Wall -Wextra -Wpedantic -g -O0 -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -fanalyzer -o CMakeFiles/luevent.dir/src/lu_event.c.o -c /root/luevent/src/lu_event.c",
+  "file": "/root/luevent/src/lu_event.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_event.c.o"
+},
+{
+  "directory": "/root/luevent",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -std=gnu17 -Wall -Wextra -Wpedantic -g -O0 -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -fanalyzer -o CMakeFiles/luevent.dir/src/lu_mm-internal.c.o -c /root/luevent/src/lu_mm-internal.c",
+  "file": "/root/luevent/src/lu_mm-internal.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_mm-internal.c.o"
+},
+{
+  "directory": "/root/luevent",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -std=gnu17 -Wall -Wextra -Wpedantic -g -O0 -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -fanalyzer -o CMakeFiles/luevent.dir/src/main.c.o -c /root/luevent/src/main.c",
+  "file": "/root/luevent/src/main.c",
+  "output": "CMakeFiles/luevent.dir/src/main.c.o"
+},
+{
+  "directory": "/root/luevent",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -std=gnu17 -Wall -Wextra -Wpedantic -g -O0 -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -fanalyzer -o CMakeFiles/luevent.dir/src/lu_error.c.o -c /root/luevent/src/lu_error.c",
+  "file": "/root/luevent/src/lu_error.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_error.c.o"
+},
+{
+  "directory": "/root/luevent",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -std=gnu17 -Wall -Wextra -Wpedantic -g -O0 -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -fanalyzer -o CMakeFiles/luevent.dir/src/lu_log.c.o -c /root/luevent/src/lu_log.c",
+  "file": "/root/luevent/src/lu_log.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_log.c.o"
+},
+{
+  "directory": "/root/luevent",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -std=gnu17 -Wall -Wextra -Wpedantic -g -O0 -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -fanalyzer -o CMakeFiles/luevent.dir/src/lu_util.c.o -c /root/luevent/src/lu_util.c",
+  "file": "/root/luevent/src/lu_util.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_util.c.o"
+},
+{
+  "directory": "/root/luevent",
+  "command": "/usr/bin/cc  -I/root/luevent/include -I/root/luevent/compat -g -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer -std=gnu17 -Wall -Wextra -Wpedantic -g -O0 -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -fanalyzer -o CMakeFiles/luevent.dir/src/lu_hash_table.c.o -c /root/luevent/src/lu_hash_table.c",
+  "file": "/root/luevent/src/lu_hash_table.c",
+  "output": "CMakeFiles/luevent.dir/src/lu_hash_table.c.o"
+}
+]

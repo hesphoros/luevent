@@ -354,31 +354,27 @@ int lu_log_add_fp(FILE* fp, int level)
 static void lu_init_event(lu_log_event_t* log_event, void* data) {
     if (!log_event) return;
 
-    // 为每个 log_event 分配独立的 time_info
-    struct tm* time_info = (struct tm*)mm_malloc(sizeof(struct tm));
-    if (!time_info) {
-        fprintf(stderr, "Error: Failed to allocate memory for time_info.\n");
-        return;
-    }
+    // 在栈上分配 time_info
+    static struct tm time_info;  // 不再使用 malloc，而是在栈上分配
 
     time_t t = time(NULL);
-    if (localtime_r(&t, time_info) == NULL) {
+    if (localtime_r(&t, &time_info) == NULL) {
         fprintf(stderr, "Error: localtime_r failed, check TZ environment variable.\n");
-        free(time_info);  // 避免内存泄漏
         return;
     }
 
+    // 将栈上的 time_info 地址赋给 log_event->time_info
+    log_event->time_info = &time_info;  // 这里的指针指向栈上的结构体
 
-    // 将 time_info 赋值给 log_event，确保每个事件有独立的时间结构
-    log_event->time_info = time_info;
     if (!data) {
         fprintf(stderr, "Warning: data pointer is NULL.\n");
     }
 
-    
     log_event->data = data;
-    mm_free(time_info);
+
+    // 此时不再需要手动释放 memory，避免内存泄漏
 }
+
 
  
 

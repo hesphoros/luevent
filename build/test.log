@@ -1,9 +1,3 @@
-2025-01-11 14:23:847249409 WARN  /root/luevent/src/main.c:157: warning message
-2025-01-11 14:23:671088641 DEBUG /root/luevent/src/main.c:158: debug message
-2025-01-11 14:23:570425345 ERROR /root/luevent/src/main.c:159: error message 
-2025-01-11 14:30:1728053249 WARN  /root/luevent/src/main.c:157: warning message
-2025-01-11 14:30:1837105153 DEBUG /root/luevent/src/main.c:158: debug message
-2025-01-11 14:30:771751937 ERROR /root/luevent/src/main.c:159: error message 
-2025-01-11 14:32:1996488705 WARN  /root/luevent/src/main.c:157: warning message
-2025-01-11 14:32:1065353217 DEBUG /root/luevent/src/main.c:158: debug message
-2025-01-11 14:32:67108865 ERROR /root/luevent/src/main.c:159: error message 
+2025-01-11 22:40:47 WARN  /root/luevent/src/main.c:157: warning message
+2025-01-11 22:40:47 DEBUG /root/luevent/src/main.c:158: debug message
+2025-01-11 22:40:47 ERROR /root/luevent/src/main.c:159: error message 

@@ -110,7 +110,7 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_warnx(const char *file, int line,const char
 LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);
 LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *file, int line,const char *fmt, ...) LU_EV_CHECK_FMT(3,4);
 LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap) LU_EV_CHECK_FMT(3,0);
-
+LU_EVENT_EXPORT_SYMBOL void lu_event_errorv(const char* file, int line, const char* fmt, ...)LU_EV_CHECK_FMT(3,4) ;
 
 /**New log func implementation*/
 LU_EVENT_EXPORT_SYMBOL void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap) LU_EV_CHECK_FMT(5,0);
@@ -125,6 +125,7 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_log_logv_(int severity, const char* errstr,
 #define LU_EVENT_LOG_MSGX(fmt, ...) lu_event_msgx(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 #define LU_EVENT_LOG_DEBUGX(fmt, ...) lu_event_debugx_(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
+#define LU_EVENT_LOG_ERRORV(fmt,...) lu_event_errorv(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
 
 /**

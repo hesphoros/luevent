@@ -56,7 +56,7 @@ int lu_evutil_vsnprintf(char *str, size_t size, const char *format, va_list ap){
         str[size - 1] = '\0';
     }
 
-    str[size-1] = '\0';
+   
     return ret;
 }
 

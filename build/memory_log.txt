@@ -1,0 +1,7 @@
+[2025-01-11 13:53:04] __MALLOC__     0x17679f0      allocated           (size: 24 bytes)
+[2025-01-11 13:53:04] __MALLOC__     0x1768040      allocated           (size: 24 bytes)
+[2025-01-11 13:53:04] __MALLOC__     0x1768080      allocated           (size: 24 bytes)
+[2025-01-11 13:53:04] __MALLOC__     0x17680c0      allocated           (size: 24 bytes)
+[2025-01-11 13:53:04] __MALLOC__     0x1768100      allocated           (size: 24 bytes)
+[2025-01-11 13:53:04] __MALLOC__     0x1768140      allocated           (size: 24 bytes)
+[2025-01-11 13:53:04] __ALIGNED_M__  (nil)          aligned_malloc allocated (size: 100 bytes)

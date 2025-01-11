@@ -141,19 +141,22 @@ void test_mm_memory(){
 
 
 void test_logging(){
-    FILE *fp = fopen("./log/luevent_log.log","a");
+    FILE *fp = fopen("./test.log","a");
     lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
-    
-    //LU_EVENT_LOG_ERROR(1000,"error message");
-    LU_EVENT_LOG_ERRORX(1000,"error message error");
+    lu_log_set_level(LU_EVENT_LOG_LEVEL_DEBUG);
+    LU_EVENT_LOG_WARN("warning message");
+    LU_EVENT_LOG_DEBUGX("debug message");
+    LU_EVENT_LOG_ERRORV("error message ");
+    //LU_EVENT_LOG_ERRORX(1000,"error message error");
    
-      
+    
     fclose(fp);
 }
 
 int main(){
     //test_hash();
-    //test_error_to_string();
+   
     test_logging();
+    test_error_to_string();
     return 0;
 }

@@ -56,7 +56,7 @@ static  struct {
 		
 	int severity;
 	int quiet;
-	lu_log_callback_t callbacks[MAX_CALLBACKS];
+	lu_log_callback_t callbacks;
 }lu_log_config_t;
 
 //添加lu_log_config_t 的锁的逻辑 使用pthread_mutex_t
@@ -76,7 +76,7 @@ static const char* lu_log_level_strings[] = {
 static const char* lu_level_colors[] = {
 	
 	"\x1b[36m",  // DEBUG
-	"\x1b[32m",  // INFO
+	"\x1b[32m",  // MSG
 	"\x1b[33m",  // WARN
 	"\x1b[31m",  // ERROR
 	"\x1b[35m",  // FATAL
@@ -157,6 +157,15 @@ void lu_event_error(int errnum, const char* file, int line, const char *fmt,...)
     va_start(ap, fmt);
     lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), fmt, ap);
     //lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), file, line, fmt, ap);
+    va_end(ap);
+}
+
+void lu_event_errorv(const char* file, int line, const char* fmt, ...){
+    va_list ap;
+    va_start(ap, fmt);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errno), fmt, ap);
+
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, NULL, file, line, fmt, ap);
     va_end(ap);
 }
 
@@ -307,10 +316,10 @@ static void lu_unlock(void) {
 
 
 
-// void lu_log_set_level(lu_log_level_t level)
-// {
-// 	lu_log_config_t.level = level;
-// }
+void lu_log_set_level(int level)
+{
+	lu_log_config_t.severity = level;
+}
 
 
 void lu_log_set_quiet(int enable)
@@ -320,14 +329,10 @@ void lu_log_set_quiet(int enable)
 
 int lu_log_add_handler(lu_log_handler_t handler, void* data, int level)
 {
-	for (size_t i = 0; i < MAX_CALLBACKS; i++)
-	{
-		if (!lu_log_config_t.callbacks[i].handler) {
-			lu_log_config_t.callbacks[i] = (lu_log_callback_t){ handler,data,level };
-			return 0;
-		}
-	}
-	return -1;
+	
+    lu_log_config_t.callbacks = (lu_log_callback_t){ handler,data,level };
+
+	return 0;
 }
 
 int lu_log_add_fp(FILE* fp, int level)
@@ -347,22 +352,17 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 
 
 //int severity, const char *errstr, const char *fmt, va_list ap
-
-void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap){
-    
+void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap) {
     // Declare the buffer for formatted log message
     char buff[1024];
     size_t len = 0; // Initialize len to zero
 
     // If the severity is DEBUG and the debug logging mask is not set, skip logging
-    
-
     if (severity == LU_EVENT_LOG_LEVEL_DEBUG && !(lu_event_debug_get_logging_mask_())) {
         printf("DEBUG logging is disabled is %d\n", lu_event_debug_get_logging_mask_());
         return;
     }
 
-    
     // If fmt is not NULL, format the log message using vsnprintf
     if (fmt != NULL) {
         len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap);
@@ -373,9 +373,13 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
     // If there is an error string, append it to the log message
     if (errstr) {
         size_t errstr_len = strlen(errstr);
+        // Ensure there is enough space for errstr and ": " separator
         if (len + errstr_len + 2 < sizeof(buff)) {  // +2 for ": " separator
             lu_evutil_snprintf(buff + len, sizeof(buff) - len, ": %s", errstr);
             len += errstr_len + 2;  // Update len to include errstr length
+        } else {
+            // If not enough space, append only part of the errstr or skip appending
+            buff[sizeof(buff) - 1] = '\0'; // Ensure buffer ends with null terminator
         }
     }
 
@@ -396,19 +400,16 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
         lu_init_event(&log_event, stderr);
         lu_stdout_handler(&log_event);
     }
-
-    // Call the registered callback handlers for logging
-    for (size_t i = 0; i < MAX_CALLBACKS && lu_log_config_t.callbacks[i].handler; i++) {
-        lu_log_callback_t* cb = &lu_log_config_t.callbacks[i];
-        if (severity >= cb->severity) {
-            lu_init_event(&log_event, cb->data);
-            cb->handler(&log_event);  // Call the callback function to handle the log
-        }
+    lu_log_callback_t * cb = &lu_log_config_t.callbacks;
+    if(cb->handler && severity >= cb->severity) {
+        // Initialize event and output to registered callback
+        lu_init_event(&log_event, cb->data);
+        cb->handler(&log_event);  // Call the callback function to handle the log
     }
+
+
+
 
     // Unlock the logging mechanism
     lu_unlock();
-
-    
 }
-

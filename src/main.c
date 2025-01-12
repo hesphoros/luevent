@@ -13,7 +13,7 @@
 #include <unistd.h>
 
 
-//#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
 
 
 // 定义包含姓名、ID号、性别等信息的结构体
@@ -47,8 +47,8 @@ void destroy_person_db(PersonDatabase* db) {
 
 void test_error_to_string(){
     lu_enable_default_memory_logging(1); 
-    // printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
-    // printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
+    printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
+    printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_BROKEN_PIPE));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY));
@@ -64,7 +64,7 @@ void test_error_to_string(){
 
 
 
-void test_hash(){
+void test_hash(void){
      // 初始化哈希表数据库
     PersonDatabase db;
     db.hash_table = LU_HASH_TABLE_INIT(8);
@@ -128,25 +128,22 @@ void test_hash(){
 
 }
 
-//test_hash();
-//test_error_to_string();
 
-void test_mm_memory(){
-    
-    void *p = mm_malloc(100);
-    printf("%p size: %d\n",p, sizeof(*p));
+void test_mm_memory(void) {
+    int *p = mm_malloc(100);  // 分配 100 字节
+    if (p != NULL) {
+        printf("%p size: %zu\n", p, 100);  // 打印实际分配的大小
+    }
    
-    p = mm_realloc(p,200);
-    printf("%p size: %d\n",p,sizeof(p));
+    // 使用 realloc 修改内存大小
+    p = mm_realloc(p, 200);  // 重新分配 200 字节
+    if (p != NULL) {
+        printf("%p size: %zu\n", p, 200);  // 打印实际分配的大小
+    }
 
-    p = mm_calloc(1,200);
-    printf("%p %s size: %d\n",p,*(int*)p,sizeof(p));
-
-    p = mm_strdup("hello");
-    printf("%p %s\n",p,(char*)p);
-    
+ 
+    // 释放内存
     mm_free(p);
-
 }
 
 
@@ -155,17 +152,19 @@ void test_logging(){
     lu_log_add_fp(fp, LU_EVENT_LOG_LEVEL_DEBUG);
     lu_log_set_level(LU_EVENT_LOG_LEVEL_DEBUG);
     LU_EVENT_LOG_WARN("warning message");
+    LU_EVENT_LOG_MSGX("message");
     LU_EVENT_LOG_DEBUGX("debug message");
     LU_EVENT_LOG_ERRORV("error message ");
+    
     //LU_EVENT_LOG_ERRORX(1000,"error message error");
    
     
     fclose(fp);
 }
 
-int main(){
+int main(void){
     //test_hash();
-   
+    test_mm_memory();
     test_logging();
     test_error_to_string();
     return 0;

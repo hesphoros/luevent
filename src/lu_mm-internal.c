@@ -5,7 +5,7 @@
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
-
+#include <stdint.h>
 
 
 
@@ -18,10 +18,12 @@ void* lu_log_functions_global_[] = {
 };
 
 void lu_enable_default_memory_logging(int enable) {
-    void (*log_fn)(const char*, void*, size_t) = enable ? default_memory_log : NULL;
-    
-    for (int i = 0; i < sizeof(lu_log_functions_global_) / sizeof(lu_log_functions_global_[0]); i++) {
-        *(void**)lu_log_functions_global_[i] = log_fn;
+    //void (*log_fn)(const char*, void*, size_t) = enable ? default_memory_log : NULL;
+    uintptr_t log_fn_ptr = (uintptr_t)(enable ? default_memory_log : NULL);
+    for (size_t i = 0; i < sizeof(lu_log_functions_global_) / sizeof(lu_log_functions_global_[0]); i++) {
+      // *(void**)lu_log_functions_global_[i] = (void*)log_fn;
+        *(uintptr_t*)lu_log_functions_global_[i] = log_fn_ptr;
+
     }
 }
 
@@ -52,22 +54,35 @@ void* lu_event_mm_malloc_(size_t size){
 
     return ptr;
 }
+
 void* lu_event_mm_calloc_(size_t nitems, size_t size) {
     if (nitems == 0 || size == 0)
         return NULL;
 
     size_t sz = nitems * size;
     if (nitems > LU_SIZE_MAX / size) 
+    {
         goto error;
+    }
+       
 
     void *p = NULL;
     if (lu_mm_calloc_fn_) {
         p = lu_event_mm_malloc_(sz);
+        if (p == NULL) {
+            return NULL;  
+        }
         if (lu_mm_calloc_log_fn_) {
             lu_mm_calloc_log_fn_(MM_CALLOC_STR, p, sz);
         }
-        if (p)
-            return memset(p, 0, sz);
+        if (p){
+            if (memset(p, 0, sz) == NULL)
+            {
+                free(p);  
+                return NULL;
+            }
+        }
+           
     } else {
         p = calloc(nitems, size);
         if (p == NULL) 
@@ -75,9 +90,9 @@ void* lu_event_mm_calloc_(size_t nitems, size_t size) {
         if(lu_mm_calloc_log_fn_) {
             lu_mm_calloc_log_fn_(CALLOC_STR, p, sz);
         }
-    
-        return p;
+           
     }
+    return p;
 error:
     errno = LU_ERROR_OUT_OF_MEMORY;
     return NULL;
@@ -124,9 +139,9 @@ void* lu_event_mm_realloc_(void* ptr,size_t size){
         p = realloc(ptr, size);
         if (p && lu_mm_realloc_log_fn_)
             lu_mm_realloc_log_fn_(REALLOC_STR, p, size);
-        return p;              
+                     
     }  
-        
+        return p;
 }
 
 void lu_event_mm_free_(void* ptr){

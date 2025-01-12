@@ -20,7 +20,7 @@
 
 
 static int			 lu_convert_bucket_to_rbtree(lu_hash_bucket_t* bucket);
-static lu_rb_tree_t* lu_rb_tree_init();
+static lu_rb_tree_t* lu_rb_tree_init(void);
 static void			 lu_rb_tree_insert(lu_rb_tree_t* tree, int key, void* value);
 static void			 lu_hash_rb_tree_delete(lu_hash_bucket_t* bucket, int key);
 
@@ -422,7 +422,7 @@ static int lu_convert_bucket_to_rbtree(lu_hash_bucket_t* bucket)
  *
  * @return Pointer to the initialized red-black tree, or exits the program if memory allocation fails.
  */
-static lu_rb_tree_t* lu_rb_tree_init()
+static lu_rb_tree_t* lu_rb_tree_init(void)
 {
 	lu_rb_tree_t* rb_tree = (lu_rb_tree_t*)LU_MM_MALLOC(sizeof(lu_rb_tree_t));
 	if (NULL == rb_tree) {

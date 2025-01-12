@@ -160,12 +160,25 @@ void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list a
 
 //void lu_event_error(int errnum, const char *fmt,...)
 void lu_event_error(int errnum, const char* file, int line, const char *fmt,...) {
+    LU_UNUSED(file);
+    LU_UNUSED(line);
     va_list ap;
     va_start(ap, fmt);
     lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), fmt, ap);
     //lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(errnum), file, line, fmt, ap);
     va_end(ap);
 }
+
+void lu_event_fatal(const char* file, int line, const char* fmt, ...){
+    //TODO: fix this
+    va_list ap;
+    va_start(ap, fmt);
+    //lu_event_logv_(LU_EVENT_LOG_LEVEL_FATAL, NULL, fmt, ap);
+    lu_event_log_logv_(LU_EVENT_LOG_LEVEL_FATAL, NULL, file, line, fmt, ap);
+    va_end(ap);
+
+}
+
 
 void lu_event_errorv(const char* file, int line, const char* fmt, ...){
     va_list ap;

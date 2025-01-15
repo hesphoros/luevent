@@ -22,7 +22,7 @@
 
 #define NGX_POOL_ALIGNMENT       16
 #define NGX_MIN_POOL_SIZE                                                     \
-    ngx_align((sizeof(lu_mm_pool_t) + 2 * sizeof(ngx_pool_large_t)),            \
+    lu_align((sizeof(lu_mm_pool_t) + 2 * sizeof(ngx_pool_large_t)),            \
               NGX_POOL_ALIGNMENT)
 
 

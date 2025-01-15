@@ -162,6 +162,7 @@ void test_logging(){
     fclose(fp);
 }
 
+
 int main(void){
     //test_hash();
     test_mm_memory();

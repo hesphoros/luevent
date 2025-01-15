@@ -1,8 +1,10 @@
 ## Development Log
 
+## Wednesday 8 Jan 2025
 
+change the coding environment to new computer.j
 
-## Friday 10 Jan 2025
+## Friday 10 Jan 2025sss
 - [X] Repair the sgementation fault in  LU_EVENT_LOG_ERROR function.
 ## Thursday 9 Jan 2025
 - [X] Initial update of lu_log module

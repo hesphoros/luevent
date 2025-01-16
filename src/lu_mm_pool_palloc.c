@@ -56,7 +56,7 @@ lu_mm_pool_t * ngx_create_pool(size_t size)
 void ngx_destroy_pool(lu_mm_pool_t *pool)
 {
     lu_mm_pool_t          *p, *n;
-    ngx_pool_large_t    *l;
+    lu_mm_pool_large_t    *l;
     //ngx_pool_cleanup_t  *c;
 
     /*for (c = pool->cleanup; c; c = c->next) {
@@ -104,9 +104,10 @@ void ngx_destroy_pool(lu_mm_pool_t *pool)
 }
 
 
-void ngx_reset_pool(ngx_pool_t *pool)
+void ngx_reset_pool(lu_mm_pool_t *pool)
 {
-    ngx_pool_t        *p;
+    lu_mm_pool_t      *p;
+    
     ngx_pool_large_t  *l;
 
     for (l = pool->large; l; l = l->next) {
@@ -116,7 +117,7 @@ void ngx_reset_pool(ngx_pool_t *pool)
     }
 
     for (p = pool; p; p = p->d.next) {
-        p->d.last = (u_char *) p + sizeof(ngx_pool_t);
+        p->d.last = (u_char *) p + sizeof(lu_mm_pool_t);
         p->d.failed = 0;
     }
 
@@ -126,7 +127,7 @@ void ngx_reset_pool(ngx_pool_t *pool)
 }
 
 
-void *ngx_palloc(ngx_pool_t *pool, size_t size)
+void *ngx_palloc(lu_mm_pool_t *pool, size_t size)
 {
 #if !(NGX_DEBUG_PALLOC)
     if (size <= pool->max) {
@@ -138,7 +139,7 @@ void *ngx_palloc(ngx_pool_t *pool, size_t size)
 }
 
 
-void *ngx_pnalloc(ngx_pool_t *pool, size_t size)
+void *ngx_pnalloc(lu_mm_pool_t *pool, size_t size)
 {
 #if !(NGX_DEBUG_PALLOC)
     if (size <= pool->max) {
@@ -150,10 +151,10 @@ void *ngx_pnalloc(ngx_pool_t *pool, size_t size)
 }
 
 
-static inline void *ngx_palloc_small(ngx_pool_t *pool, size_t size, ngx_uint_t align)
+static inline void *ngx_palloc_small(lu_mm_pool_t *pool, size_t size, ngx_uint_t align)
 {
     u_char      *m;
-    ngx_pool_t  *p;
+    lu_mm_pool_t  *p;
 
     p = pool->current;
 
@@ -178,11 +179,11 @@ static inline void *ngx_palloc_small(ngx_pool_t *pool, size_t size, ngx_uint_t a
 }
 
 
-static void *ngx_palloc_block(ngx_pool_t *pool, size_t size)
+static void *ngx_palloc_block(lu_mm_pool_t *pool, size_t size)
 {
     u_char      *m;
     size_t       psize;
-    ngx_pool_t  *p, *new;
+    lu_mm_pool_t  *p, *new;
 
     psize = (size_t) (pool->d.end - (u_char *) pool);
 
@@ -191,7 +192,7 @@ static void *ngx_palloc_block(ngx_pool_t *pool, size_t size)
         return NULL;
     }
 
-    new = (ngx_pool_t *) m;
+    new = (lu_mm_pool_t *) m;
 
     new->d.end = m + psize;
     new->d.next = NULL;
@@ -213,7 +214,7 @@ static void *ngx_palloc_block(ngx_pool_t *pool, size_t size)
 }
 
 
-static void *ngx_palloc_large(ngx_pool_t *pool, size_t size)
+static void *ngx_palloc_large(lu_mm_pool_t *pool, size_t size)
 {
     void              *p;
     ngx_uint_t         n;

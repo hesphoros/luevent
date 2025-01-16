@@ -29,6 +29,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     add_compile_options(-Wall -Wextra -Wpedantic -g -O0)
     add_compile_options(-Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations)
     add_compile_options(-fanalyzer)
+    
 endif()
 
 # 创建可执行文件

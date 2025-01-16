@@ -45,10 +45,10 @@ typedef struct lu_mm_pool_data_s{
 } lu_mm_pool_data_t;
  
 typedef struct lu_mm_pool_s {
-    ngx_pool_data_t       d;        // 内存池当前的数据区指针的结构体
+    lu_mm_pool_data_t       d;        // 内存池当前的数据区指针的结构体
     size_t                max;      // 当前数据块最大可分配的内存大小（Bytes）
     lu_mm_pool_t           *current;  // 当前正在使用的数据块的指针
-    ngx_pool_large_t     *large;    // pool 中指向大数据块的指针（大数据快是指 size > max 的数据块）
+    lu_mm_pool_large_t     *large;    // pool 中指向大数据块的指针（大数据快是指 size > max 的数据块）
 
 }lu_mm_pool_t;
 

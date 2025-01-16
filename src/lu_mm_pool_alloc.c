@@ -61,7 +61,7 @@ void * lu_mm_pool_memalign(size_t alignment, size_t size)
 
 #elif (NGX_HAVE_MEMALIGN)
 
-void * ngx_memalign(size_t alignment, size_t size)
+void * lu_mm_pool_memalign(size_t alignment, size_t size)
 {
     void  *p;
 

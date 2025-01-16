@@ -37,7 +37,7 @@ typedef struct lu_mm_pool_s      lu_mm_pool_t;
 #include "lu_mm_palloc.h"
 
 // typedef intptr_t        ngx_int_t;//long int  lu_intptr_t
-// typedef uintptr_t       ngx_uint_t;//unsigned long int lu_uintptr_t
+// lu_uintptr_t uintptr_t       ngx_uint_t;//unsigned long int lu_uintptr_t
 // typedef unsigned char u_char;
 
 

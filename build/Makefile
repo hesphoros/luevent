@@ -249,6 +249,54 @@ src/lu_mm-internal.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm-internal.c.s
 .PHONY : src/lu_mm-internal.c.s
 
+src/lu_mm_pool_alloc.o: src/lu_mm_pool_alloc.c.o
+.PHONY : src/lu_mm_pool_alloc.o
+
+# target to build an object file
+src/lu_mm_pool_alloc.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm_pool_alloc.c.o
+.PHONY : src/lu_mm_pool_alloc.c.o
+
+src/lu_mm_pool_alloc.i: src/lu_mm_pool_alloc.c.i
+.PHONY : src/lu_mm_pool_alloc.i
+
+# target to preprocess a source file
+src/lu_mm_pool_alloc.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm_pool_alloc.c.i
+.PHONY : src/lu_mm_pool_alloc.c.i
+
+src/lu_mm_pool_alloc.s: src/lu_mm_pool_alloc.c.s
+.PHONY : src/lu_mm_pool_alloc.s
+
+# target to generate assembly for a file
+src/lu_mm_pool_alloc.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm_pool_alloc.c.s
+.PHONY : src/lu_mm_pool_alloc.c.s
+
+src/lu_mm_pool_palloc.o: src/lu_mm_pool_palloc.c.o
+.PHONY : src/lu_mm_pool_palloc.o
+
+# target to build an object file
+src/lu_mm_pool_palloc.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm_pool_palloc.c.o
+.PHONY : src/lu_mm_pool_palloc.c.o
+
+src/lu_mm_pool_palloc.i: src/lu_mm_pool_palloc.c.i
+.PHONY : src/lu_mm_pool_palloc.i
+
+# target to preprocess a source file
+src/lu_mm_pool_palloc.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm_pool_palloc.c.i
+.PHONY : src/lu_mm_pool_palloc.c.i
+
+src/lu_mm_pool_palloc.s: src/lu_mm_pool_palloc.c.s
+.PHONY : src/lu_mm_pool_palloc.s
+
+# target to generate assembly for a file
+src/lu_mm_pool_palloc.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent.dir/build.make CMakeFiles/luevent.dir/src/lu_mm_pool_palloc.c.s
+.PHONY : src/lu_mm_pool_palloc.c.s
+
 src/lu_util.o: src/lu_util.c.o
 .PHONY : src/lu_util.o
 
@@ -321,6 +369,12 @@ help:
 	@echo "... src/lu_mm-internal.o"
 	@echo "... src/lu_mm-internal.i"
 	@echo "... src/lu_mm-internal.s"
+	@echo "... src/lu_mm_pool_alloc.o"
+	@echo "... src/lu_mm_pool_alloc.i"
+	@echo "... src/lu_mm_pool_alloc.s"
+	@echo "... src/lu_mm_pool_palloc.o"
+	@echo "... src/lu_mm_pool_palloc.i"
+	@echo "... src/lu_mm_pool_palloc.s"
 	@echo "... src/lu_util.o"
 	@echo "... src/lu_util.i"
 	@echo "... src/lu_util.s"

@@ -1,0 +1,129 @@
+     | ^
+In file included from /root/luevent/include/lu_mm_core.h:37,
+                 from /root/luevent/src/lu_mm_pool_palloc.c:8:
+/root/luevent/include/lu_mm_palloc.h:68:1: error: unknown type name ‘ngx_int_t’
+   68 | ngx_int_t ngx_pfree(lu_mm_pool_t *pool, void *p);
+      | ^~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c:11:38: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+   11 | static inline void *ngx_palloc_small(ngx_pool_t *pool, size_t size,
+      |                                      ^~~~~~~~~~
+      |                                      ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:12:5: error: unknown type name ‘ngx_uint_t’
+   12 |     ngx_uint_t align);
+      |     ^~~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c:13:31: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+   13 | static void *ngx_palloc_block(ngx_pool_t *pool, size_t size);
+      |                               ^~~~~~~~~~
+      |                               ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:14:31: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+   14 | static void *ngx_palloc_large(ngx_pool_t *pool, size_t size);
+      |                               ^~~~~~~~~~
+      |                               ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:19:1: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+   19 | ngx_pool_t * ngx_create_pool(size_t size)
+      | ^~~~~~~~~~
+      | ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:19:14: error: conflicting types for ‘ngx_create_pool’
+   19 | ngx_pool_t * ngx_create_pool(size_t size)
+      |              ^~~~~~~~~~~~~~~
+In file included from /root/luevent/include/lu_mm_core.h:37,
+                 from /root/luevent/src/lu_mm_pool_palloc.c:8:
+/root/luevent/include/lu_mm_palloc.h:60:15: note: previous declaration of ‘ngx_create_pool’ was here
+   60 | lu_mm_pool_t *ngx_create_pool(size_t size);
+      |               ^~~~~~~~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c: In function ‘ngx_create_pool’:
+/root/luevent/src/lu_mm_pool_palloc.c:21:5: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+   21 |     ngx_pool_t  *p;
+      |     ^~~~~~~~~~
+      |     ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:23:9: warning: implicit declaration of function ‘ngx_memalign’; did you mean ‘ngx_pmemalign’? [-Wimplicit-function-declaration]
+   23 |     p = ngx_memalign(NGX_POOL_ALIGNMENT, size);
+      |         ^~~~~~~~~~~~
+      |         ngx_pmemalign
+/root/luevent/src/lu_mm_pool_palloc.c:23:7: warning: assignment to ‘int *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+   23 |     p = ngx_memalign(NGX_POOL_ALIGNMENT, size);
+      |       ^
+/root/luevent/src/lu_mm_pool_palloc.c:31:6: error: request for member ‘d’ in something not a structure or union
+   31 |     p->d.last = (u_char *) p + sizeof(ngx_pool_t);//指向这块内存已使用区域的最后部分。
+      |      ^~
+/root/luevent/src/lu_mm_pool_palloc.c:31:39: error: ‘ngx_pool_t’ undeclared (first use in this function)
+   31 |     p->d.last = (u_char *) p + sizeof(ngx_pool_t);//指向这块内存已使用区域的最后部分。
+      |                                       ^~~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c:31:39: note: each undeclared identifier is reported only once for each function it appears in
+/root/luevent/src/lu_mm_pool_palloc.c:34:6: error: request for member ‘d’ in something not a structure or union
+   34 |     p->d.end = (u_char *) p + size;
+      |      ^~
+/root/luevent/src/lu_mm_pool_palloc.c:36:6: error: request for member ‘d’ in something not a structure or union
+   36 |     p->d.next = NULL;
+      |      ^~
+/root/luevent/src/lu_mm_pool_palloc.c:39:6: error: request for member ‘d’ in something not a structure or union
+   39 |     p->d.failed = 0;
+      |      ^~
+/root/luevent/src/lu_mm_pool_palloc.c:43:6: error: request for member ‘max’ in something not a structure or union
+   43 |     p->max = (size < NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;
+      |      ^~
+In file included from /root/luevent/include/lu_mm_core.h:37,
+                 from /root/luevent/src/lu_mm_pool_palloc.c:8:
+/root/luevent/include/lu_mm_palloc.h:19:35: error: ‘ngx_pagesize’ undeclared (first use in this function); did you mean ‘getpagesize’?
+   19 | #define NGX_MAX_ALLOC_FROM_POOL  (ngx_pagesize - 1)
+      |                                   ^~~~~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c:43:22: note: in expansion of macro ‘NGX_MAX_ALLOC_FROM_POOL’
+   43 |     p->max = (size < NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c:46:6: error: request for member ‘current’ in something not a structure or union
+   46 |     p->current = p;
+      |      ^~
+/root/luevent/src/lu_mm_pool_palloc.c:48:6: error: request for member ‘large’ in something not a structure or union
+   48 |     p->large = NULL;
+      |      ^~
+/root/luevent/src/lu_mm_pool_palloc.c: At top level:
+/root/luevent/src/lu_mm_pool_palloc.c:56:23: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+   56 | void ngx_destroy_pool(ngx_pool_t *pool)
+      |                       ^~~~~~~~~~
+      |                       ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:107:21: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  107 | void ngx_reset_pool(ngx_pool_t *pool)
+      |                     ^~~~~~~~~~
+      |                     ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:129:18: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  129 | void *ngx_palloc(ngx_pool_t *pool, size_t size)
+      |                  ^~~~~~~~~~
+      |                  ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:141:19: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  141 | void *ngx_pnalloc(ngx_pool_t *pool, size_t size)
+      |                   ^~~~~~~~~~
+      |                   ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:153:38: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  153 | static inline void *ngx_palloc_small(ngx_pool_t *pool, size_t size, ngx_uint_t align)
+      |                                      ^~~~~~~~~~
+      |                                      ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:153:69: error: unknown type name ‘ngx_uint_t’
+  153 | static inline void *ngx_palloc_small(ngx_pool_t *pool, size_t size, ngx_uint_t align)
+      |                                                                     ^~~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c:181:31: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  181 | static void *ngx_palloc_block(ngx_pool_t *pool, size_t size)
+      |                               ^~~~~~~~~~
+      |                               ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:216:31: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  216 | static void *ngx_palloc_large(ngx_pool_t *pool, size_t size)
+      |                               ^~~~~~~~~~
+      |                               ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:254:21: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  254 | void *ngx_pmemalign(ngx_pool_t *pool, size_t size, size_t alignment)
+      |                     ^~~~~~~~~~
+      |                     ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:278:1: error: unknown type name ‘ngx_int_t’
+  278 | ngx_int_t ngx_pfree(ngx_pool_t *pool, void *p)
+      | ^~~~~~~~~
+/root/luevent/src/lu_mm_pool_palloc.c:278:21: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  278 | ngx_int_t ngx_pfree(ngx_pool_t *pool, void *p)
+      |                     ^~~~~~~~~~
+      |                     ngx_pool_data_t
+/root/luevent/src/lu_mm_pool_palloc.c:296:20: error: unknown type name ‘ngx_pool_t’; did you mean ‘ngx_pool_data_t’?
+  296 | void * ngx_pcalloc(ngx_pool_t *pool, size_t size)
+      |                    ^~~~~~~~~~
+      |                    ngx_pool_data_t
+make[2]: *** [CMakeFiles/luevent.dir/build.make:174: CMakeFiles/luevent.dir/src/lu_mm_pool_palloc.c.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:83: CMakeFiles/luevent.dir/all] Error 2
+make: *** [Makefile:91: all] Error 2
+[root@Lucifer build]# 

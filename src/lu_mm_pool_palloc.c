@@ -5,30 +5,30 @@
  */
 
 
-#include "mem_core.h"
+#include "lu_mm_core.h"
  
 
-static inline void *ngx_palloc_small(ngx_pool_t *pool, size_t size,
-    ngx_uint_t align);
-static void *ngx_palloc_block(ngx_pool_t *pool, size_t size);
-static void *ngx_palloc_large(ngx_pool_t *pool, size_t size);
+static inline void *ngx_palloc_small(lu_mm_pool_t *pool, size_t size,
+    lu_uintptr_t align);
+static void *ngx_palloc_block(lu_mm_pool_t *pool, size_t size);
+static void *ngx_palloc_large(lu_mm_pool_t *pool, size_t size);
 
  
 
 
-ngx_pool_t * ngx_create_pool(size_t size)
+lu_mm_pool_t * ngx_create_pool(size_t size)
 {
-    ngx_pool_t  *p;
+    lu_mm_pool_t  *p;
 
     p = ngx_memalign(NGX_POOL_ALIGNMENT, size);
     if (p == NULL) {
         return NULL;
     }
-    //它将 p 指针向后偏移 sizeof(ngx_pool_t) 字节，这样 p->d.last 就指向了内存块中除去 ngx_pool_t 结构体大小后的位置，即可用于分配的起始位置。
+    //它将 p 指针向后偏移 sizeof(lu_mm_pool_t) 字节，这样 p->d.last 就指向了内存块中除去 ngx_pool_t 结构体大小后的位置，即可用于分配的起始位置。
     //将 p 指向的内存块的 last 成员设置为指向当前内存块后面的一段内存的起始地址。
-    //这段内存的大小为 sizeof(ngx_pool_t)，即 ngx_pool_t 结构体的大小。
+    //这段内存的大小为 sizeof(lu_mm_pool_t)，即 ngx_pool_t 结构体的大小。
     //这样做是为了在这块内存中分配其他数据时，可以从这段内存的末尾开始分配，确保内存块的内存布局是连续的。
-    p->d.last = (u_char *) p + sizeof(ngx_pool_t);//指向这块内存已使用区域的最后部分。
+    p->d.last = (u_char *) p + sizeof(lu_mm_pool_t);//指向这块内存已使用区域的最后部分。
     
     //指向未使用区域的尾部
     p->d.end = (u_char *) p + size;
@@ -39,7 +39,7 @@ ngx_pool_t * ngx_create_pool(size_t size)
     p->d.failed = 0;
 
     //这行代码确定了内存池中可用于分配的最大内存大小。为了确保内存分配不会超出预先设定的阈值， 
-    size = size - sizeof(ngx_pool_t);
+    size = size - sizeof(lu_mm_pool_t);
     p->max = (size < NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;
 
     // 当前正在使用的数据块的指针
@@ -53,9 +53,9 @@ ngx_pool_t * ngx_create_pool(size_t size)
 }
 
 
-void ngx_destroy_pool(ngx_pool_t *pool)
+void ngx_destroy_pool(lu_mm_pool_t *pool)
 {
-    ngx_pool_t          *p, *n;
+    lu_mm_pool_t          *p, *n;
     ngx_pool_large_t    *l;
     //ngx_pool_cleanup_t  *c;
 

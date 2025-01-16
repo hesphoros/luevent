@@ -32,21 +32,23 @@ typedef struct lu_mm_pool_s      lu_mm_pool_t;
 #include <errno.h>
 #include <sys/mman.h>
 
+
+#include "lu_mm_alloc.h"
+#include "lu_mm_palloc.h"
+
 // typedef intptr_t        ngx_int_t;//long int  lu_intptr_t
 // typedef uintptr_t       ngx_uint_t;//unsigned long int lu_uintptr_t
 // typedef unsigned char u_char;
 
 
-#define NGX_ALIGNMENT   sizeof(unsigned long)    /* platform word 平台字节长*/
-#define ngx_align(d, a)     (((d) + (a - 1)) & ~(a - 1)) /* b对齐为a的倍数*/
-#define ngx_align_ptr(p, a)                                                   \
+#define LU_ALIGNMENT   sizeof(unsigned long)    /* platform word 平台字节长*/
+#define lu_align(d, a)     (((d) + (a - 1)) & ~(a - 1)) /* b对齐为a的倍数*/
+#define lu_align_ptr(p, a)                                                   \
     (lu_uchar_t*) (((lu_uintptr_t) (p) + ((lu_uintptr_t) a - 1)) & ~((lu_uintptr_t) a - 1))/*用于将指针 p 对齐到指定的对齐字节数 a*/
 
-#define ngx_memzero(buf, n)       (void) memset(buf, 0, n)
+#define lu_memzero(buf, n)       (void) memset(buf, 0, n)
 
 
-#include "lu_mm_alloc.h"
-#include "lu_mm_palloc.h"
 
 
 #endif /* _LU_MM_POLL_CORE_H_INCLUDED_ */

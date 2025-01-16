@@ -1,6 +1,10 @@
 ## Development Log
 
-## Wednesday 8 Jan 2025
+## Thursday 16 Jan 2025
+
+- [X] update lu_mm_pool model
+
+## Wednesday 15 Jan 2025
 
 change the coding environment to new computer.j
 

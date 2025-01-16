@@ -20,6 +20,8 @@ set(SOURCES
     src/lu_log.c
     src/lu_util.c
     src/lu_hash_table.c
+    src/lu_mm_pool_palloc.c
+    src/lu_mm_pool_alloc.c
 )
 
 # 添加编译选项（可选）

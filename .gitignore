@@ -1,5 +1,3 @@
-root
-root.pub
 other/*
 *.out
 ./clangd

@@ -11,18 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 设置源文件列表
-set(SOURCES
-    src/lu_event.c
-    src/lu_mm-internal.c
-    src/main.c    
-    src/lu_error.c
-    src/lu_log.c
-    src/lu_util.c
-    src/lu_hash_table.c
-    src/lu_mm_pool_palloc.c
-    src/lu_mm_pool_alloc.c
-)
+
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.c")
+
+
 
 # 添加编译选项（可选）
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -38,6 +30,7 @@ add_executable(luevent ${SOURCES})
 # 链接 pthread 库（针对 UNIX）
 if(UNIX)
     target_link_libraries(luevent pthread)
+    target_link_libraries(luevent gtest)
 endif()
 
 # 添加头文件搜索路径
@@ -63,5 +56,3 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2 -DNDEBUG")
 if(WIN32)
     target_link_libraries(luevent ws2_32)
 endif()
-
-# 如果需要进行跨平台支持，可以在这里添加更多平台相关的设置

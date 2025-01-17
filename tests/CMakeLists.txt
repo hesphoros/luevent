@@ -17,6 +17,14 @@ else()
     message(WARNING "Google Test not found. You may need to install it or set GTest_DIR.")
 endif()
 
+
+# 添加头文件路径
+target_include_directories(LueventGTest PUBLIC
+    ${PROJECT_SOURCE_DIR}/include  
+)
+
+
+
 # 定义源文件
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/test_main.c  # 你的测试文件
@@ -25,10 +33,6 @@ set(SOURCES
 # 创建目标 LueventGTest 可执行文件
 add_executable(LueventGTest ${SOURCES})
 
-# 添加头文件路径
-target_include_directories(LueventGTest PUBLIC
-    ${PROJECT_SOURCE_DIR}/include  # 你的头文件目录
-)
 
 # 链接 GTest 库
 if(GTest_FOUND)

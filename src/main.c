@@ -132,13 +132,13 @@ void test_hash(void){
 void test_mm_memory(void) {
     int *p = mm_malloc(100);  // 分配 100 字节
     if (p != NULL) {
-        printf("%p size: %zu\n", p, 100);  // 打印实际分配的大小
+        printf("%ls size: %u\n", (int*)p, (int)100);  // 打印实际分配的大小
     }
    
     // 使用 realloc 修改内存大小
     p = mm_realloc(p, 200);  // 重新分配 200 字节
     if (p != NULL) {
-        printf("%p size: %zu\n", p, 200);  // 打印实际分配的大小
+        printf("%ls size: %lu\n",(int*) p, (long unsigned int)200);  // 打印实际分配的大小
     }
 
  
@@ -155,7 +155,7 @@ void test_logging(){
     LU_EVENT_LOG_MSGX("message");
     LU_EVENT_LOG_DEBUGX("debug message");
     LU_EVENT_LOG_ERRORV("error message ");
-    
+    LU_EVENT_LOG_FATAL("Repaied Need to Test\n");
     //LU_EVENT_LOG_ERRORX(1000,"error message error");
    
     

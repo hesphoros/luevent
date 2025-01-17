@@ -1,28 +1,18 @@
 
-/*
- * Copyright (C) Igor Sysoev
- * Copyright (C) Nginx, Inc.
- */
-
-
-#include "mem_core.h"
+#include "lu_mm_core.h"
 
 static int debug = 0;
 
-typedef uintptr_t lu_uintptr_t;//ngx_uint_t
-typedef intptr_t  lu_intptr_t ;//ngx_int_t
 
 
 
-
-
-ngx_uint_t  ngx_pagesize;
-ngx_uint_t  ngx_pagesize_shift;
-ngx_uint_t  ngx_cacheline_size;
+lu_uintptr_t  lu_mm_pagesize;
+lu_uintptr_t  lu_mm_pagesize_shift;
+lu_uintptr_t  lu_mm_cacheline_size;
 
 
 
-void * ngx_alloc(size_t size)
+void * lu_mm_alloc(size_t size)
 {
     void  *p;
 
@@ -37,23 +27,23 @@ void * ngx_alloc(size_t size)
 }
 
 
-void * ngx_calloc(size_t size)
+void * lu_mm_calloc(size_t size)
 {
     void  *p;
 
-    p = ngx_alloc(size);
+    p = lu_mm_alloc(size);
 
     if (p) {
-        ngx_memzero(p, size);
+        lu_mm_memzero(p, size);
     }
 
     return p;
 }
 
 // /*
-#if (NGX_HAVE_POSIX_MEMALIGN)
+#if (LU_MM_HAVE_POSIX_MEMALIGN)
 
-void * ngx_memalign(size_t alignment, size_t size)
+void * lu_mm_memalign(size_t alignment, size_t size)
 {
     void  *p;
     int    err;
@@ -70,9 +60,9 @@ void * ngx_memalign(size_t alignment, size_t size)
     return p;
 }
 
-#elif (NGX_HAVE_MEMALIGN)
+#elif (LU_MM_HAVE_MEMALIGN)
 
-void * ngx_memalign(size_t alignment, size_t size)
+void * lu_mm_memalign(size_t alignment, size_t size)
 {
     void  *p;
 

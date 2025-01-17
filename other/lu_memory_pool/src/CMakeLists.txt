@@ -1,0 +1,16 @@
+project(mem_pool)
+
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 20)
+
+
+INCLUDE_DIRECTORIES(
+    ${CMAKE_CURRENT_SOURCE_DIR})
+
+aux_source_directory(${PROJECT_SOURCE_DIR} CMAKE_CURRENT_SOURCE_DIR)
+ADD_EXECUTABLE(mem_pool ${CMAKE_CURRENT_SOURCE_DIR})
+
+ 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -pipe -std=c++0x -lrt -Wno-reorder -Wdeprecated-declarations")

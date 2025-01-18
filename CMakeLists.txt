@@ -27,13 +27,12 @@ endif()
 # 创建可执行文件
 # add_executable(luevent ${SOURCES})
 
-
 # 创建静态库
 add_library(luevent_static STATIC ${SOURCES})
 # 创建动态库
 add_library(luevent_shared SHARED ${SOURCES})
 
-# 链接 pthread 库（针对 UNIX）
+# 链接 pthread 库(针对 UNIX)
 if(UNIX)
     #target_link_libraries(luevent pthread)
     target_link_libraries(luevent_static pthread)

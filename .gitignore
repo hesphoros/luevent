@@ -2,6 +2,10 @@
 ./clangd
 build/CMakeFiles/
 build/CMakeCache.txt
+build/compile_commands.json
+build/.cmake/*
+build/cmake_install.cmake
+
 key.pem
 .cache/
 .vscode/

@@ -271,11 +271,11 @@ lu_intptr_t ngx_pfree(lu_mm_pool_t *pool, void *p)
             lu_mm_free(l->alloc);
             l->alloc = NULL;
 
-            return LU_MM_POOL_OK;
+            return LU_ERROR_LUEVENT_MEMORY_POOL_OK;
         }
     }
 
-    return LU_MM_POOL_DECLINED;
+    return LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED;
 }
 
 

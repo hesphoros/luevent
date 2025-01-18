@@ -44,13 +44,13 @@ static const char* lu_error_strings_global[LU_MAX_ERROR_CODE + 1] = {
     [LU_ERROR_BROKEN_PIPE] = "Broken pipe",
     [LU_ERROR_MATH_ARGUMENT_OUT_OF_DOMAIN_OF_FUNCTION] = "Math argument out of domain of function",
     [LU_ERROR_RESULT_TOO_REPRESENTABLE] = "Result too representable",
-    [LU_ERROR_LUEVENT_MEMOYPOOL_OK] = "Luevent MemoyPool OK",
-    [LU_ERROR_LUEVENT_MEMOYPOOL_ERROR] = "Luevent MemoyPool ERROR",
-    [LU_ERROR_LUEVENT_MEMORYPOOL_AGAIN] = "Luevent MemoryPool AGAIN",
-    [LU_ERROR_LUEVENT_MEMORYPOOL_BUSY] = "Luevent MemoryPool BUSY",
-    [LU_ERROR_LUEVENT_MEMORYPOOL_DONE] = "Luevent MemoryPool DONE",
-    [LU_ERROR_LUEVENT_MEMORYPOOL_DECLINED] = "Luevent MemoryPool DECLINED",
-    [LU_ERROR_LUEVENT_MEMORYPOOL_ABORT] = "Luevent MemoryPool ABORT",
+    [LU_ERROR_LUEVENT_MEMORY_POOL_OK] = "Luevent MemoyPool OK",
+    [LU_ERROR_LUEVENT_MEMORY_POOL_ERROR] = "Luevent MemoyPool ERROR",
+    [LU_ERROR_LUEVENT_MEMORY_POOL_AGAGIN] = "Luevent MemoryPool AGAIN",
+    [LU_ERROR_LUEVENT_MEMORY_POOL_BUSY] = "Luevent MemoryPool BUSY",
+    [LU_ERROR_LUEVENT_MEMORY_POOL_DONE] = "Luevent MemoryPool DONE",
+    [LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED] = "Luevent MemoryPool DECLINED",
+    [LU_ERROR_LUEVENT_MEMORY_POOL_ABORT] = "Luevent MemoryPool ABORT",
     
 };
  

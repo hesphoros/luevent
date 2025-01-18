@@ -13,8 +13,9 @@ typedef struct lu_mm_pool_s            lu_mm_pool_t;
 #include <stdint.h>
 #include <sys/types.h>
 #include <string.h>
-#include <errno.h>
-#include <sys/mman.h>
+//#include <errno.h>
+#include <lu_erron.h>
+// #include <sys/mman.h>
 #include "lu_util.h"
 
 

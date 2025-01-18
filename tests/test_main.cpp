@@ -1,7 +1,7 @@
 #include "lu_erron.h"
 #include <gtest/gtest.h>
 
-#include <stdio.h>jj
+#include <stdio.h>
 
 // 测试 lu_get_error_string 函数
 TEST(LuErrorTest, GetErrorString) {
@@ -21,4 +21,8 @@ TEST(LuErrorTest, GetErrorStringHash) {
     EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_INTERRUPTED_SYSTEM_CALL),"Interrupted system call");
 }
 
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
 

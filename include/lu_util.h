@@ -3,7 +3,7 @@
 
 
 #include "lu_visibility.h"
-//#include <time.h>
+#include <time.h>
 #include <stdarg.h>
 #include <stdint.h>
 #include <sys/types.h>
@@ -177,13 +177,13 @@ LU_EVENT_EXPORT_SYMBOL const char *lu_evutil_socket_error_to_string(int errcode)
 
 #define LU_UNUSED(x) (void)(x)
 
-#define LU_MM_POOL_OK    0x01
-#define LU_MM_POOL_ERROR 0x02
-#define LU_MM_POOL_AGAIN 0x03
-#define LU_MM_POOL_BUSY  0x04
-#define LU_MM_POOL_DONE  0x05
-#define LU_MM_POOL_DECLINED 0x06
-#define LU_MM_POOL_ABORT 0x07
+// #define LU_MM_POOL_OK    0x01
+// #define LU_MM_POOL_ERROR 0x02
+// #define LU_MM_POOL_AGAIN 0x03
+// #define LU_MM_POOL_BUSY  0x04
+// #define LU_MM_POOL_DONE  0x05
+// #define LU_MM_POOL_DECLINED 0x06
+// #define LU_MM_POOL_ABORT 0x07
 
 
 typedef struct lu_evutil_monotonic_timer_s{

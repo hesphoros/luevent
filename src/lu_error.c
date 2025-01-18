@@ -43,7 +43,15 @@ static const char* lu_error_strings_global[LU_MAX_ERROR_CODE + 1] = {
     [LU_ERROR_TOO_MANY_LINKS] = "Too many links",
     [LU_ERROR_BROKEN_PIPE] = "Broken pipe",
     [LU_ERROR_MATH_ARGUMENT_OUT_OF_DOMAIN_OF_FUNCTION] = "Math argument out of domain of function",
-    [LU_ERROR_RESULT_TOO_REPRESENTABLE] = "Result too representable"
+    [LU_ERROR_RESULT_TOO_REPRESENTABLE] = "Result too representable",
+    [LU_ERROR_LUEVENT_MEMOYPOOL_OK] = "Luevent MemoyPool OK",
+    [LU_ERROR_LUEVENT_MEMOYPOOL_ERROR] = "Luevent MemoyPool ERROR",
+    [LU_ERROR_LUEVENT_MEMORYPOOL_AGAIN] = "Luevent MemoryPool AGAIN",
+    [LU_ERROR_LUEVENT_MEMORYPOOL_BUSY] = "Luevent MemoryPool BUSY",
+    [LU_ERROR_LUEVENT_MEMORYPOOL_DONE] = "Luevent MemoryPool DONE",
+    [LU_ERROR_LUEVENT_MEMORYPOOL_DECLINED] = "Luevent MemoryPool DECLINED",
+    [LU_ERROR_LUEVENT_MEMORYPOOL_ABORT] = "Luevent MemoryPool ABORT",
+    
 };
  
 
@@ -108,6 +116,13 @@ static const char* load_error_string_(int error_code) {
         case 0x11F: return "Broken pipe";
         case 0x120: return "Math argument out of domain of function";
         case 0x121: return "Result too representable";
+        case 0x122: return "Luevent MemoyPool OK";
+        case 0x123: return "Luevent MemoyPool ERROR";
+        case 0x124: return "Luevent MemoryPool AGAIN";
+        case 0x125: return "Luevent MemoryPool BUSY";
+        case 0x126: return "Luevent MemoryPool DONE";
+        case 0x127: return "Luevent MemoryPool DECLINED";
+        case 0x128: return "Luevent MemoryPool ABORT";
         default: return "Unknown error";
     }
 }

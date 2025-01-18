@@ -1,23 +1,9 @@
-
 #ifndef _LU_MM_CORE_H_INCLUDED_
 #define _LU_MM_CORE_H_INCLUDED_
 
-
 #define LU_MM_HAVE_POSIX_MEMALIGN  1
 
-
 typedef struct lu_mm_pool_s            lu_mm_pool_t;
-
-
-#define  NGX_OK          0
-#define  NGX_ERROR      -1
-#define  NGX_AGAIN      -2
-#define  NGX_BUSY       -3
-#define  NGX_DONE       -4
-#define  NGX_DECLINED   -5
-#define  NGX_ABORT      -6
-
-
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -41,9 +41,16 @@ extern "C" {
 #define LU_ERROR_BROKEN_PIPE 0x11F
 #define LU_ERROR_MATH_ARGUMENT_OUT_OF_DOMAIN_OF_FUNCTION 0x120
 #define LU_ERROR_RESULT_TOO_REPRESENTABLE 0x121
-#define LU_MAX_ERROR_CODE 0x122  // 假设错误码的最大值
 
+#define LU_MEMORY_POOL_OK 0x122
+#define LU_ERRORM_EMORY_POOL_ERROR 0x123
+#define LU_ERROR_MEMORY_POOL_AGAGIN 0x124
+#define LU_ERROR_MEMORY_POOL_BUSY 0x125
+#define LU_ERROR_MEMORY_POOL_DONE 0x126
+#define LU_ERROR_MEMORY_POOL_DECLINED 0x127
+#define LU_ERROR_MEMORY_ABORT 0x128
 
+#define LU_MAX_ERROR_CODE 0x129  // 假设错误码的最大值
 
 const char* lu_get_error_string(int errno);
 const char* lu_get_error_string_hash(int errno);

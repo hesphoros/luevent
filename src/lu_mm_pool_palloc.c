@@ -271,11 +271,11 @@ lu_intptr_t ngx_pfree(lu_mm_pool_t *pool, void *p)
             lu_mm_free(l->alloc);
             l->alloc = NULL;
 
-            return NGX_OK;
+            return LU_MM_POOL_OK;
         }
     }
 
-    return NGX_DECLINED;
+    return LU_MM_POOL_DECLINED;
 }
 
 

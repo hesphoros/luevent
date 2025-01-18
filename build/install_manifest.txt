@@ -1,0 +1,2 @@
+/root/codespace/luevent/tests/lib/libluevent_static.a
+/root/codespace/luevent/tests/lib/libluevent_shared.so

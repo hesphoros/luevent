@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
-project(Luevent VERSION 1.0 LANGUAGES C CXX)
+project(lueventGTest VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -43,17 +43,28 @@ find_library(LUEVENT_LIB NAMES libluevent_static.a PATHS ${PROJECT_SOURCE_DIR}/l
 include_directories(${PROJECT_SOURCE_DIR}/../include)
 
 # 创建测试可执行文件
-add_executable(LueventGTest ${SOURCES})
+add_executable(lueventGTest ${SOURCES})
 
 # 启用测试
 enable_testing()
 
 # 链接 GTest 库和安装好的 luevent 库
-target_link_libraries(LueventGTest PRIVATE
+target_link_libraries(lueventGTest PRIVATE
     pthread
     GTest::GTest
     ${LUEVENT_LIB}
 )
 
 # 添加测试
-add_test(NAME LueventTest COMMAND LueventGTest)
+add_test(NAME LueventTest COMMAND lueventGTest)
+
+
+# 将静态库和动态库文件添加到默认清理规则
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES
+    "${PROJECT_SOURCE_DIR}/lib/libluevent_static.a"
+    #"${PROJECT_SOURCE_DIR}/lib/libluevent_shared.so"
+)
+
+set_directory_properties(PROPERTIES ADDITIONAL_CLEAN_FILES
+    "${PROJECT_SOURCE_DIR}/lib/libluevent_shared.so"
+)

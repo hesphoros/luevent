@@ -9,3 +9,7 @@
 ## 2025-1-18 
 
 - [X] 添加了luevent-memory-pool的错误码
+
+## 2025-1-19
+
+- [X] 修复了lu_errorn中错误表(lu_hash_table)的内存泄露 ，entry(lu_error_info_t)下的error_msg(const char*)内存泄露未free

@@ -178,6 +178,7 @@ static void cleanup_error_table_(void)  {
     for (int i = 0; i < LU_MAX_ERROR_CODE + 1; i++) {
         lu_error_info_t* entry = LU_HASH_TABLE_FIND(lu_error_hash_table, i);  // 获取每个条目
         if (entry) {
+            mm_free(entry->error_message);  // 释放错误信息的内存
             mm_free(entry);  // 释放条目的内存
             LU_HASH_TABLE_DELETE(lu_error_hash_table, i);  // 从哈希表中删除该条目
         }

@@ -11,14 +11,14 @@ if [ -f /etc/centos-release ]; then
     echo "检测到 CentOS 系统，开始安装..."
     sudo yum update -y
     sudo yum install -y gcc gcc-c++ cmake gdb valgrind libstdc++-dev 
-    echo "memcheck 是 Valgrind 的一部分，已安装 Valgrind"
+    sudo yum install -y clang
 elif [ -f /etc/lsb-release ]; then
     # Ubuntu 系统
     echo "检测到 Ubuntu 系统，开始安装..."
     sudo apt update -y
     sudo apt install -y build-essential cmake gdb valgrind
     sudo apt install -y libstdc++-dev
-    echo "memcheck 是 Valgrind 的一部分，已安装 Valgrind"
+    sudo apt install -y clang
 else
     echo "无法识别的 Linux 发行版"
     exit 1

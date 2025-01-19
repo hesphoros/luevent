@@ -151,17 +151,18 @@ void lu_event_mm_free_(void* ptr){
     //sizeof(*ptr) 无法准确反映动态分配的内存大小，可以考虑在内存分配时额外存储内存块大小，或者使用自定义的内存管理来追踪内存块大小。
     if(lu_mm_free_fn_){
         lu_mm_free_fn_(ptr);
-        if (lu_mm_free_log_fn_){
-            lu_mm_free_log_fn_(MM_FREE_STR, ptr,ptr?sizeof(*ptr):0);        
-        }
+        // if (lu_mm_free_log_fn_){
+        //     lu_mm_free_log_fn_(MM_FREE_STR, ptr,ptr?sizeof(*ptr):0);        
+        // }
     }
     else
     {
+        //FIXME: 
         free(ptr);
-        if (lu_mm_free_log_fn_){
-            lu_mm_free_log_fn_(FREE_STR, ptr,ptr?sizeof(*ptr):0);
-        }
-    }
+    //     if (lu_mm_free_log_fn_){
+    //         lu_mm_free_log_fn_(FREE_STR, ptr,ptr?sizeof(*ptr):0);
+    //     }
+     }
          
 }
 

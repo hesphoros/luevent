@@ -160,8 +160,12 @@ static lu_error_info_t* get_or_create_error_entry_(int error_code) {
             fprintf(stderr, "Memory allocation failed for error entry\n");
             exit(EXIT_FAILURE);
         }
+        //FIXME 使用内部mmzero函数
         memset(entry, 0, sizeof(lu_error_info_t));  // 初始化条目
-
+         // 由于是新创建的条目，确保所有字段正确初始化
+        entry->error_code = error_code;  // 设置错误码
+        entry->error_message = NULL;     // 尚未加载错误信息
+        entry->is_loaded = 0;            // 标记为未加载
         // 插入哈希表
         LU_HASH_TABLE_INSERT(lu_error_hash_table, error_code, entry);
     }
@@ -170,15 +174,17 @@ static lu_error_info_t* get_or_create_error_entry_(int error_code) {
 }
 
 
-// 错误表清理
+//错误表清理
 static void cleanup_error_table_(void)  {
     pthread_mutex_lock(&error_table_mutex);  // 加锁
     //清理 entries
       // 遍历哈希表并清理每个条目
-    for (int i = 0; i < LU_MAX_ERROR_CODE + 1; i++) {
+    for (size_t i = LU_ERROR_CODE_START_VALUE; i < LU_MAX_ERROR_CODE + 1; i++) {
         lu_error_info_t* entry = LU_HASH_TABLE_FIND(lu_error_hash_table, i);  // 获取每个条目
         if (entry) {
-            mm_free(entry->error_message);  // 释放错误信息的内存
+            if (entry->error_message) {  // 如果错误信息存在，释放其内存
+                mm_free((void*)entry->error_message);  // 释放错误消息内存
+            }
             mm_free(entry);  // 释放条目的内存
             LU_HASH_TABLE_DELETE(lu_error_hash_table, i);  // 从哈希表中删除该条目
         }
@@ -187,7 +193,10 @@ static void cleanup_error_table_(void)  {
     LU_HASH_TABLE_DESTROY(lu_error_hash_table); // 销毁哈希表
     pthread_mutex_unlock(&error_table_mutex); 
     pthread_mutex_destroy(&error_table_mutex);  // 销毁锁
+    
 }
+
+
 
 static int initialized = 0;
 static void initialize_error_table_(void) {
@@ -214,6 +223,7 @@ static void initialize_error_table_(void) {
 __attribute__((constructor)) void error_table_initializer(void){
    
     initialize_error_table_();
+   
 }
 
 
@@ -221,7 +231,7 @@ __attribute__((constructor)) void error_table_initializer(void){
 // destructor函数，用于清理静态变量
 __attribute__((destructor)) void error_table_finalizer(void) {
     cleanup_error_table_();  // 清理哈希表
-    
+   
 }
 
 // 错误码字符串哈希表访问函数
@@ -235,8 +245,11 @@ const char* lu_get_error_string_hash(int errno)  {
  
     int lock_status = pthread_mutex_lock(&error_table_mutex);
     if (lock_status != 0) {
-        // printf("Failed to lock error_table_mutex: %d\n", lock_status);
-        return "Lock failed";           
+        //FIXME 这里应该返回一个错误信息，而不是直接退出程序 使用内部log函数
+        // 如果锁失败，返回具体错误信息
+        static char error_buffer[64];
+        snprintf(error_buffer, sizeof(error_buffer), "Unable to lock error table (status: %d)", lock_status);
+        return error_buffer;          
     }   
 
     lu_error_info_t* entry = get_or_create_error_entry_(errno);

@@ -72,11 +72,11 @@ static pthread_mutex_t  error_table_mutex;
 
 
 
-static const char*   get_error_message_(int error_code);
+static const char*          get_error_message_(int error_code);
 static const char*         load_error_string_(int error_code);
 static lu_error_info_t*    get_or_create_error_entry_(int error_code) ;
 static void                cleanup_error_table_(void) ;
-static void         initialize_error_table_(void) ;
+static void                initialize_error_table_(void) ;
 
 
 // 错误信息的加载函数
@@ -226,8 +226,11 @@ __attribute__((destructor)) void error_table_finalizer(void) {
 // 错误码字符串哈希表访问函数
 const char* lu_get_error_string_hash(int errno)  {
     if (errno < 0 || errno > LU_MAX_ERROR_CODE) {
-        return "Unknown error";
+        static char buffer[64];  // 用于返回更详细的错误信息
+        snprintf(buffer, sizeof(buffer), "Unknown error: %d", errno);
+        return buffer;
     }
+     
  
     int lock_status = pthread_mutex_lock(&error_table_mutex);
     if (lock_status != 0) {

@@ -8,52 +8,51 @@
 #include <pthread.h>
  
 
-
-static const char* lu_error_strings_global[LU_MAX_ERROR_CODE + 1] = {
-    [LU_ERROR_OPERATION_NOT_PERMITTED] = "Operation not permitted",
-    [LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY] = "No such file or directory",
-    [LU_ERROR_NO_SUCH_PROCESS] = "No such process",
-    [LU_ERROR_INTERRUPTED_SYSTEM_CALL] = "Interrupted system call",
-    [LU_ERROR_INPUT_OUTPUT_ERROR] = "Input/output error",
-    [LU_ERROR_NO_SUCH_DEVICE_OR_ADDRESS] = "No such device or address",
-    [LU_ERROR_ARGUMENT_LIST_TOO_LONG] = "Argument list too long",
-    [LU_ERROR_EXEC_FORMAT_ERROR] = "Exec format error",
-    [LU_ERROR_BAD_FILE_DESCRIPTOR] = "Bad file descriptor",
-    [LU_ERROR_NO_CHILD_PROCESSES] = "No child processes",
-    [LU_ERROR_TRY_AGAIN] = "Try again",
-    [LU_ERROR_OUT_OF_MEMORY] = "Out of memory",
-    [LU_ERROR_PERMISSION_DENIED] = "Permission denied",
-    [LU_ERROR_BAD_ADDRESS] = "Bad address",
-    [LU_ERROR_BLOCK_DEVICE_REQUIRED] = "Block device required",
-    [LU_ERROR_DEVICE_OR_RESOURCE_BUSY] = "Device or resource busy",
-    [LU_ERROR_FILE_EXISTS] = "File exists",
-    [LU_ERROR_CROSS_DEVICE_LINK] = "Cross-device link",
-    [LU_ERROR_NO_SUCH_DEVICE] = "No such device",
-    [LU_ERROR_NOT_A_DIRECTORY] = "Not a directory",
-    [LU_ERROR_IS_A_DIRECTORY] = "Is a directory",
-    [LU_ERROR_INVALID_ARGUMENT] = "Invalid argument",
-    [LU_ERROR_FILE_TABLE_OVERFLOW] = "File table overflow",
-    [LU_ERROR_TOO_MANY_OPEN_FILES] = "Too many open files",
-    [LU_ERROR_NOT_A_TYPEWRITER] = "Not a typewriter",
-    [LU_ERROR_TEXT_FILE_BUSY] = "Text file busy",
-    [LU_ERROR_FILE_TOO_LARGE] = "File too large",
-    [LU_ERROR_NO_SPACE_LEFT_ON_DEVICE] = "No space left on device",
-    [LU_ERROR_ILLEGAL_SEEK] = "Illegal seek",
-    [LU_ERROR_READ_ONLY_FILE_SYSTEM] = "Read-only file system",
-    [LU_ERROR_TOO_MANY_LINKS] = "Too many links",
-    [LU_ERROR_BROKEN_PIPE] = "Broken pipe",
-    [LU_ERROR_MATH_ARGUMENT_OUT_OF_DOMAIN_OF_FUNCTION] = "Math argument out of domain of function",
-    [LU_ERROR_RESULT_TOO_REPRESENTABLE] = "Result too representable",
-    [LU_ERROR_LUEVENT_MEMORY_POOL_OK] = "Luevent MemoyPool OK",
-    [LU_ERROR_LUEVENT_MEMORY_POOL_ERROR] = "Luevent MemoyPool ERROR",
-    [LU_ERROR_LUEVENT_MEMORY_POOL_AGAGIN] = "Luevent MemoryPool AGAIN",
-    [LU_ERROR_LUEVENT_MEMORY_POOL_BUSY] = "Luevent MemoryPool BUSY",
-    [LU_ERROR_LUEVENT_MEMORY_POOL_DONE] = "Luevent MemoryPool DONE",
-    [LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED] = "Luevent MemoryPool DECLINED",
-    [LU_ERROR_LUEVENT_MEMORY_POOL_ABORT] = "Luevent MemoryPool ABORT",
-    
+static const char* lu_error_strings_global[LU_MAX_ERROR_CODE - LU_ERROR_CODE_START_VALUE + 1] = {
+    [LU_ERROR_INDEX(LU_ERROR_OPERATION_NOT_PERMITTED)] = "Operation not permitted",
+    [LU_ERROR_INDEX(LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY)] = "No such file or directory",
+    [LU_ERROR_INDEX(LU_ERROR_NO_SUCH_PROCESS)] = "No such process",
+    [LU_ERROR_INDEX(LU_ERROR_INTERRUPTED_SYSTEM_CALL)] = "Interrupted system call",
+    [LU_ERROR_INDEX(LU_ERROR_INPUT_OUTPUT_ERROR)] = "Input/output error",
+    [LU_ERROR_INDEX(LU_ERROR_NO_SUCH_DEVICE_OR_ADDRESS)] = "No such device or address",
+    [LU_ERROR_INDEX(LU_ERROR_ARGUMENT_LIST_TOO_LONG)] = "Argument list too long",
+    [LU_ERROR_INDEX(LU_ERROR_EXEC_FORMAT_ERROR)] = "Exec format error",
+    [LU_ERROR_INDEX(LU_ERROR_BAD_FILE_DESCRIPTOR)] = "Bad file descriptor",
+    [LU_ERROR_INDEX(LU_ERROR_NO_CHILD_PROCESSES)] = "No child processes",
+    [LU_ERROR_INDEX(LU_ERROR_TRY_AGAIN)] = "Try again",
+    [LU_ERROR_INDEX(LU_ERROR_OUT_OF_MEMORY)] = "Out of memory",
+    [LU_ERROR_INDEX(LU_ERROR_PERMISSION_DENIED)] = "Permission denied",
+    [LU_ERROR_INDEX(LU_ERROR_BAD_ADDRESS)] = "Bad address",
+    [LU_ERROR_INDEX(LU_ERROR_BLOCK_DEVICE_REQUIRED)] = "Block device required",
+    [LU_ERROR_INDEX(LU_ERROR_DEVICE_OR_RESOURCE_BUSY)] = "Device or resource busy",
+    [LU_ERROR_INDEX(LU_ERROR_FILE_EXISTS)] = "File exists",
+    [LU_ERROR_INDEX(LU_ERROR_CROSS_DEVICE_LINK)] = "Cross-device link",
+    [LU_ERROR_INDEX(LU_ERROR_NO_SUCH_DEVICE)] = "No such device",
+    [LU_ERROR_INDEX(LU_ERROR_NOT_A_DIRECTORY)] = "Not a directory",
+    [LU_ERROR_INDEX(LU_ERROR_IS_A_DIRECTORY)] = "Is a directory",
+    [LU_ERROR_INDEX(LU_ERROR_INVALID_ARGUMENT)] = "Invalid argument",
+    [LU_ERROR_INDEX(LU_ERROR_FILE_TABLE_OVERFLOW)] = "File table overflow",
+    [LU_ERROR_INDEX(LU_ERROR_TOO_MANY_OPEN_FILES)] = "Too many open files",
+    [LU_ERROR_INDEX(LU_ERROR_NOT_A_TYPEWRITER)] = "Not a typewriter",
+    [LU_ERROR_INDEX(LU_ERROR_TEXT_FILE_BUSY)] = "Text file busy",
+    [LU_ERROR_INDEX(LU_ERROR_FILE_TOO_LARGE)] = "File too large",
+    [LU_ERROR_INDEX(LU_ERROR_NO_SPACE_LEFT_ON_DEVICE)] = "No space left on device",
+    [LU_ERROR_INDEX(LU_ERROR_ILLEGAL_SEEK)] = "Illegal seek",
+    [LU_ERROR_INDEX(LU_ERROR_READ_ONLY_FILE_SYSTEM)] = "Read-only file system",
+    [LU_ERROR_INDEX(LU_ERROR_TOO_MANY_LINKS)] = "Too many links",
+    [LU_ERROR_INDEX(LU_ERROR_BROKEN_PIPE)] = "Broken pipe",
+    [LU_ERROR_INDEX(LU_ERROR_MATH_ARGUMENT_OUT_OF_DOMAIN_OF_FUNCTION)] = "Math argument out of domain of function",
+    [LU_ERROR_INDEX(LU_ERROR_RESULT_TOO_REPRESENTABLE)] = "Result too representable",
+    [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_OK)] = "Luevent MemoyPool OK",
+    [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_ERROR)] = "Luevent MemoyPool ERROR",
+    [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_AGAGIN)] = "Luevent MemoryPool AGAIN",
+    [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_BUSY)] = "Luevent MemoryPool BUSY",
+    [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_DONE)] = "Luevent MemoryPool DONE",
+    [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED)] = "Luevent MemoryPool DECLINED",
+    [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_ABORT)] = "Luevent MemoryPool ABORT",
 };
- 
+
+
 
 
 // error info struct
@@ -130,14 +129,14 @@ static const char* load_error_string_(int error_code) {
 
 
 // 错误码字符串访问函数 采用数组形式
-const char* lu_get_error_string(int errno) {
-    if (errno < 0 || errno > LU_MAX_ERROR_CODE) {
+const char* lu_get_error_string(int error_code) {
+    if (error_code < 0 || error_code > LU_MAX_ERROR_CODE) {
         static char buffer[64];  // 用于返回更详细的错误信息
-        snprintf(buffer, sizeof(buffer), "Unknown error: %d", errno);
+        snprintf(buffer, sizeof(buffer), "Unknown error: %d", error_code);
         return buffer;
     }
      
-    return get_error_message_(errno);
+    return lu_error_strings_global[LU_ERROR_INDEX(error_code)];
      
 }
 
@@ -179,14 +178,12 @@ static void cleanup_error_table_(void)  {
     pthread_mutex_lock(&error_table_mutex);  // 加锁
     //清理 entries
       // 遍历哈希表并清理每个条目
-    for (size_t i = LU_ERROR_CODE_START_VALUE; i < LU_MAX_ERROR_CODE + 1; i++) {
+    for (size_t i = LU_ERROR_CODE_START_VALUE + 1 ; i < LU_MAX_ERROR_CODE; i++) {
         lu_error_info_t* entry = LU_HASH_TABLE_FIND(lu_error_hash_table, i);  // 获取每个条目
         if (entry) {
-            if (entry->error_message) {  // 如果错误信息存在，释放其内存
-                mm_free((void*)entry->error_message);  // 释放错误消息内存
-            }
-            mm_free(entry);  // 释放条目的内存
+                       
             LU_HASH_TABLE_DELETE(lu_error_hash_table, i);  // 从哈希表中删除该条目
+            mm_free(entry);  // 释放条目的内存
         }
     }
 
@@ -252,7 +249,7 @@ const char* lu_get_error_string_hash(int errno)  {
         return error_buffer;          
     }   
 
-    lu_error_info_t* entry = get_or_create_error_entry_(errno);
+    lu_error_info_t* entry = get_or_create_error_entry_(LU_ERROR_INDEX(errno));
 
     // 如果尚未加载错误信息，则进行加载 使用惰性加载机制
     if (!entry->is_loaded) {

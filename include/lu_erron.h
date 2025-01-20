@@ -53,8 +53,12 @@ extern "C" {
 
 #define LU_MAX_ERROR_CODE 0x129  // 假设错误码的最大值
 
-const char* lu_get_error_string(int errno);
-const char* lu_get_error_string_hash(int errno);
+
+
+#define LU_ERROR_INDEX(x) ((x) - LU_ERROR_CODE_START_VALUE)
+
+const char* lu_get_error_string(int error_code);
+const char* lu_get_error_string_hash(int error_code);
 
 
 #ifdef __cplusplus

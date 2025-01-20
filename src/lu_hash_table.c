@@ -63,7 +63,7 @@ static void lu_rb_tree_rehash(lu_rb_tree_t* tree, lu_rb_tree_node_t* node, lu_ha
  * @param table_size The size of the hash table (number of buckets).
  * @return The computed hash value, ranging from 0 to table_size - 1.
  */
-int lu_hash_function(int key, int table_size)
+int lu_hash_function(int key, size_t table_size)
 {
 	static const double golden_rate_reciprocal = 0.6180339887; // Reciprocal of the golden ratio
 
@@ -341,7 +341,7 @@ void lu_hash_table_destroy(lu_hash_table_t* table)
 	}
 
 	// Iterate through each bucket in the hash table
-	for (int i = 0; i < table->table_size; i++) {
+	for (size_t i = 0; i < table->table_size; i++) {
 		lu_hash_bucket_t* bucket = &table->buckets[i];
 		
 		// Destroy the bucket if it uses a linked list for storage
@@ -1257,7 +1257,7 @@ static void lu_hash_table_resize(lu_hash_table_t* table)
 		new_buckets[i].esize_bucket = 0;
 	}
 
-	for (int i = 0; i < table->table_size; i++) {
+	for (size_t i = 0; i < table->table_size; i++) {
 		lu_hash_bucket_t* old_bucket = &table->buckets[i];
 		if (old_bucket->type == LU_HASH_BUCKET_LIST) {
 			lu_hash_bucket_node_t* node = old_bucket->data.list_head;

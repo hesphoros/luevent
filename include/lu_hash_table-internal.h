@@ -129,7 +129,7 @@ extern "C" {
 	*/
 	typedef struct lu_hash_table_s {
 		lu_hash_bucket_t* buckets;
-		int				  table_size;
+		size_t				  table_size;
 		size_t		      element_count; // Current number of elements in the hash table
 	}lu_hash_table_t;
 
@@ -170,7 +170,7 @@ lu_hash_table_t* lu_hash_table_init(size_t table_size);
 void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value);
 void lu_hash_table_delete(lu_hash_table_t* table, int key);
 void lu_hash_table_destroy(lu_hash_table_t* table);
-int	 lu_hash_function(int key, int table_size);
+int	 lu_hash_function(int key, size_t table_size);
 
 #define LU_HASH_TABLE_INIT(size)				lu_hash_table_init(size)
 #define LU_HASH_TABLE_INSERT(table,key,value)	lu_hash_table_insert(table,key,value)

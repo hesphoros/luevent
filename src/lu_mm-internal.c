@@ -159,6 +159,7 @@ void lu_event_mm_free_(void* ptr){
     {
         //FIXME: 
         free(ptr);
+        ptr = NULL;
     //     if (lu_mm_free_log_fn_){
     //         lu_mm_free_log_fn_(FREE_STR, ptr,ptr?sizeof(*ptr):0);
     //     }

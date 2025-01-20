@@ -9,6 +9,7 @@
  
 
 static const char* lu_error_strings_global[LU_MAX_ERROR_CODE - LU_ERROR_CODE_START_VALUE + 1] = {
+    [LU_ERROR_INDEX(LU_ERROR_CODE_START_VALUE)] = "lu errrocode start value",
     [LU_ERROR_INDEX(LU_ERROR_OPERATION_NOT_PERMITTED)] = "Operation not permitted",
     [LU_ERROR_INDEX(LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY)] = "No such file or directory",
     [LU_ERROR_INDEX(LU_ERROR_NO_SUCH_PROCESS)] = "No such process",
@@ -140,9 +141,9 @@ const char* lu_get_error_string(int error_code) {
      
 }
 
-static const char* get_error_message_(int error_code) {
+static const char* get_error_message_(int index) {
     
-    return lu_error_strings_global[error_code];
+    return lu_error_strings_global[index];
 }
 
 
@@ -181,7 +182,9 @@ static void cleanup_error_table_(void)  {
     for (size_t i = LU_ERROR_CODE_START_VALUE + 1 ; i < LU_MAX_ERROR_CODE; i++) {
         lu_error_info_t* entry = LU_HASH_TABLE_FIND(lu_error_hash_table, i);  // 获取每个条目
         if (entry) {
-                       
+            if(entry->error_message){
+                //mm_free((void*)entry->error_message);
+            }         
             LU_HASH_TABLE_DELETE(lu_error_hash_table, i);  // 从哈希表中删除该条目
             mm_free(entry);  // 释放条目的内存
         }
@@ -232,10 +235,10 @@ __attribute__((destructor)) void error_table_finalizer(void) {
 }
 
 // 错误码字符串哈希表访问函数
-const char* lu_get_error_string_hash(int errno)  {
-    if (errno < 0 || errno > LU_MAX_ERROR_CODE) {
+const char* lu_get_error_string_hash(int error_code)  {
+    if (error_code < 0 || error_code > LU_MAX_ERROR_CODE) {
         static char buffer[64];  // 用于返回更详细的错误信息
-        snprintf(buffer, sizeof(buffer), "Unknown error: %d", errno);
+        snprintf(buffer, sizeof(buffer), "Unknown error: %d", error_code);
         return buffer;
     }
      
@@ -249,12 +252,12 @@ const char* lu_get_error_string_hash(int errno)  {
         return error_buffer;          
     }   
 
-    lu_error_info_t* entry = get_or_create_error_entry_(LU_ERROR_INDEX(errno));
+    lu_error_info_t* entry = get_or_create_error_entry_(error_code);
 
     // 如果尚未加载错误信息，则进行加载 使用惰性加载机制
     if (!entry->is_loaded) {
-        entry->error_code = errno;         
-        entry->error_message = get_error_message_(errno);
+        entry->error_code = error_code;         
+        entry->error_message = (char*)get_error_message_(LU_ERROR_INDEX(error_code));
         entry->is_loaded = 1;  // 标记为已加载
     }
     pthread_mutex_unlock(&error_table_mutex);  // 解锁~

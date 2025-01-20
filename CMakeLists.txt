@@ -37,7 +37,7 @@ if(UNIX)
     #target_link_libraries(luevent pthread)
     target_link_libraries(luevent_static pthread)
     target_link_libraries(luevent_shared pthread)
-    # target_link_libraries(luevent gtest)
+    #target_link_libraries(luevent gtest)
 endif()
 
 # 添加头文件搜索路径
@@ -58,8 +58,8 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # 设置调试信息并启用 AddressSanitizer 和 UndefinedBehaviorSanitizer
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer")
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer")
+#set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0 -fsanitize=address,undefined -fno-omit-frame-pointer")
 
 # 为 Release 构建类型设置优化标志
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2 -DNDEBUG")

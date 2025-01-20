@@ -170,7 +170,7 @@ void lu_event_error(int errnum, const char* file, int line, const char *fmt,...)
 }
 
 void lu_event_fatal(const char* file, int line, const char* fmt, ...){
-    //TODO: fix this
+   
     va_list ap;
     va_start(ap, fmt);
     //lu_event_logv_(LU_EVENT_LOG_LEVEL_FATAL, NULL, fmt, ap);
@@ -234,17 +234,6 @@ void lu_event_sock_warn(lu_evutil_socket_t sock,const char* file,int line,const 
 }
 
 
-/**
- * 
- * 
-LU_EVENT_EXPORT_SYMBOL LU_EVENT_EXPORT_SYMBOL 
-
-LU_EVENT_EXPORT_SYMBOL void lu_event_msgx(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
-LU_EVENT_EXPORT_SYMBOL void lu_event_debugx_(const char *fmt, ...) LU_EV_CHECK_FMT(1,2);
-LU_EVENT_EXPORT_SYMBOL void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list ap) LU_EV_CHECK_FMT(3,0);
-
-
- */
 //void lu_event_errorx(int eval, const char *fmt, ...)
 void lu_event_errorx(int eval, const char* file, int line,const char *fmt, ...) {
     va_list ap;
@@ -337,10 +326,6 @@ static void lu_unlock(void) {
 		pthread_mutex_unlock(&lu_log_config_lock);
 }
 
-// const char* lu_log_level_to_string(lu_log_level_t level)
-// {
-// 	return lu_log_level_strings[level];
-// }
 
 
 

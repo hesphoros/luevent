@@ -54,8 +54,6 @@ static const char* lu_error_strings_global[LU_MAX_ERROR_CODE - LU_ERROR_CODE_STA
 };
 
 
-
-
 // error info struct
 typedef struct lu_error_info_s{
     int error_code;       // 错误码
@@ -72,7 +70,7 @@ static pthread_mutex_t  error_table_mutex;
 
 
 
-const char*          get_error_message_(int error_code);
+const char*                get_error_message_(int error_code);
 static const char*         load_error_string_(int error_code);
 static lu_error_info_t*    get_or_create_error_entry_(int error_code) ;
 static void                cleanup_error_table_(void) ;

@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "stdio.h": "c",
+        "lu_erron.h": "c",
+        "mem_core.h": "c",
+        "mem_alloc.h": "c",
+        "mem_pool_palloc.h": "c",
+        "stat.h": "c",
+        "lu_mm_core.h": "c",
+        "lu_util.h": "c",
+        "cerrno": "c",
+        "system_error": "c"
+    }
+}

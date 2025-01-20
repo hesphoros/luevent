@@ -442,7 +442,7 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
 }
 
 
-void enable_file_logging(const char* filename, int level)
+void enable_default_file_logging(const char* filename, int level)
 {
     int ret = lu_evutil_create_dictionay("./log/");
     if (ret != 0) {
@@ -454,4 +454,6 @@ void enable_file_logging(const char* filename, int level)
         filename = default_filename;
     }
     FILE* fp = fopen(filename, "a");
+    lu_log_add_fp(fp, level);
+    printf("Enable file logging to %s with level %d\n", filename, level);
 }

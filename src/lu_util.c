@@ -165,11 +165,9 @@ int lu_evutil_configure_monotonic_time_(lu_evutil_monotonic_timer_t *base,
 
 
 int lu_evutil_create_dictionay(const char * path){
-    //TODO: Add some error code checking here
-     if (path == NULL || strlen(path) == 0) {
-        printf("Invalid path\n");
-        
-        return -1; 
+ 
+    if (path == NULL || strlen(path) == 0) {        
+        return LU_ERROR_INVALID_PATH; 
     }
 
     // 创建目录

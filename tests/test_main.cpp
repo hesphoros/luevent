@@ -1,5 +1,6 @@
 #include "lu_erron.h"
 #include "lu_hash_table-internal.h"
+#include "lu_util.h"
 #include <gtest/gtest.h>
 
 #include <stdio.h>
@@ -49,13 +50,15 @@ TEST(LuErrorTest, GetErrorString) {
     EXPECT_STREQ(lu_get_error_string(LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED), "Luevent MemoryPool DECLINED");
     EXPECT_STREQ(lu_get_error_string(LU_ERROR_LUEVENT_MEMORY_POOL_ABORT), "Luevent MemoryPool ABORT");
     EXPECT_STREQ(lu_get_error_string(LU_ERROR_INVALID_PATH), "INVALID PATH");
-    //EXPECT_STREQ(lu_get_error_string(-1),"Unknown error: -1");
-    //EXPECT_STREQ(lu_get_error_string(1000000),"Unknown error: 1000000");
+    EXPECT_STREQ(lu_get_error_string(-1),"Unknown error: -1");
+    EXPECT_STREQ(lu_get_error_string(1000000),"Unknown error: 1000000");
 }
 
 
 
-
+TEST(LuevutilTest, CreateDictionary){
+    EXPECT_EQ(lu_evutil_create_dictionay("test"), 0);
+}
 
  // 测试 lu_get_error_string_hash 函数
 TEST(LuErrorTest, GetErrorStringHash) {
@@ -102,8 +105,8 @@ TEST(LuErrorTest, GetErrorStringHash) {
     EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED), "Luevent MemoryPool DECLINED");
     EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_LUEVENT_MEMORY_POOL_ABORT), "Luevent MemoryPool ABORT");
     EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_INVALID_PATH), "INVALID PATH");
-    //EXPECT_STREQ(lu_get_error_string_hash(-1),"Unknown error: -1");
-    //EXPECT_STREQ(lu_get_error_string_hash(1000000),"Unknown error: 1000000");
+    EXPECT_STREQ(lu_get_error_string_hash(-1),"Unknown error: -1");
+    EXPECT_STREQ(lu_get_error_string_hash(1000000),"Unknown error: 1000000");
 
 }
 

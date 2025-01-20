@@ -1,6 +1,9 @@
 *.out
 ./clangd
-build/*
+build/
+build/libluevent_shared.so
+build/libluevent_static.a
+build/luevent_tests
 key.pem
 .cache/
-.vscode/
+test/lib

@@ -440,3 +440,18 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
     // Unlock the logging mechanism
     lu_unlock();
 }
+
+
+void enable_file_logging(const char* filename, int level)
+{
+    int ret = lu_evutil_create_dictionay("./log/");
+    if (ret != 0) {
+        printf("Error: create dictionary failed ret[%d]\n",ret);
+        return;
+    }
+    const char* default_filename = "./log/lu_event.log";
+    if (filename == NULL) {
+        filename = default_filename;
+    }
+    FILE* fp = fopen(filename, "a");
+}

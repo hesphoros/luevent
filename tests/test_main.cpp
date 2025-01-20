@@ -48,7 +48,7 @@ TEST(LuErrorTest, GetErrorString) {
     EXPECT_STREQ(lu_get_error_string(LU_ERROR_LUEVENT_MEMORY_POOL_DONE), "Luevent MemoryPool DONE");
     EXPECT_STREQ(lu_get_error_string(LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED), "Luevent MemoryPool DECLINED");
     EXPECT_STREQ(lu_get_error_string(LU_ERROR_LUEVENT_MEMORY_POOL_ABORT), "Luevent MemoryPool ABORT");
-
+    EXPECT_STREQ(lu_get_error_string(LU_ERROR_INVALID_PATH), "INVALID PATH");
     //EXPECT_STREQ(lu_get_error_string(-1),"Unknown error: -1");
     //EXPECT_STREQ(lu_get_error_string(1000000),"Unknown error: 1000000");
 }
@@ -101,7 +101,7 @@ TEST(LuErrorTest, GetErrorStringHash) {
     EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_LUEVENT_MEMORY_POOL_DONE), "Luevent MemoryPool DONE");
     EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED), "Luevent MemoryPool DECLINED");
     EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_LUEVENT_MEMORY_POOL_ABORT), "Luevent MemoryPool ABORT");
-
+    EXPECT_STREQ(lu_get_error_string_hash(LU_ERROR_INVALID_PATH), "INVALID PATH");
     //EXPECT_STREQ(lu_get_error_string_hash(-1),"Unknown error: -1");
     //EXPECT_STREQ(lu_get_error_string_hash(1000000),"Unknown error: 1000000");
 

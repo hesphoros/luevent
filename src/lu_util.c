@@ -11,6 +11,7 @@
 
 #include "lu_memory_manager.h"
 #include "lu_hash_table-internal.h"
+#include "lu_erron.h"
 
 
 lu_hash_table_t* lu_cached_sock_errs_map;
@@ -166,6 +167,8 @@ int lu_evutil_configure_monotonic_time_(lu_evutil_monotonic_timer_t *base,
 int lu_evutil_create_dictionay(const char * path){
     //TODO: Add some error code checking here
      if (path == NULL || strlen(path) == 0) {
+        printf("Invalid path\n");
+        
         return -1; 
     }
 

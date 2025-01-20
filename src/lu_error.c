@@ -51,6 +51,7 @@ static const char* lu_error_strings_global[LU_MAX_ERROR_CODE - LU_ERROR_CODE_STA
     [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_DONE)] = "Luevent MemoryPool DONE",
     [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED)] = "Luevent MemoryPool DECLINED",
     [LU_ERROR_INDEX(LU_ERROR_LUEVENT_MEMORY_POOL_ABORT)] = "Luevent MemoryPool ABORT",
+    [LU_ERROR_INDEX(LU_ERROR_INVALID_PATH)] = "INVALID PATH",
 };
 
 
@@ -71,61 +72,12 @@ static pthread_mutex_t  error_table_mutex;
 
 
 const char*                get_error_message_(int error_code);
-static const char*         load_error_string_(int error_code);
 static lu_error_info_t*    get_or_create_error_entry_(int error_code) ;
 static void                cleanup_error_table_(void) ;
 static void                initialize_error_table_(void) ;
 
 
 // 错误信息的加载函数
-static const char* load_error_string_(int error_code) {
-    switch (error_code) {
-        case 0x100: return "Operation not permitted";
-        case 0x101: return "No such file or directory";
-        case 0x102: return "No such process";
-        case 0x103: return "Interrupted system call";
-        case 0x104: return "Input/output error";
-        case 0x105: return "No such device or address";
-        case 0x106: return "Argument list too long";
-        case 0x107: return "Exec format error";
-        case 0x108: return "Bad file descriptor";
-        case 0x109: return "No child processes";
-        case 0x10A: return "Try again";
-        case 0x10B: return "Out of memory";
-        case 0x10C: return "Permission denied";
-        case 0x10D: return "Bad address";
-        case 0x10E: return "Block device required";
-        case 0x10F: return "Device or resource busy";
-        case 0x110: return "File exists";
-        case 0x111: return "Cross-device link";
-        case 0x112: return "No such device";
-        case 0x113: return "Not a directory";
-        case 0x114: return "Is a directory";
-        case 0x115: return "Invalid argument";
-        case 0x116: return "File table overflow";
-        case 0x117: return "Too many open files";
-        case 0x118: return "Not a typewriter";
-        case 0x119: return "Text file busy";
-        case 0x11A: return "File too large";
-        case 0x11B: return "No space left on device";
-        case 0x11C: return "Illegal seek";
-        case 0x11D: return "Read-only file system";
-        case 0x11E: return "Too many links";
-        case 0x11F: return "Broken pipe";
-        case 0x120: return "Math argument out of domain of function";
-        case 0x121: return "Result too representable";
-        case 0x122: return "Luevent MemoyPool OK";
-        case 0x123: return "Luevent MemoyPool ERROR";
-        case 0x124: return "Luevent MemoryPool AGAIN";
-        case 0x125: return "Luevent MemoryPool BUSY";
-        case 0x126: return "Luevent MemoryPool DONE";
-        case 0x127: return "Luevent MemoryPool DECLINED";
-        case 0x128: return "Luevent MemoryPool ABORT";
-        default: return "Unknown error";
-    }
-}
- 
-
 
 // 错误码字符串访问函数 采用数组形式
 const char* lu_get_error_string(int error_code) {

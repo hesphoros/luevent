@@ -14,6 +14,10 @@ public:
     pthread_mutex_init(&mtx, NULL);
   }
 
+  ~lu_lock_s() {
+    pthread_mutex_destroy(&mtx);
+  }
+
 }lu_lock_t;
 
 #endif /* LU_MUTEX_INTERNAL_H */

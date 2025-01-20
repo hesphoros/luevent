@@ -156,9 +156,9 @@ lu_hash_table_t* lu_hash_table_init(size_t table_size)
 void lu_hash_table_insert(lu_hash_table_t* table, int key, void* value)
 {
 	// Check if we need to resize the hash table
-	if ((double)table->element_count / table->table_size > LU_HASH_TABLE_MAX_LOAD_FACTOR) {
-		lu_hash_table_resize(table);
-	}
+	// if ((double)table->element_count / table->table_size > LU_HASH_TABLE_MAX_LOAD_FACTOR) {
+	// 	lu_hash_table_resize(table);
+	// }
 	int index = lu_hash_function(key, table->table_size);
 
 	lu_hash_bucket_t* bucket = &table->buckets[index];

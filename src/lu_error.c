@@ -72,7 +72,7 @@ static pthread_mutex_t  error_table_mutex;
 
 
 
-static const char*          get_error_message_(int error_code);
+const char*          get_error_message_(int error_code);
 static const char*         load_error_string_(int error_code);
 static lu_error_info_t*    get_or_create_error_entry_(int error_code) ;
 static void                cleanup_error_table_(void) ;
@@ -141,7 +141,7 @@ const char* lu_get_error_string(int error_code) {
      
 }
 
-static const char* get_error_message_(int index) {
+const char* get_error_message_(int index) {
     
     return lu_error_strings_global[index];
 }
@@ -160,8 +160,8 @@ static lu_error_info_t* get_or_create_error_entry_(int error_code) {
             fprintf(stderr, "Memory allocation failed for error entry\n");
             exit(EXIT_FAILURE);
         }
-        //FIXME 使用内部mmzero函数
-        memset(entry, 0, sizeof(lu_error_info_t));  // 初始化条目
+       
+        
          // 由于是新创建的条目，确保所有字段正确初始化
         entry->error_code = error_code;  // 设置错误码
         entry->error_message = NULL;     // 尚未加载错误信息
@@ -179,14 +179,13 @@ static void cleanup_error_table_(void)  {
     pthread_mutex_lock(&error_table_mutex);  // 加锁
     //清理 entries
       // 遍历哈希表并清理每个条目
-    for (size_t i = LU_ERROR_CODE_START_VALUE + 1 ; i < LU_MAX_ERROR_CODE; i++) {
+    for (size_t i = LU_ERROR_CODE_START_VALUE  ; i < LU_MAX_ERROR_CODE; i++) {
         lu_error_info_t* entry = LU_HASH_TABLE_FIND(lu_error_hash_table, i);  // 获取每个条目
         if (entry) {
-            if(entry->error_message){
-                //mm_free((void*)entry->error_message);
-            }         
-            LU_HASH_TABLE_DELETE(lu_error_hash_table, i);  // 从哈希表中删除该条目
+                  
             mm_free(entry);  // 释放条目的内存
+            LU_HASH_TABLE_DELETE(lu_error_hash_table, i);  // 从哈希表中删除该条目
+            
         }
     }
 

@@ -163,10 +163,10 @@ void test_logging(){
 }
 
 
-int main(void){
-    //test_hash();
-    test_mm_memory();
-    test_logging();
-    test_error_to_string();
-    return 0;
-}
+// int main(void){
+//     //test_hash();
+//     test_mm_memory();
+//     test_logging();
+//     test_error_to_string();
+//     return 0;
+// }

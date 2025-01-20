@@ -1,6 +1,6 @@
 *.out
 ./clangd
-build/
+build/*
 key.pem
 .cache/
 .vscode/

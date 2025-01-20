@@ -12,4 +12,5 @@
 
 ## 2025-1-19
 
-- [X] 修复了lu_errorn中错误表(lu_hash_table)的内存泄露 ，entry(lu_error_info_t)下的error_msg(const char*)内存泄露未free
+- [X] 修复了lu_errorn 中的内存泄露；泄露原因是lu_hash_table rehash 存在问题
+

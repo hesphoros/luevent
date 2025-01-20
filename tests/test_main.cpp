@@ -58,6 +58,9 @@ TEST(LuErrorTest, GetErrorString) {
 
 TEST(LuevutilTest, CreateDictionary){
     EXPECT_EQ(lu_evutil_create_dictionay("test"), 0);
+    EXPECT_EQ(lu_evutil_create_dictionay(NULL), LU_ERROR_INVALID_PATH);
+    EXPECT_EQ(lu_evutil_create_dictionay(""), LU_ERROR_INVALID_PATH);
+    EXPECT_EQ(lu_evutil_create_dictionay("log1/log2/log3"), 0);
 }
 
  // 测试 lu_get_error_string_hash 函数

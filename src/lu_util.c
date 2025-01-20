@@ -163,9 +163,23 @@ int lu_evutil_configure_monotonic_time_(lu_evutil_monotonic_timer_t *base,
  return 0;
 }
 
+int lu_evutil_check_dict_file_exist(const char *path){
+    if (path == NULL || strlen(path) == 0) {        
+        return LU_ERROR_INVALID_PATH; 
+    }
+        struct stat sb;
+    if (stat(path, &sb) == 0) {
+        return 0; // 文件存在
+    }
+        return -1; // 文件不存在
+}
 
 int lu_evutil_create_dictionay(const char * path){
- 
+    
+    if(lu_evutil_check_dict_file_exist(path) == 0){
+        return 0; // 文件存在，不再创建
+    }
+    
     if (path == NULL || strlen(path) == 0) {        
         return LU_ERROR_INVALID_PATH; 
     }

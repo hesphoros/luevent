@@ -60,11 +60,11 @@ add_test(NAME LueventTest COMMAND lueventGTest)
 
 
 # 将静态库和动态库文件添加到默认清理规则
-set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES
-    "${PROJECT_SOURCE_DIR}/lib/libluevent_static.a"
+#set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES
+#    "${PROJECT_SOURCE_DIR}/lib/libluevent_static.a"
     #"${PROJECT_SOURCE_DIR}/lib/libluevent_shared.so"
-)
+#)
 
-set_directory_properties(PROPERTIES ADDITIONAL_CLEAN_FILES
-    "${PROJECT_SOURCE_DIR}/lib/libluevent_shared.so"
-)
+#et_directory_properties(PROPERTIES ADDITIONAL_CLEAN_FILES
+#    "${PROJECT_SOURCE_DIR}/lib/libluevent_shared.so"#
+#)

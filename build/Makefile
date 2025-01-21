@@ -174,26 +174,12 @@ luevent_static/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/build
 .PHONY : luevent_static/fast
 
-#=============================================================================
-# Target rules for targets named luevent_shared
-
-# Build rule for target.
-luevent_shared: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 luevent_shared
-.PHONY : luevent_shared
-
-# fast build rule for target.
-luevent_shared/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/build
-.PHONY : luevent_shared/fast
-
 src/lu_error.o: src/lu_error.c.o
 .PHONY : src/lu_error.o
 
 # target to build an object file
 src/lu_error.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_error.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_error.c.o
 .PHONY : src/lu_error.c.o
 
 src/lu_error.i: src/lu_error.c.i
@@ -202,7 +188,6 @@ src/lu_error.i: src/lu_error.c.i
 # target to preprocess a source file
 src/lu_error.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_error.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_error.c.i
 .PHONY : src/lu_error.c.i
 
 src/lu_error.s: src/lu_error.c.s
@@ -211,7 +196,6 @@ src/lu_error.s: src/lu_error.c.s
 # target to generate assembly for a file
 src/lu_error.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_error.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_error.c.s
 .PHONY : src/lu_error.c.s
 
 src/lu_event.o: src/lu_event.c.o
@@ -220,7 +204,6 @@ src/lu_event.o: src/lu_event.c.o
 # target to build an object file
 src/lu_event.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_event.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_event.c.o
 .PHONY : src/lu_event.c.o
 
 src/lu_event.i: src/lu_event.c.i
@@ -229,7 +212,6 @@ src/lu_event.i: src/lu_event.c.i
 # target to preprocess a source file
 src/lu_event.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_event.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_event.c.i
 .PHONY : src/lu_event.c.i
 
 src/lu_event.s: src/lu_event.c.s
@@ -238,7 +220,6 @@ src/lu_event.s: src/lu_event.c.s
 # target to generate assembly for a file
 src/lu_event.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_event.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_event.c.s
 .PHONY : src/lu_event.c.s
 
 src/lu_hash_table.o: src/lu_hash_table.c.o
@@ -247,7 +228,6 @@ src/lu_hash_table.o: src/lu_hash_table.c.o
 # target to build an object file
 src/lu_hash_table.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_hash_table.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_hash_table.c.o
 .PHONY : src/lu_hash_table.c.o
 
 src/lu_hash_table.i: src/lu_hash_table.c.i
@@ -256,7 +236,6 @@ src/lu_hash_table.i: src/lu_hash_table.c.i
 # target to preprocess a source file
 src/lu_hash_table.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_hash_table.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_hash_table.c.i
 .PHONY : src/lu_hash_table.c.i
 
 src/lu_hash_table.s: src/lu_hash_table.c.s
@@ -265,7 +244,6 @@ src/lu_hash_table.s: src/lu_hash_table.c.s
 # target to generate assembly for a file
 src/lu_hash_table.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_hash_table.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_hash_table.c.s
 .PHONY : src/lu_hash_table.c.s
 
 src/lu_log.o: src/lu_log.c.o
@@ -274,7 +252,6 @@ src/lu_log.o: src/lu_log.c.o
 # target to build an object file
 src/lu_log.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_log.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_log.c.o
 .PHONY : src/lu_log.c.o
 
 src/lu_log.i: src/lu_log.c.i
@@ -283,7 +260,6 @@ src/lu_log.i: src/lu_log.c.i
 # target to preprocess a source file
 src/lu_log.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_log.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_log.c.i
 .PHONY : src/lu_log.c.i
 
 src/lu_log.s: src/lu_log.c.s
@@ -292,7 +268,6 @@ src/lu_log.s: src/lu_log.c.s
 # target to generate assembly for a file
 src/lu_log.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_log.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_log.c.s
 .PHONY : src/lu_log.c.s
 
 src/lu_mm-internal.o: src/lu_mm-internal.c.o
@@ -301,7 +276,6 @@ src/lu_mm-internal.o: src/lu_mm-internal.c.o
 # target to build an object file
 src/lu_mm-internal.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm-internal.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm-internal.c.o
 .PHONY : src/lu_mm-internal.c.o
 
 src/lu_mm-internal.i: src/lu_mm-internal.c.i
@@ -310,7 +284,6 @@ src/lu_mm-internal.i: src/lu_mm-internal.c.i
 # target to preprocess a source file
 src/lu_mm-internal.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm-internal.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm-internal.c.i
 .PHONY : src/lu_mm-internal.c.i
 
 src/lu_mm-internal.s: src/lu_mm-internal.c.s
@@ -319,7 +292,6 @@ src/lu_mm-internal.s: src/lu_mm-internal.c.s
 # target to generate assembly for a file
 src/lu_mm-internal.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm-internal.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm-internal.c.s
 .PHONY : src/lu_mm-internal.c.s
 
 src/lu_mm_alloc.o: src/lu_mm_alloc.c.o
@@ -328,7 +300,6 @@ src/lu_mm_alloc.o: src/lu_mm_alloc.c.o
 # target to build an object file
 src/lu_mm_alloc.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm_alloc.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm_alloc.c.o
 .PHONY : src/lu_mm_alloc.c.o
 
 src/lu_mm_alloc.i: src/lu_mm_alloc.c.i
@@ -337,7 +308,6 @@ src/lu_mm_alloc.i: src/lu_mm_alloc.c.i
 # target to preprocess a source file
 src/lu_mm_alloc.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm_alloc.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm_alloc.c.i
 .PHONY : src/lu_mm_alloc.c.i
 
 src/lu_mm_alloc.s: src/lu_mm_alloc.c.s
@@ -346,7 +316,6 @@ src/lu_mm_alloc.s: src/lu_mm_alloc.c.s
 # target to generate assembly for a file
 src/lu_mm_alloc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm_alloc.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm_alloc.c.s
 .PHONY : src/lu_mm_alloc.c.s
 
 src/lu_mm_pool_palloc.o: src/lu_mm_pool_palloc.c.o
@@ -355,7 +324,6 @@ src/lu_mm_pool_palloc.o: src/lu_mm_pool_palloc.c.o
 # target to build an object file
 src/lu_mm_pool_palloc.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm_pool_palloc.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm_pool_palloc.c.o
 .PHONY : src/lu_mm_pool_palloc.c.o
 
 src/lu_mm_pool_palloc.i: src/lu_mm_pool_palloc.c.i
@@ -364,7 +332,6 @@ src/lu_mm_pool_palloc.i: src/lu_mm_pool_palloc.c.i
 # target to preprocess a source file
 src/lu_mm_pool_palloc.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm_pool_palloc.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm_pool_palloc.c.i
 .PHONY : src/lu_mm_pool_palloc.c.i
 
 src/lu_mm_pool_palloc.s: src/lu_mm_pool_palloc.c.s
@@ -373,7 +340,6 @@ src/lu_mm_pool_palloc.s: src/lu_mm_pool_palloc.c.s
 # target to generate assembly for a file
 src/lu_mm_pool_palloc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm_pool_palloc.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_mm_pool_palloc.c.s
 .PHONY : src/lu_mm_pool_palloc.c.s
 
 src/lu_util.o: src/lu_util.c.o
@@ -382,7 +348,6 @@ src/lu_util.o: src/lu_util.c.o
 # target to build an object file
 src/lu_util.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_util.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_util.c.o
 .PHONY : src/lu_util.c.o
 
 src/lu_util.i: src/lu_util.c.i
@@ -391,7 +356,6 @@ src/lu_util.i: src/lu_util.c.i
 # target to preprocess a source file
 src/lu_util.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_util.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_util.c.i
 .PHONY : src/lu_util.c.i
 
 src/lu_util.s: src/lu_util.c.s
@@ -400,7 +364,6 @@ src/lu_util.s: src/lu_util.c.s
 # target to generate assembly for a file
 src/lu_util.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_util.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/lu_util.c.s
 .PHONY : src/lu_util.c.s
 
 src/main.o: src/main.c.o
@@ -409,7 +372,6 @@ src/main.o: src/main.c.o
 # target to build an object file
 src/main.c.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/main.c.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/main.c.o
 .PHONY : src/main.c.o
 
 src/main.i: src/main.c.i
@@ -418,7 +380,6 @@ src/main.i: src/main.c.i
 # target to preprocess a source file
 src/main.c.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/main.c.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/main.c.i
 .PHONY : src/main.c.i
 
 src/main.s: src/main.c.s
@@ -427,7 +388,6 @@ src/main.s: src/main.c.s
 # target to generate assembly for a file
 src/main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/main.c.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_shared.dir/build.make CMakeFiles/luevent_shared.dir/src/main.c.s
 .PHONY : src/main.c.s
 
 # Help Target
@@ -442,7 +402,6 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... luevent_shared"
 	@echo "... luevent_static"
 	@echo "... src/lu_error.o"
 	@echo "... src/lu_error.i"

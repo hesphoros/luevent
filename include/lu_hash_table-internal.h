@@ -128,9 +128,9 @@ extern "C" {
 	*  Structure representing a hash table
 	*/
 	typedef struct lu_hash_table_s {
-		lu_hash_bucket_t* buckets;
-		size_t				  table_size;
-		size_t		      element_count; // Current number of elements in the hash table
+		lu_hash_bucket_t* 		buckets;
+		size_t				  	table_size;
+		size_t		      		element_count; // Current number of elements in the hash table
 	}lu_hash_table_t;
 
 	static inline void* lu_mm_malloc(size_t size) {

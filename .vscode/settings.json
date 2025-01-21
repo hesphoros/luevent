@@ -9,6 +9,11 @@
         "lu_mm_core.h": "c",
         "lu_util.h": "c",
         "cerrno": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "span": "cpp",
+        "utility": "cpp"
     }
 }

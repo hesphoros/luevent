@@ -55,6 +55,13 @@ TEST(LuErrorTest, GetErrorString) {
 }
 
 
+TEST(Testluhashtable,init){
+    lu_hash_table_t *ht = LU_HASH_TABLE_INIT(10);
+    EXPECT_EQ(ht->element_count, 0);
+    EXPECT_EQ(ht->table_size, 10);
+    LU_HASH_TABLE_DESTROY(ht);
+    
+}
 
 TEST(LuevutilTest, CreateDictionary){
     EXPECT_EQ(lu_evutil_create_dictionay("test"), 0);
@@ -112,11 +119,6 @@ TEST(LuErrorTest, GetErrorStringHash) {
     EXPECT_STREQ(lu_get_error_string_hash(1000000),"Unknown error: 1000000");
 
 }
-
- 
-
-
-
 
 // 定义包含姓名、ID号、性别等信息的结构体
 typedef struct {
@@ -216,7 +218,6 @@ int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     //test_hash();
     return RUN_ALL_TESTS();
-    return 0;
     
 }
 

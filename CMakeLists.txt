@@ -30,13 +30,13 @@ endif()
 # 创建静态库
 add_library(luevent_static STATIC ${SOURCES})
 # 创建动态库
-add_library(luevent_shared SHARED ${SOURCES})
+#add_library(luevent_shared SHARED ${SOURCES})
 
 # 链接 pthread 库(针对 UNIX)
 if(UNIX)
     #target_link_libraries(luevent pthread)
     target_link_libraries(luevent_static pthread)
-    target_link_libraries(luevent_shared pthread)
+    #target_link_libraries(luevent_shared pthread)
     #target_link_libraries(luevent gtest)
 endif()
 
@@ -46,10 +46,10 @@ target_include_directories(luevent_static PUBLIC
     ${PROJECT_SOURCE_DIR}/compat
 )
 
-target_include_directories(luevent_shared PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/compat
-)
+#target_include_directories(luevent_shared PUBLIC
+#    ${PROJECT_SOURCE_DIR}/include
+#    ${PROJECT_SOURCE_DIR}/compat
+#)
 
 
 # 设置默认的构建类型为 Debug（如果没有指定）
@@ -67,13 +67,19 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2 -DNDEBUG")
 # 如果是 Windows 平台，链接所需的库（如 ws2_32.lib）
 if(WIN32)
     target_link_libraries(luevent_static ws2_32)
-    target_link_libraries(luevent_shared ws2_32)
+    #target_link_libraries(luevent_shared ws2_32)
 endif()
 
 
 # 设置安装规则
-install(TARGETS luevent_static luevent_shared
+install(TARGETS luevent_static #luevent_shared
     ARCHIVE DESTINATION ~/codespace/luevent/tests/lib
     LIBRARY DESTINATION ~/codespace/luevent/tests/lib
     RUNTIME DESTINATION ~/codespace/luevent/tests/bin
+)
+
+# 将静态库和动态库文件添加到默认清理规则
+set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES
+    "${PROJECT_SOURCE_DIR}/tests/lib/libluevent_static.a"
+    #"${PROJECT_SOURCE_DIR}/lib/libluevent_shared.so"
 )

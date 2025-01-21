@@ -16,7 +16,7 @@ TEST(Testlulog,test_enable_default_file_log){
     std::string str_debug = "debug log";
     LU_EVENT_LOG_DEBUGX("Test  %s ",str_debug.c_str());
     std::string str_error = "error log";
-    LU_EVENT_LOG_ERRORV("Test %s",str_error.c_str());
+    LU_EVENT_LOG_ERRORV("Test  %s",str_error.c_str());
     std::string str_warn = "warn log";
     LU_EVENT_LOG_WARN("Test  %s ",str_warn.c_str());
     std::string str_msg = "msg log";

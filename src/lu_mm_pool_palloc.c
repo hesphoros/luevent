@@ -260,8 +260,7 @@ void *ngx_pmemalign(lu_mm_pool_t *pool, size_t size, size_t alignment)
     return p;
 }
 
-
-lu_intptr_t ngx_pfree(lu_mm_pool_t *pool, void *p)
+lu_intptr_t lu_mm_pool_free(lu_mm_pool_t *pool, void *p)
 {
     lu_mm_pool_large_t  *l;
 

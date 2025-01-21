@@ -173,13 +173,13 @@ void test_logging(){
 }
 
 
-int main(void){
-    //test_hash();
-    test_mm_memory();
-    test_logging();
-    test_error_to_string();
-    lu_mm_pool_t *pool = lu_mm_create_pool(1024*1024*1024);
+// int main(void){
+//     //test_hash();
+//     test_mm_memory();
+//     test_logging();
+//     test_error_to_string();
+//     lu_mm_pool_t *pool = lu_mm_create_pool(1024*1024*1024);
 
-    lu_mm_destroy_pool(pool);
-    return 0;
-}
+//     lu_mm_destroy_pool(pool);
+//     return 0;
+// }

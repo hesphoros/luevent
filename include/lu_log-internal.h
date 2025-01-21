@@ -79,7 +79,7 @@ typedef void (*lu_log_lock_fn)(int lock, void* data);
 
 
 
-const char* lu_log_level_to_string(int level);
+//const char* lu_log_level_to_string(int level);
 
 void lu_log_set_level(int level);
 void lu_log_set_quiet(int enable);
@@ -164,7 +164,7 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_enable_debug_logging(lu_uint32_t which_mask
  */
 LU_EVENT_EXPORT_SYMBOL void lu_event_set_fatal_callback(lu_event_fatal_cb fatal_cb);
 
-void enable_default_file_logging(const char* filename, int level);
+void lu_enable_default_file_logging(const char* filename, int level);
 
 #ifdef __cplusplus
 }

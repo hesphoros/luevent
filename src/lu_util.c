@@ -174,6 +174,48 @@ int lu_evutil_check_dict_file_exist(const char *path){
         return -1; // 文件不存在
 }
 
+int lu_evutil_check_contain_directory(const char *filename){
+    if (filename == NULL || strlen(filename) == 0) {        
+        return LU_ERROR_INVALID_PATH; 
+    }
+    while(*filename){
+        if(*filename == '/' || *filename == '\\'){
+            return 1;//包含目录
+        }
+        filename++;
+    }
+    return 0;
+}
+
+const char* lu_evutil_strip_directory(const char *filename,char * out_buf,size_t out_buffer_size)
+{
+    const char *last_slash_pos = NULL;
+    const char *p = filename;
+
+    // 找到最后一个斜杠的位置
+    while (*p) {
+        if (*p == '/' || *p == '\\') {
+            last_slash_pos = p + 1;
+        }
+        p++;
+    }
+    //如果没有找到目录分隔符，则返回原路径
+    if(!last_slash_pos){
+        return filename;
+    }
+
+    size_t filename_len = strlen(last_slash_pos);
+    if(filename_len >= out_buffer_size){
+        printf("ERROR: out buffer size is not enough to hold the filename\n");
+        return NULL;
+    }
+   
+   strncpy(out_buf,last_slash_pos,filename_len);
+   out_buf[filename_len] = '\0';
+   return out_buf;
+}
+
+
 int lu_evutil_create_dictionay(const char * path){
     
     if(lu_evutil_check_dict_file_exist(path) == 0){

@@ -15,5 +15,6 @@
         "initializer_list": "cpp",
         "span": "cpp",
         "utility": "cpp"
-    }
+    },
+    "Codegeex.RepoIndex": true
 }

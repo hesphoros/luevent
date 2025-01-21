@@ -1,6 +1,8 @@
 #include "lu_erron.h"
 #include "lu_hash_table-internal.h"
 #include "lu_util.h"
+#include "lu_log-internal.h"
+#include "lu_util.h"
 #include <gtest/gtest.h>
 
 #include <stdio.h>
@@ -62,6 +64,20 @@ TEST(Testluhashtable,init){
     LU_HASH_TABLE_DESTROY(ht);
     
 }
+
+TEST(Testlulog,test_enable_default_file_log){
+    lu_enable_default_file_logging(NULL, LU_EVENT_LOG_LEVEL_DEBUG);
+    char* str_debug = "debug log";
+    LU_EVENT_LOG_DEBUGX("Test  %s ",str_debug);
+    char* str_error = "info log";
+    LU_EVENT_LOG_ERROR(LU_ERROR_BAD_ADDRESS,"BAD ADDRESS");
+    char * str_warn = "warn log";
+    LU_EVENT_LOG_WARN("Test  %s ",str_warn);
+    char* str_msg = "msg log";
+    LU_EVENT_LOG_MSGX("Test  %s ",str_msg);
+    
+}
+
 
 TEST(LuevutilTest, CreateDictionary){
     EXPECT_EQ(lu_evutil_create_dictionay("test"), 0);

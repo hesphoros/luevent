@@ -30,7 +30,7 @@
 */
 static void lu_event_log_(int severity, const char *msg);
 
-//TODO: DELELTE ME
+//FIXME: DELELTE ME 
 #define LU_EVENT_DEBUG_LOGGING_ENABLED
 #define LU_USE_DEBUG
 
@@ -334,6 +334,7 @@ static void lu_unlock(void) {
 void lu_log_set_quiet(int enable)
 {
 	lu_log_config_t.quiet = enable;
+
 }
 
 int lu_log_add_handler(lu_log_handler_t handler, void* data, int level)
@@ -449,7 +450,7 @@ __attribute__((constructor)) void init_default_file_log()
 {
     if(enbale_default_file_log_)
     {
-        enable_default_file_logging(NULL, LU_EVENT_LOG_LEVEL_DEBUG);
+        lu_enable_default_file_logging(NULL, LU_EVENT_LOG_LEVEL_DEBUG);
     }
 }
 
@@ -463,11 +464,12 @@ __attribute__((destructor)) void destroy_default_file_log()
 }
 
 
-void enable_default_file_logging(const char* filename, int level)
+void lu_enable_default_file_logging(const char* filename, int level)
 {
     //TODO :
     //如果filename 中包含目录，则创建目录
-    //int default_level = LU_EVENT_LOG_LEVEL_DEBUG;
+    
+
     if(level < LU_EVENT_LOG_LEVEL_DEBUG || level > LU_EVENT_LOG_LEVEL_ERROR)
     {
         level = LU_EVENT_LOG_LEVEL_DEBUG;
@@ -477,15 +479,32 @@ void enable_default_file_logging(const char* filename, int level)
     const char* default_filename = "./log/lu_event.log";
     if (filename == NULL) {
         filename = default_filename;
-        int ret = lu_evutil_create_dictionay("./log/");
+        int ret = lu_evutil_create_dictionay("/log");
         if (ret != 0) {
             printf("Error: create dictionary failed ret[%d]\n",ret);
             return;
         }
     }
+    if(filename != NULL)
+    {
+        if(lu_evutil_check_contain_directory(filename))
+        {
+            char path[1024];
+            lu_evutil_strip_directory(filename, path, sizeof(path));
+            int ret = lu_evutil_create_dictionay(path);
+            if (ret != 0) {
+                printf("Error: create dictionary failed ret[%d] str [%s]\n",ret,lu_get_error_string(ret));
+                return;
+            }
+        }
+    }
+
+    
+  
+    
     default_file_log_fp_ = fopen(filename, "a");
     lu_log_add_fp(default_file_log_fp_, level);
-    printf("[ INFO ] Enable file logging to %s with level %d\n", filename, level);
+    printf("[ INFO ] Enable file logging to %s with level %s\n", filename, level[lu_log_level_strings]);
     enbale_default_file_log_ = 1;
     
 }

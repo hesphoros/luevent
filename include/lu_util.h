@@ -197,6 +197,9 @@ int lu_evutil_configure_monotonic_time_( lu_evutil_monotonic_timer_t *base,int f
 
 int lu_evutil_create_dictionay(const char * path);
 int lu_evutil_check_dict_file_exist(const char *path);
+int lu_evutil_check_contain_directory(const char *filename);
+
+const char* lu_evutil_strip_directory(const char *filename,char * out_buf,size_t out_buffer_size);
 
 //lu_evutil_timercmp
 #define lu_evutil_timercmp(tvp,uvp,cmp) \

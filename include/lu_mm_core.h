@@ -13,11 +13,14 @@ typedef struct lu_mm_pool_s            lu_mm_pool_t;
 #include <stdint.h>
 #include <sys/types.h>
 #include <string.h>
-//#include <errno.h>
+
 #include <lu_erron.h>
 // #include <sys/mman.h>
 #include "lu_util.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 
@@ -31,6 +34,11 @@ typedef struct lu_mm_pool_s            lu_mm_pool_t;
 
 
 #define lu_mm_memzero(buf,n)        (void) memset(buf, 0, n)
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #include "lu_mm_alloc.h"
 #include "lu_mm_palloc.h"

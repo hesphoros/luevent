@@ -68,4 +68,4 @@ const char* lu_get_error_string_hash(int error_code);
 }
 #endif
 
-#endif // LU_ERRNO_H_
+#endif /*LU_ERRNO_H_*/

@@ -6,6 +6,10 @@
 #include "lu_mm_core.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * NGX_MAX_ALLOC_FROM_POOL should be (lu_mm_pagesize - 1), i.e. 4095 on x86.
  * On Windows NT it decreases a number of locked pages in a kernel.
@@ -22,7 +26,7 @@
 
 #define LU_MM_MIN_POOL_SIZE                                                         \
         lu_align((sizeof(lu_mm_pool_t) + 2 * sizeof(lu_mm_pool_large_t)),              \
-            LU_MM_POOL_ALIGNMENT))                      
+            LU_MM_POOL_ALIGNMENT)                     
 
 
 typedef struct lu_mm_pool_large_s  lu_mm_pool_large_t;
@@ -59,12 +63,15 @@ lu_mm_pool_t *lu_mm_create_pool(size_t size);
 void lu_mm_destroy_pool(lu_mm_pool_t *pool);
 void lu_mm_reset_pool(lu_mm_pool_t *pool);
 
-void *lu_mm_palloc(lu_mm_pool_t *pool, size_t size);
-void *lu_mm_pnalloc(lu_mm_pool_t *pool, size_t size);
-void *lu_mm_pcalloc(lu_mm_pool_t *pool, size_t size);
-void *lu_mm_pmemalign(lu_mm_pool_t *pool, size_t size, size_t alignment);
-lu_intptr_t lu_mm_pfree(lu_mm_pool_t *pool, void *p);
+void *lu_mm_pool_alloc(lu_mm_pool_t *pool, size_t size);
+void *lu_mm_pool_nalloc(lu_mm_pool_t *pool, size_t size);
+void *lu_mm_pool_calloc(lu_mm_pool_t *pool, size_t size);
+void *lu_mm_pool_memalign(lu_mm_pool_t *pool, size_t size, size_t alignment);
+lu_intptr_t lu_mm_pool_free(lu_mm_pool_t *pool, void *p);
 
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _LU_MM_PALLOC_H_INCLUDED_ */

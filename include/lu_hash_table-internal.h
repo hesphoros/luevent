@@ -54,9 +54,9 @@ extern "C" {
 	*/
 #define LU_HASH_BUCKET_LIST_THRESHOLD 8
 
-#define LU_MM_MALLOC(size)			lu_mm_malloc(size)
-#define LU_MM_CALLOC(nmemb,size)	lu_mm_calloc(nmemb,size)
-#define LU_MM_FREE(ptr)				lu_mm_free(ptr)
+#define LU_MM_MALLOC(size)			luhash_mm_malloc(size)
+#define LU_MM_CALLOC(nmemb,size)	luhash_mm_calloc(nmemb,size)
+#define LU_MM_FREE(ptr)				luhash_mm_free(ptr)
 
 	//#define  LU_HASH_DEBUG
 
@@ -133,7 +133,7 @@ extern "C" {
 		size_t		      		element_count; // Current number of elements in the hash table
 	}lu_hash_table_t;
 
-	static inline void* lu_mm_malloc(size_t size) {
+	static inline void* luhash_mm_malloc(size_t size) {
 		void* ptr = malloc(size);
 		if (ptr == NULL) {
 #ifdef LU_HASH_DEBUG
@@ -145,14 +145,14 @@ extern "C" {
 		return ptr;
 	}
 
-	static inline void lu_mm_free(void* ptr) {
+	static inline void luhash_mm_free(void* ptr) {
 		if (ptr) {
 			free(ptr);
 			ptr = NULL;
 		}
 	}
 
-	static inline void* lu_mm_calloc(size_t nmemb, size_t size) {
+	static inline void* luhash_mm_calloc(size_t nmemb, size_t size) {
 		void* ptr = calloc(nmemb, size);
 		if (ptr == NULL) {
 #ifdef LU_HASH_DEBUG

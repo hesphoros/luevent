@@ -1,5 +1,6 @@
 #define LU_EVENT_DEBUG_LOGGING_ENABLED
 #define LU_USE_DEBUG
+#include "lu_mm_core.h"
 #include "lu_memory_manager.h"
 #include <stdio.h>
 #include "lu_erron.h"
@@ -7,6 +8,15 @@
 #include "lu_hash_table-internal.h"
 #include "lu_log-internal.h"
 #include "lu_util.h"
+#include "lu_mm_alloc.h"
+
+#include "lu_mm_palloc.h"
+#include "lu_changelist-internal.h"
+#include "lu_event-internal.h"
+#include "lu_event_struct.h"
+#include "lu_min_heap.h"
+#include "lu_mutex-internal.h"
+#include "lu_visibility.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -163,10 +173,13 @@ void test_logging(){
 }
 
 
-// int main(void){
-//     //test_hash();
-//     test_mm_memory();
-//     test_logging();
-//     test_error_to_string();
-//     return 0;
-// }
+int main(void){
+    //test_hash();
+    test_mm_memory();
+    test_logging();
+    test_error_to_string();
+    lu_mm_pool_t *pool = lu_mm_create_pool(1024*1024*1024);
+
+    lu_mm_destroy_pool(pool);
+    return 0;
+}

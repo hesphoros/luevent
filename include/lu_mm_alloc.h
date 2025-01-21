@@ -7,6 +7,12 @@
 #include "lu_mm_core.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
 void *lu_mm_alloc(size_t size);
 void *lu_mm_calloc(size_t size);
 
@@ -35,6 +41,10 @@ void *lu_mm_memalign(size_t alignment, size_t size);
 extern lu_uintptr_t  lu_mm_pagesize;
 extern lu_uintptr_t  lu_mm_pagesize_shift;
 extern lu_uintptr_t  lu_mm_cacheline_size;
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* _LU_MM_ALLOC_H_INCLUDED_ */

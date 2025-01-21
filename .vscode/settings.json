@@ -14,7 +14,11 @@
         "string_view": "cpp",
         "initializer_list": "cpp",
         "span": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "string": "cpp",
+        "lu_mm_alloc.h": "c",
+        "lu_visibility.h": "c",
+        "lu_mutex-internal.h": "c"
     },
     "Codegeex.RepoIndex": true
 }

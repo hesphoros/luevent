@@ -1249,7 +1249,7 @@ static void lu_rb_tree_rehash(lu_rb_tree_t* tree, lu_rb_tree_node_t* node, lu_ha
 static void lu_hash_table_resize(lu_hash_table_t* table)
 {
 	int new_table_size = table->table_size * 2;
-	lu_hash_bucket_t* new_buckets = (lu_hash_bucket_t*)LU_MM_CALqwLOC(new_table_size, sizeof(lu_hash_bucket_t));
+	lu_hash_bucket_t* new_buckets = (lu_hash_bucket_t*)LU_MM_CALLOC(new_table_size, sizeof(lu_hash_bucket_t));
 
 	for (int i = 0; i < new_table_size; i++) {
 		new_buckets[i].type = LU_HASH_BUCKET_LIST;

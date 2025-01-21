@@ -441,19 +441,51 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
     lu_unlock();
 }
 
+static int enbale_default_file_log_ = 0;
+FILE* default_file_log_fp_ = NULL;
+
+
+__attribute__((constructor)) void init_default_file_log()
+{
+    if(enbale_default_file_log_)
+    {
+        enable_default_file_logging(NULL, LU_EVENT_LOG_LEVEL_DEBUG);
+    }
+}
+
+__attribute__((destructor)) void destroy_default_file_log()
+{
+    if(enbale_default_file_log_)
+    {
+        fclose(default_file_log_fp_);
+        enbale_default_file_log_ = 0;
+    }
+}
+
 
 void enable_default_file_logging(const char* filename, int level)
 {
-    int ret = lu_evutil_create_dictionay("./log/");
-    if (ret != 0) {
-        printf("Error: create dictionary failed ret[%d]\n",ret);
-        return;
+    //TODO :
+    //如果filename 中包含目录，则创建目录
+    //int default_level = LU_EVENT_LOG_LEVEL_DEBUG;
+    if(level < LU_EVENT_LOG_LEVEL_DEBUG || level > LU_EVENT_LOG_LEVEL_ERROR)
+    {
+        level = LU_EVENT_LOG_LEVEL_DEBUG;
     }
+
+   
     const char* default_filename = "./log/lu_event.log";
     if (filename == NULL) {
         filename = default_filename;
+        int ret = lu_evutil_create_dictionay("./log/");
+        if (ret != 0) {
+            printf("Error: create dictionary failed ret[%d]\n",ret);
+            return;
+        }
     }
-    FILE* fp = fopen(filename, "a");
-    lu_log_add_fp(fp, level);
-    printf("Enable file logging to %s with level %d\n", filename, level);
+    default_file_log_fp_ = fopen(filename, "a");
+    lu_log_add_fp(default_file_log_fp_, level);
+    printf("[ INFO ] Enable file logging to %s with level %d\n", filename, level);
+    enbale_default_file_log_ = 1;
+    
 }

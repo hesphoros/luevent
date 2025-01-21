@@ -164,6 +164,8 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_enable_debug_logging(lu_uint32_t which_mask
  */
 LU_EVENT_EXPORT_SYMBOL void lu_event_set_fatal_callback(lu_event_fatal_cb fatal_cb);
 
+void enable_default_file_logging(const char* filename, int level);
+
 #ifdef __cplusplus
 }
 #endif

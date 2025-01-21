@@ -477,20 +477,14 @@ void lu_enable_default_file_logging(const char* filename, int level)
 
    
     const char* default_filename = "./log/lu_event.log";
-    if (filename == NULL) {
-        filename = default_filename;
-        int ret = lu_evutil_create_dictionay("/log");
-        if (ret != 0) {
-            printf("Error: create dictionary failed ret[%d]\n",ret);
-            return;
-        }
-    }
+  
     if(filename != NULL)
     {
         if(lu_evutil_check_contain_directory(filename))
         {
             char path[1024];
-            lu_evutil_strip_directory(filename, path, sizeof(path));
+            lu_evutil_get_directory(filename, path, sizeof(path));
+           
             int ret = lu_evutil_create_dictionay(path);
             if (ret != 0) {
                 printf("Error: create dictionary failed ret[%d] str [%s]\n",ret,lu_get_error_string(ret));
@@ -499,6 +493,14 @@ void lu_enable_default_file_logging(const char* filename, int level)
         }
     }
 
+    if (filename == NULL) {
+        filename = default_filename;
+        int ret = lu_evutil_create_dictionay("./log/");
+        if (ret != 0) {
+            printf("Error: create dictionary failed ret[%d]\n",ret);
+            return;
+        }
+    }
     
   
     

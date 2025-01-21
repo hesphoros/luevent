@@ -1,1 +1,1 @@
-/root/codespace/luevent/tests/lib/libluevent_static.a
+/root/luevent/tests/lib/libluevent_static.a

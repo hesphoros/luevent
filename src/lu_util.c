@@ -187,7 +187,7 @@ int lu_evutil_check_contain_directory(const char *filename){
     return 0;
 }
 
-const char* lu_evutil_strip_directory(const char *filename,char * out_buf,size_t out_buffer_size)
+const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t out_buffer_size)
 {
     const char *last_slash_pos = NULL;
     const char *p = filename;
@@ -195,7 +195,7 @@ const char* lu_evutil_strip_directory(const char *filename,char * out_buf,size_t
     // 找到最后一个斜杠的位置
     while (*p) {
         if (*p == '/' || *p == '\\') {
-            last_slash_pos = p + 1;
+            last_slash_pos = p;
         }
         p++;
     }
@@ -204,14 +204,18 @@ const char* lu_evutil_strip_directory(const char *filename,char * out_buf,size_t
         return filename;
     }
 
-    size_t filename_len = strlen(last_slash_pos);
-    if(filename_len >= out_buffer_size){
-        printf("ERROR: out buffer size is not enough to hold the filename\n");
+      // 计算目录部分的长度（即最后一个斜杠之前的部分）
+    size_t dir_len = last_slash_pos - filename;
+
+    // 如果目录部分长度大于或等于输出缓冲区大小，返回错误
+    if (dir_len >= out_buffer_size) {
+        printf("ERROR: out buffer size is not enough to hold the directory\n");
         return NULL;
     }
    
-   strncpy(out_buf,last_slash_pos,filename_len);
-   out_buf[filename_len] = '\0';
+      // 将目录部分复制到输出缓冲区，并确保以空字符结束
+    strncpy(out_buf, filename, dir_len);
+    out_buf[dir_len] = '\0';
    return out_buf;
 }
 

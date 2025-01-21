@@ -73,9 +73,9 @@ endif()
 
 # 设置安装规则
 install(TARGETS luevent_static #luevent_shared
-    ARCHIVE DESTINATION ~/codespace/luevent/tests/lib
-    LIBRARY DESTINATION ~/codespace/luevent/tests/lib
-    RUNTIME DESTINATION ~/codespace/luevent/tests/bin
+    ARCHIVE DESTINATION "${PROJECT_SOURCE_DIR}/tests/lib"
+    LIBRARY DESTINATION "${PROJECT_SOURCE_DIR}/tests/lib"
+    RUNTIME DESTINATION "${PROJECT_SOURCE_DIR}/tests/bin"
 )
 
 # 将静态库和动态库文件添加到默认清理规则

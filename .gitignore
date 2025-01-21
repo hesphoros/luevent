@@ -12,3 +12,5 @@ build/libluevent_static.a
 tests/lib/libluevent_shared.so
 tests/lib/libluevent_static.a
 .VSCodeCounter/
+build/install_manifest.txt
+tests/lib/libluevent_static.a

@@ -9,86 +9,99 @@
 //lu_mm_pool
 #include "lu_mm_core.h"
 #include "lu_mm_alloc.h"
-#include "lu_mm_palloc.h"
-
-#define BLOCK_SIZE 1024 //每次分配内存卡大小 1kb
-#define TEST_COUNT 1024*500
-#define MEM_POOL_SIZE (1024*4) //内存池每块大小 4kb
-
-TEST(Testlummpool, test_lummpool) {
+#include "lu_mm_pool_palloc.h"
+#define BLOCK_SIZE (16)
+#define MEM_POOL_SIZE (1024*4)
+#define TEST_COUNT 1024
+/**
+ * Function: test_lummpool()
+ * -------------------------
+ * Description: This function compares the performance of memory allocation using a memory pool (lu_mm_pool) and using malloc/free in C++. It measures the elapsed time for each method and calculates the speedup factor. The results are printed to the console and logged using LU_EVENT_LOG_MSGX.
+ * 
+ * Parameters: None
+ * 
+ * Returns: None
+ */
+void test_lummpool() {
     int i = 0, k = 0;
-    int use_free = 0;
-
-    // 内存池部分
     struct timeval start_time, end_time;
-    gettimeofday(&start_time, NULL);
+    char *pool_str = NULL;
 
-    char *ptr = NULL;
-    // 使用 lu_mm_pool
+    // 获取页面大小
     lu_mm_pagesize = getpagesize();
-    //printf("pagesize: %d\n", lu_mm_pagesize);
 
-    for (k = 0; k < TEST_COUNT ; k++) {
-        lu_mm_pool_t *pool = lu_mm_create_pool(102 * 4);
+    // 使用内存池分配（lu_mm_pool）
+    gettimeofday(&start_time, NULL);
+    for (k = 0; k < 1024; k++) {
+        // 创建内存池，每次分配 BLOCK_SIZE 大小的内存块
+        lu_mm_pool_t *pool = lu_mm_create_pool(MEM_POOL_SIZE);
 
+        // 内存池分配
         for (i = 0; i < TEST_COUNT; i++) {
-            ptr = (char*)lu_mm_pool_alloc(pool, BLOCK_SIZE);
-            if (!ptr) {
-                fprintf(stderr, "palloc failed. reason:%s\n", strerror(errno));
+            pool_str = (char*)lu_mm_pool_alloc(pool, BLOCK_SIZE);
+            if (!pool_str) {
+                fprintf(stderr, "Memory pool allocation failed. Reason: %s\n", strerror(errno));
+                continue; // 如果分配失败，继续下一个循环
             } else {
-                *ptr = '\0';
-                *(ptr + BLOCK_SIZE - 1) = '\0';
+                *pool_str = '\0'; // 初始化
+                *(pool_str + BLOCK_SIZE - 1) = '\0';
             }
         }
 
+        // 销毁内存池
         lu_mm_destroy_pool(pool);
     }
-
-    // 记录程序结束时间
     gettimeofday(&end_time, NULL);
-    // 计算并输出运行时间（单位：秒）
-    double pool_elapsed_time = (end_time.tv_sec - start_time.tv_sec) + 
+    double pool_elapsed_time = (end_time.tv_sec - start_time.tv_sec) +
                                (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
     printf("Total lu_mm_pool elapsed time: %.4f seconds\n", pool_elapsed_time);
-    LU_EVENT_LOG_MSGX( "Total lu_mm_pool elapsed time: %.4f seconds", pool_elapsed_time);
-    // malloc/free 部分
-    gettimeofday(&start_time, NULL);
+    LU_EVENT_LOG_MSGX("Total lu_mm_pool elapsed time: %.4f seconds", pool_elapsed_time);
 
-    char *malloc_ptr[TEST_COUNT];
-    for (k = 0; k < TEST_COUNT ; k++) {
+    // 使用 malloc/free 分配（确保内存分配与内存池相同）
+    gettimeofday(&start_time, NULL);
+    char *ptr[TEST_COUNT];
+    for (k = 0; k < 1024; k++) {
+        // malloc/free 分配，每次分配 BLOCK_SIZE 大小的内存块
         for (i = 0; i < TEST_COUNT; i++) {
-            malloc_ptr[i] = (char*)malloc(BLOCK_SIZE);
-            if (!malloc_ptr[i]) {
-                fprintf(stderr, "malloc failed. reason:%s\n", strerror(errno));
+            ptr[i] = (char*)malloc(BLOCK_SIZE);
+            if (!ptr[i]) {
+                fprintf(stderr, "malloc failed. Reason: %s\n", strerror(errno));
             } else {
-                *malloc_ptr[i] = '\0';
-                *(malloc_ptr[i] + BLOCK_SIZE - 1) = '\0';
+                *ptr[i] = '\0'; // 初始化
+                *(ptr[i] + BLOCK_SIZE - 1) = '\0';
             }
         }
 
+        // 释放内存
         for (i = 0; i < TEST_COUNT; i++) {
-            if (malloc_ptr[i]) {
-                free(malloc_ptr[i]);
-            }
+            if (ptr[i]) free(ptr[i]);
         }
     }
-
     gettimeofday(&end_time, NULL);
-    double malloc_elapsed_time = (end_time.tv_sec - start_time.tv_sec) + 
+    double malloc_elapsed_time = (end_time.tv_sec - start_time.tv_sec) +
                                  (end_time.tv_usec - start_time.tv_usec) / 1000000.0;
     printf("Total malloc elapsed time: %.4f seconds\n", malloc_elapsed_time);
-    LU_EVENT_LOG_MSGX( "Total malloc elapsed time: %.4f seconds", malloc_elapsed_time);
+    LU_EVENT_LOG_MSGX("Total malloc elapsed time: %.4f seconds", malloc_elapsed_time);
+
     // 比较两者的运行时间并输出加速比
-    if (malloc_elapsed_time > pool_elapsed_time) {
-        double speedup = malloc_elapsed_time / pool_elapsed_time;
-        printf("lu_mm_pool is %.2f times faster than malloc/free.\n", speedup);
-        LU_EVENT_LOG_MSGX( "lu_mm_pool is %.2f times faster than malloc/free.", speedup);
-    } else {
-        double speedup = pool_elapsed_time / malloc_elapsed_time;
-        printf("malloc/free is %.2f times faster than lu_mm_pool.\n", speedup);
-        LU_EVENT_LOG_MSGX( "malloc/free is %.2f times faster than lu_mm_pool.", speedup);
-    }
+    double speedup = (malloc_elapsed_time > pool_elapsed_time) ?
+                     malloc_elapsed_time / pool_elapsed_time :
+                     pool_elapsed_time / malloc_elapsed_time;
+
+    const char *faster = (malloc_elapsed_time > pool_elapsed_time) ? "malloc/free" : "lu_mm_pool";
+    printf("%s is %.2f times faster than %s.\n", faster, speedup, 
+           (malloc_elapsed_time > pool_elapsed_time) ? "lu_mm_pool" : "malloc/free");
+    LU_EVENT_LOG_MSGX("%s is %.2f times faster than %s.", faster, speedup, 
+           (malloc_elapsed_time > pool_elapsed_time) ? "lu_mm_pool" : "malloc/free");
 }
+
+
+TEST(Testlummpool, test_lummpool) {
+  test_lummpool();
+}
+
+
+
 
 
 #endif // TEST_LUMMPOOL_HPP

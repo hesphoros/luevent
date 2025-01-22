@@ -52,7 +52,7 @@ void lu_mm_destroy_pool(lu_mm_pool_t *pool)
     lu_mm_pool_large_t    *l;
 
 
-#if (NGX_DEBUG)
+#if (LU_MM_DEBUG_POOL)
 
     /*
      * we could allocate the pool->log from this pool
@@ -114,7 +114,7 @@ void lu_mm_reset_pool(lu_mm_pool_t *pool)
 
 void *lu_mm_pool_alloc(lu_mm_pool_t *pool, size_t size)
 {
-//#if !(NGX_DEBUG_PALLOC)
+//#if !(LU_MM_DEBUG_PALLOC)
     if (size <= pool->max) {
         return lu_mm_palloc_small(pool, size, 1);
     }
@@ -126,11 +126,11 @@ void *lu_mm_pool_alloc(lu_mm_pool_t *pool, size_t size)
 
 void *lu_mm_pool_nalloc(lu_mm_pool_t *pool, size_t size)
 {
-#if !(NGX_DEBUG_PALLOC)
+//#if !(LU_MM_DEBUG_PALLOC)
     if (size <= pool->max) {
         return lu_mm_palloc_small(pool, size, 0);
     }
-#endif
+//#endif
 
     return lu_mm_palloc_large(pool, size);
 }
@@ -237,7 +237,7 @@ static void *lu_mm_palloc_large(lu_mm_pool_t *pool, size_t size)
 }
 
 
-void *ngx_pmemalign(lu_mm_pool_t *pool, size_t size, size_t alignment)
+void *lu_mm_pool_memalign(lu_mm_pool_t *pool, size_t size, size_t alignment)
 {
     void              *p;
     lu_mm_pool_large_t  *large;
@@ -278,7 +278,7 @@ lu_intptr_t lu_mm_pool_free(lu_mm_pool_t *pool, void *p)
 }
 
 
-void * ngx_pcalloc(lu_mm_pool_t *pool, size_t size)
+void * lu_mm_pool_calloc(lu_mm_pool_t *pool, size_t size)
 {
     void *p;
 

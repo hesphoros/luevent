@@ -5,3 +5,5 @@ cmake -DCMAKE_BUILD_TYPE=Debug ..
 make
 
 ctest -C Debug
+
+valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --undef-value-errors=no --log-file=log ./your_program

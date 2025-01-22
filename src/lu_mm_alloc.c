@@ -4,8 +4,6 @@
 static int debug = 0;
 
 
-
-
 lu_uintptr_t  lu_mm_pagesize;
 lu_uintptr_t  lu_mm_pagesize_shift;
 lu_uintptr_t  lu_mm_cacheline_size;

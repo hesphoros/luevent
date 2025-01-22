@@ -30,7 +30,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fsanitize=undefined")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=undefined")
 endif()
-# 定义源文件
+#定义源文件
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/test_main.cpp  # 你的测试文件
     # ${PROJECT_SOURCE_DIR}/test_luevent.cpp  # 如果你有这个文件，可以取消注释

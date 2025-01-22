@@ -10,7 +10,7 @@
 #include "lu_util.h"
 #include "lu_mm_alloc.h"
 
-#include "lu_mm_palloc.h"
+#include "lu_mm_pool_palloc.h"
 #include "lu_changelist-internal.h"
 #include "lu_event-internal.h"
 #include "lu_event_struct.h"

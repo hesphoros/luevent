@@ -41,7 +41,7 @@ extern "C" {
 #endif
 
 #include "lu_mm_alloc.h"
-#include "lu_mm_palloc.h"
+#include "lu_mm_pool_palloc.h"
 
 
 #endif /* _LU_MM_CORE_H_INCLUDED_ */

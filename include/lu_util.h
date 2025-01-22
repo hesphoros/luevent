@@ -17,11 +17,11 @@ extern "C" {
 // socket type
 #define lu_evutil_socket_t  int
 #define lu_evutil_socklen_t socklen_t
- 
+
 /**
  * @name Standard integer types.
  * @{
-*/  
+*/
 
 #define lu_uint64_t     uint64_t
 #define lu_int64_t      int64_t
@@ -36,7 +36,7 @@ extern "C" {
 #define lu_uintptr_t    uintptr_t
 #define lu_intptr_t     intptr_t
 #define lu_size_t       size_t
-//ssize_t 
+//ssize_t
 #define lu_ssize_t      ssize_t
 //off_t
 #define lu_off_t        lu_int64_t
@@ -121,7 +121,7 @@ extern "C" {
 //debug level
 #define LU_EVENT_DBG_NONE 0
 #define LU_EVENT_DBG_ALL  0xffffffffu
- 
+
 
 /** @name Log severities
  */
@@ -208,7 +208,7 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
      ((tvp)->tv_sec cmp (uvp)->tv_sec))
 
 
-#ifdef __cplusplus  
+#ifdef __cplusplus
 }
 #endif
 

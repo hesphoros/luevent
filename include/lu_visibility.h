@@ -2,7 +2,7 @@
 #define LU_EVENT_VISIBILITY_H_INCLUDED_
 
 /**
- * @file lu_visibility.h 
+ * @file lu_visibility.h
  * @brief 定义符号导出
  * @author <hesphoros hesphoros@gmail>
  * @version 1.0
@@ -17,7 +17,7 @@
     defined(event_pthreads_shared_EXPORTS) || \
     defined(event_openssl_shared_EXPORTS) || \
     defined(event_mbedtls_shared_EXPORTS)
- 
+
 
 #ifdef  __GNUC__
 #define LU_EVENT_EXPORT_SYMBOL __attribute__ ((visibility("default")))

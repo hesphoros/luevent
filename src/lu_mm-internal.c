@@ -34,7 +34,7 @@ void* lu_event_mm_malloc_(size_t size){
         return NULL;
     }
     void* ptr = NULL;
-    
+
     if (lu_mm_malloc_fn_) {
         ptr = lu_mm_malloc_fn_(size);  // 调用自定义的内存分配函数
          // 如果启用了日志记录函数，则记录日志
@@ -42,15 +42,14 @@ void* lu_event_mm_malloc_(size_t size){
             lu_mm_malloc_log_fn_(MM_MALLOC_STR, ptr, size);  // 记录日志
         }
     } else {
-        ptr = malloc(size);  
-        
+        ptr = malloc(size);
+
         //if (ptr == NULL && lu_mm_malloc_log_fn_) {
         if (lu_mm_malloc_log_fn_) {
-            lu_mm_malloc_log_fn_(MALLOC_STR, ptr, size);  // 记录内存分配的日志           
+            lu_mm_malloc_log_fn_(MALLOC_STR, ptr, size);  // 记录内存分配的日志
         }
-        
     }
-   
+
 
     return ptr;
 }
@@ -60,17 +59,17 @@ void* lu_event_mm_calloc_(size_t nitems, size_t size) {
         return NULL;
 
     size_t sz = nitems * size;
-    if (nitems > LU_SIZE_MAX / size) 
+    if (nitems > LU_SIZE_MAX / size)
     {
         goto error;
     }
-       
+
 
     void *p = NULL;
     if (lu_mm_calloc_fn_) {
         p = lu_event_mm_malloc_(sz);
         if (p == NULL) {
-            return NULL;  
+            return NULL;
         }
         if (lu_mm_calloc_log_fn_) {
             lu_mm_calloc_log_fn_(MM_CALLOC_STR, p, sz);
@@ -78,19 +77,19 @@ void* lu_event_mm_calloc_(size_t nitems, size_t size) {
         if (p){
             if (memset(p, 0, sz) == NULL)
             {
-                free(p);  
+                free(p);
                 return NULL;
             }
         }
-           
+
     } else {
         p = calloc(nitems, size);
-        if (p == NULL) 
+        if (p == NULL)
             goto error;
         if(lu_mm_calloc_log_fn_) {
             lu_mm_calloc_log_fn_(CALLOC_STR, p, sz);
         }
-           
+
     }
     return p;
 error:
@@ -106,19 +105,19 @@ char* lu_event_mm_strdup_(const char *str){
     void * ptr   = NULL;
     if(lu_mm_malloc_fn_){
         size_t len = strlen(str);
-       
+
         if(len == LU_SIZE_MAX)
             goto error;
         ptr = lu_mm_malloc_fn_(len+1);
-         
+
         if(ptr)
             return memcpy(ptr,str,len+1);
     }
     else{
-      
+
         return strdup(str);
     }
-        
+
 
 error:
     errno = LU_ERROR_OUT_OF_MEMORY;
@@ -133,14 +132,14 @@ void* lu_event_mm_realloc_(void* ptr,size_t size){
         if (p && lu_mm_realloc_log_fn_)
             lu_mm_realloc_log_fn_(MM_REALLOC_STR, p, size);
         return p;
-        
+
     }
     else{
         p = realloc(ptr, size);
         if (p && lu_mm_realloc_log_fn_)
             lu_mm_realloc_log_fn_(REALLOC_STR, p, size);
-                     
-    }  
+
+    }
         return p;
 }
 
@@ -152,7 +151,7 @@ void lu_event_mm_free_(void* ptr){
     if(lu_mm_free_fn_){
         lu_mm_free_fn_(ptr);
         // if (lu_mm_free_log_fn_){
-        //     lu_mm_free_log_fn_(MM_FREE_STR, ptr,ptr?sizeof(*ptr):0);        
+        //     lu_mm_free_log_fn_(MM_FREE_STR, ptr,ptr?sizeof(*ptr):0);
         // }
     }
     else
@@ -164,10 +163,10 @@ void lu_event_mm_free_(void* ptr){
     //         lu_mm_free_log_fn_(FREE_STR, ptr,ptr?sizeof(*ptr):0);
     //     }
      }
-         
+
 }
 
- 
+
 
 void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment) {
     void* ptr = NULL;
@@ -193,7 +192,7 @@ void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment) {
     }
 }
 
- 
+
 
 
 
@@ -202,17 +201,17 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
     // 获取当前时间
     time_t rawtime;
     struct tm *timeinfo;
-    char time_str[20];  
+    char time_str[20];
 
     time(&rawtime);
     timeinfo = localtime(&rawtime);
 
-    
+
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
 
     // 打开日志文件，O_APPEND 标志表示追加写入，O_CREAT 表示文件不存在时创建
     int log_file = open("memory_log.txt", O_WRONLY | O_APPEND | O_CREAT, 0644);
-    
+
     if (log_file == -1) {
         // 如果打开文件失败，输出错误信息
         perror("Error opening log file");
@@ -297,7 +296,7 @@ void default_memory_log(const char* operation, void* ptr, size_t size) {
         // 格式化日志信息：内存分配或释放成功
         message_len = snprintf(log_message, sizeof(log_message),
             "[%s] %p allocated/freed (size: %zu bytes)\n", operation, ptr, size);
-            
+
     }
 
     // 使用 write 系统调用写入日志信息到文件

@@ -37,11 +37,11 @@ typedef enum lu_event_base_config_flag_u {
      */
     LU_EVENT_BASE_FLAG_IGNORE_ENV = 0x02,
 
-    /** 在事件循环准备运行超时回调时，检查当前时间。  
+    /** 在事件循环准备运行超时回调时，检查当前时间。
     设置此标志后，检查时间将发生在每个超时回调之后，而不是每次准备运行超时回调时。
     */
     LU_EVENT_BASE_FLAG_NO_CACHE_TIME = 0x08,
-    
+
 
     /** 如果使用 epoll 后端，该标志表示可以安全地使用 Libevent 的内部变更列表代码来批量添加和删除事件，
         从而尽量减少系统调用的次数。设置此标志可以提高代码运行速度，但如果有任何文件描述符被 `dup()` 或其变体克隆，
@@ -125,16 +125,16 @@ typedef struct evwatch_list_s{
 
 
 typedef struct lu_event_callback_s{
-  
+
     TAILQ_ENTRY(lu_event_callback_s) evcb_active_next;
     short evcb_events;
-    
+
     //Smaller numbers are higher priority.
     lu_uint8_t evcb_pri;//优先级
     lu_uint8_t evcb_closure;//闭包
 
     /**Allows us to adopt for different types of events*/
-    union 
+    union
     {
         //used for io events
         void (*evcb_callback)(lu_evutil_socket_t,short,void*);//回调函数
@@ -151,12 +151,12 @@ typedef struct lu_event_callback_s{
 typedef struct lu_event_s{
     lu_event_callback_t ev_callback_;
     //表示事件在不同类型的超时列表中的位置。根据事件类型，这个成员的不同部分会被使用。
-    union 
+    union
     {
         TAILQ_ENTRY(lu_event_s) ev_next_with_common_timeout;
         lu_size_t min_heap_idx;//该事件在最小堆（min heap）中的索引，用于快速查找最早的超时事件。
     }ev_timeout_pos;
-    
+
     short ev_events;
     short ev_res;//result passed to event callback
 
@@ -178,17 +178,17 @@ typedef struct lu_event_s{
     }ev_;
 
     struct timeval ev_timeout;
-    
+
 
 }lu_event_t;
 
 
 #define EVWATCH_MAX     2
 typedef struct lu_event_base_s {
-    
+
     /** Function pointers and other data to describe this event_base's
 	 * backend. */
-    const struct lu_event_op_s* evsel_op;  
+    const struct lu_event_op_s* evsel_op;
     void* evbase;
 
     //List of changes to tell backend about next dispatch.Only used bt O(1) backends.
@@ -220,7 +220,7 @@ typedef struct lu_event_base_s {
     int event_running_priority;
 
     /** Set if we're running the event_base_loop function, to prevent
-	 * reentrant invocation. */    
+	 * reentrant invocation. */
     /** 设置是否运行 event_base_loop 函数，以防止
     * 重入调用。 */
 	int running_loop;
@@ -261,11 +261,11 @@ typedef struct lu_event_base_s {
 	/** Second in which we last updated tv_clock_diff, in monotonic time. */
 	time_t last_updated_clock_diff;
 
-	
+
 
 
     lu_event_callback_t *current_event;
-    
+
     /** Flags that this base was configured with */
 	lu_event_base_config_flag_t flags;
 
@@ -279,7 +279,7 @@ typedef struct lu_event_base_s {
 	/** A socketpair used by some th_notify functions to wake up the main
 	 * thread. */
     lu_evutil_socket_t th_notify_fd[2];
-   
+
     lu_event_t th_notify;
 
     //----
@@ -308,7 +308,7 @@ typedef struct lu_event_base_s {
    event_base_get_features() to see which features are available.
 */
 typedef enum lu_event_method_feature_u {
-   
+
     LU_EVENT_FEATURE_ET = 0x01,
     LU_EVENT_FEATURE_O1 = 0x02,
     LU_EVENT_FEATURE_FDS = 0x04,
@@ -318,10 +318,10 @@ typedef enum lu_event_method_feature_u {
 typedef struct lu_event_op_s {
     const char* name;
     /**
-     *  Function to set up an lu_event_base_t to use this backend.It should 
+     *  Function to set up an lu_event_base_t to use this backend.It should
      *  create a new lu_event_base_t and return it.On failture,this function should return NULL
      */
-    void* (*init)(lu_event_base_t*);  
+    void* (*init)(lu_event_base_t*);
     int* (*add)(lu_event_base_t*, lu_evutil_socket_t fd,short old,short events, void* fdinfo);
      /** 类似于'add'函数，但'events'参数表示我们要禁用的事件类型。 */
     int (*del)( lu_event_base_t *, lu_evutil_socket_t fd, short old, short events, void *fdinfo);
@@ -361,10 +361,10 @@ typedef struct lu_event_config_s {
 
     //指定最大分派间隔的时间值。
 	struct timeval max_dispatch_interval;
-    
+
     //指定在一次循环中最大的分派回调数量。
     int max_dispatch_callbacks;
-    
+
     //用于限制在特定优先级之后的回调数量。Use to limit the number of callbacks after a specific priority.
 	int limit_callbacks_after_priority;
 
@@ -384,4 +384,3 @@ typedef struct lu_event_config_s {
 #endif /*LU_EVENT_INTERNAL_H_INCLUDED_*/ //com
 
 
- 

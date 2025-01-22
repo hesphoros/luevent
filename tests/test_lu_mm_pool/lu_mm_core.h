@@ -13,21 +13,22 @@ typedef struct lu_mm_pool_s            lu_mm_pool_t;
 #include <stdint.h>
 #include <sys/types.h>
 #include <string.h>
-
-#include <lu_erron.h>
-// #include <sys/mman.h>
-#include "lu_util.h"
-
+#include <errno.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#define lu_uintptr_t    uintptr_t
+#define lu_intptr_t     intptr_t
+#define lu_uchar_t      unsigned char
 
+#define LU_ERROR_LUEVENT_MEMORY_POOL_OK 1
+#define LU_ERROR_LUEVENT_MEMORY_POOL_DECLINED 2
 
 #define LU_MM_ALIGNMENT   sizeof(unsigned long)    /* platform word 平台字节长*/
 
 #define lu_mm_align(d,a)     (((d) + (a - 1)) & ~(a - 1))  /* b对齐为a的倍数*/
-
+ 
 #define lu_mm_align_ptr(p,a)                                            \
     (lu_uchar_t *) (((uintptr_t) (p) + ((uintptr_t) a - 1))             \
             & ~((uintptr_t) a - 1)) /*用于将指针 p 对齐到指定的对齐字节数 a*/

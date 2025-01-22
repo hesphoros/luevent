@@ -13,11 +13,11 @@
 
 
 static void lu_event_config_entry_free(lu_event_config_entry_t * entry);
- 
+
 lu_event_config_t * lu_event_config_new(void)
 {
    lu_event_config_t *ev_cfg_t = mm_calloc(1, sizeof(*ev_cfg_t));
-     
+
     if (ev_cfg_t == NULL)
       return (NULL);
 
@@ -57,13 +57,13 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * ev_cfg_t_) {
   }
   if(ev_cfg_t_)
     ev_base_t->flags = ev_cfg_t_->flags;
-  should_check_enviroment = 
+  should_check_enviroment =
     !(ev_cfg_t_ && (ev_cfg_t_->flags & LU_EVENT_BASE_FLAG_IGNORE_ENV));
 
   {
     //检查是否需要精确时间 TODO:
     struct timeval tmp_timeval;
-    int precise_time = 
+    int precise_time =
       (ev_cfg_t_ && (ev_cfg_t_->flags & LU_EVENT_BASE_FLAG_PRECISE_TIMER));
     int flags;
     if(should_check_enviroment && !precise_time){
@@ -71,7 +71,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * ev_cfg_t_) {
       precise_time = lu_evutil_getenv_("LU_EVENT_PRECISE_TIMER") != NULL;
       if(precise_time)
         ev_base_t->flags |= LU_EVENT_BASE_FLAG_PRECISE_TIMER;
-      
+
     }
     flags = precise_time ? LU_EVENT_MONOT_PRECISE : 0;
     lu_evutil_configure_monotonic_time_(&ev_base_t->monotonic_timer, flags);
@@ -79,7 +79,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * ev_cfg_t_) {
     gettime(ev_base_t,&tmp_timeval); //TODO: to be implemented
   }
 
-  
+
   //TODO: 最小堆
   //TODO: 信号处理
   //TODO: 延迟事件激活队列
@@ -98,7 +98,7 @@ static void lu_event_config_entry_free(lu_event_config_entry_t * entry) {
 
 void lu_event_config_free(lu_event_config_t * ev_cfg_t_) {
 	lu_event_config_entry_t *entry;
-  
+
   while((entry = TAILQ_FIRST(&ev_cfg_t_->entries))!= NULL){
     TAILQ_REMOVE(&ev_cfg_t_->entries, entry, next);
     lu_event_config_entry_free(entry);
@@ -111,7 +111,7 @@ lu_event_base_t *lu_event_base_new(void) {
   lu_event_base_t *ev_base_t = NULL;
   lu_event_config_t *ev_cfg_t = lu_event_config_new();
   if (ev_cfg_t) {
-    
+
     ev_base_t = lu_event_base_new_with_config(ev_cfg_t);
     lu_event_config_free(ev_cfg_t);
   }
@@ -119,4 +119,3 @@ lu_event_base_t *lu_event_base_new(void) {
 }
 
 
- 

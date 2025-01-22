@@ -343,7 +343,7 @@ void lu_hash_table_destroy(lu_hash_table_t* table)
 	// Iterate through each bucket in the hash table
 	for (size_t i = 0; i < table->table_size; i++) {
 		lu_hash_bucket_t* bucket = &table->buckets[i];
-		
+
 		// Destroy the bucket if it uses a linked list for storage
 		if (bucket->type == LU_HASH_BUCKET_LIST) {
 			lu_hash_list_destory(bucket);

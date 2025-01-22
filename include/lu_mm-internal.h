@@ -24,7 +24,7 @@ static void*(*lu_mm_free_fn_)(void *ptr) = NULL;
 
 //int posix_memalign(void **memptr, size_t alignment, size_t size);
 static int(*lu_mm_aligned_malloc_fn_)(void **ptr,size_t size, size_t alignment) = NULL;
- 
+
 
 //static 日志函数指针
 static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
@@ -37,11 +37,11 @@ static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, si
 /**
  * This functions is luevent's offer for custom memory management functions
  * It will create a file with the name "memory_log.txt" in the current directory.
- * log_level : define some macro string in lu_utils.h 
- * */ 
+ * log_level : define some macro string in lu_utils.h
+ * */
 void default_memory_log(const char* operation, void* ptr, size_t size);
- 
- 
+
+
 extern void* lu_log_functions_global_[];
 
 
@@ -53,8 +53,8 @@ extern void* lu_log_functions_global_[];
 //     return (void*)aligned;
 // }
 
-/** 
- * @briefMemory management functions 
+/**
+ * @briefMemory management functions
  * @{
 */
 

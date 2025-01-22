@@ -27,7 +27,7 @@
 
 
 typedef struct lu_event_change_s {
-    /**The fd or signal whose events are to be changed. */    
+    /**The fd or signal whose events are to be changed. */
     lu_evutil_socket_t fd;
     /* The events that were enabled on the fd before any of these changes
 	   were made.  May include EV_READ or EV_WRITE. */

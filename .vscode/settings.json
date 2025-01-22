@@ -18,7 +18,8 @@
         "string": "cpp",
         "lu_mm_alloc.h": "c",
         "lu_visibility.h": "c",
-        "lu_mutex-internal.h": "c"
+        "lu_mutex-internal.h": "c",
+        "lu_mm_pool_palloc.h": "c"
     },
     "Codegeex.RepoIndex": true
 }

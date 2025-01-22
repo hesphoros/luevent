@@ -48,7 +48,7 @@ int lu_evutil_snprintf(char *str, size_t size, const char *format,...){
 
 int lu_evutil_vsnprintf(char *str, size_t size, const char *format, va_list ap){
     int ret;
-    if (!str || size == 0 || !format) {     
+    if (!str || size == 0 || !format) {
         return -1;
     }
     ret = vsnprintf(str, size, format, ap);
@@ -58,7 +58,7 @@ int lu_evutil_vsnprintf(char *str, size_t size, const char *format, va_list ap){
         str[size - 1] = '\0';
     }
 
-   
+
     return ret;
 }
 
@@ -71,13 +71,13 @@ int lu_evutil_socket_geterror(lu_evutil_socket_t sock_t){
     if ((err == EAGAIN || err == EWOULDBLOCK) && sock_t >= 0) {
          // 获取套接字的 SO_ERROR 错误
         if (getsockopt(sock_t, SOL_SOCKET, SO_ERROR, (void*)&optval, &optvallen) < 0)
-            return errno;  
+            return errno;
         // 如果 SO_ERROR 非零，表示有实际的套接字错误
         if (optval)
             return optval;
     }
-    
-    return err;   
+
+    return err;
 }
 
 const char *lu_evutil_socket_error_to_string(int errcode){
@@ -86,10 +86,10 @@ const char *lu_evutil_socket_error_to_string(int errcode){
     // 锁定缓存，保证线程安全
     pthread_mutex_lock(&linux_socket_errors_lock_);
 
-    
+
     errs= (lu_cached_sock_errs_entry_t*)LU_HASH_TABLE_FIND(lu_cached_sock_errs_map_,errcode);
     // 查找缓存中的错误信息
-   
+
     if (errs) {
         msg = errs->msg;
         pthread_mutex_unlock(&linux_socket_errors_lock_);
@@ -164,8 +164,8 @@ int lu_evutil_configure_monotonic_time_(lu_evutil_monotonic_timer_t *base,
 }
 
 int lu_evutil_check_dict_file_exist(const char *path){
-    if (path == NULL || strlen(path) == 0) {        
-        return LU_ERROR_INVALID_PATH; 
+    if (path == NULL || strlen(path) == 0) {
+        return LU_ERROR_INVALID_PATH;
     }
         struct stat sb;
     if (stat(path, &sb) == 0) {
@@ -175,8 +175,8 @@ int lu_evutil_check_dict_file_exist(const char *path){
 }
 
 int lu_evutil_check_contain_directory(const char *filename){
-    if (filename == NULL || strlen(filename) == 0) {        
-        return LU_ERROR_INVALID_PATH; 
+    if (filename == NULL || strlen(filename) == 0) {
+        return LU_ERROR_INVALID_PATH;
     }
     while(*filename){
         if(*filename == '/' || *filename == '\\'){
@@ -212,7 +212,7 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
         printf("ERROR: out buffer size is not enough to hold the directory\n");
         return NULL;
     }
-   
+
       // 将目录部分复制到输出缓冲区，并确保以空字符结束
     strncpy(out_buf, filename, dir_len);
     out_buf[dir_len] = '\0';
@@ -221,13 +221,13 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 
 
 int lu_evutil_create_dictionay(const char * path){
-    
+
     if(lu_evutil_check_dict_file_exist(path) == 0){
         return 0; // 文件存在，不再创建
     }
-    
-    if (path == NULL || strlen(path) == 0) {        
-        return LU_ERROR_INVALID_PATH; 
+
+    if (path == NULL || strlen(path) == 0) {
+        return LU_ERROR_INVALID_PATH;
     }
 
     // 创建目录

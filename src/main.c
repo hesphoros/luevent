@@ -56,7 +56,7 @@ void destroy_person_db(PersonDatabase* db) {
 
 
 void test_error_to_string(){
-    lu_enable_default_memory_logging(1); 
+    lu_enable_default_memory_logging(1);
     printf("%s\n",lu_get_error_string(LU_ERROR_BAD_ADDRESS));
     printf("%s\n",lu_get_error_string(LU_ERROR_OUT_OF_MEMORY));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_BAD_FILE_DESCRIPTOR));
@@ -64,7 +64,7 @@ void test_error_to_string(){
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_FILE_OR_DIRECTORY));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_PROCESS));
     printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE));
-    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE_OR_ADDRESS));    
+    printf("%s\n",lu_get_error_string_hash(LU_ERROR_NO_SUCH_DEVICE_OR_ADDRESS));
     void *p = mm_memalign(100,100);
 }
 
@@ -79,7 +79,7 @@ void test_hash(void){
     PersonDatabase db;
     db.hash_table = LU_HASH_TABLE_INIT(8);
 
-  
+
     Person people[100] = {
         {"张三", 1001, 'M'}, {"李四", 1002, 'F'}, {"王五", 1003, 'M'},
         {"赵六", 1004, 'F'}, {"孙七", 1005, 'M'}, {"周八", 1006, 'F'},
@@ -144,14 +144,14 @@ void test_mm_memory(void) {
     if (p != NULL) {
         printf("%ls size: %u\n", (int*)p, (int)100);  // 打印实际分配的大小
     }
-   
+
     // 使用 realloc 修改内存大小
     p = mm_realloc(p, 200);  // 重新分配 200 字节
     if (p != NULL) {
         printf("%ls size: %lu\n",(int*) p, (long unsigned int)200);  // 打印实际分配的大小
     }
 
- 
+
     // 释放内存
     mm_free(p);
 }
@@ -167,8 +167,8 @@ void test_logging(){
     LU_EVENT_LOG_ERRORV("error message ");
     LU_EVENT_LOG_FATAL("Repaied Need to Test\n");
     //LU_EVENT_LOG_ERRORX(1000,"error message error");
-   
-    
+
+
     fclose(fp);
 }
 

@@ -26,7 +26,7 @@ extern "C" {
 
 #define LU_MM_MIN_POOL_SIZE                                                         \
         lu_align((sizeof(lu_mm_pool_t) + 2 * sizeof(lu_mm_pool_large_t)),              \
-            LU_MM_POOL_ALIGNMENT)
+            LU_MM_POOL_ALIGNMENT)                     
 
 
 typedef struct lu_mm_pool_large_s  lu_mm_pool_large_t;
@@ -37,7 +37,7 @@ struct lu_mm_pool_large_s {
     lu_mm_pool_large_t     *next;     // 指向下一块大内存块的指针
     void                 *alloc;    // 大内存块的起始地址
 };
-
+ 
 typedef struct lu_mm_pool_data_s {
     lu_uchar_t               *last;     // 保存当前数据块中内存分配指针的当前位置。每次Nginx程序从内存池中申请内存时，
                                         //从该指针保存的位置开始划分出请求的内存大小，并更新该指针到新的位置。
@@ -45,7 +45,7 @@ typedef struct lu_mm_pool_data_s {
     lu_mm_pool_t           *next;     // 内存池由多块内存块组成，指向下一个数据块的位置。
     lu_uintptr_t            failed;   // 当前数据块内存不足引起分配失败的次数
 } lu_mm_pool_data_t;
-
+ 
 struct lu_mm_pool_s {
     lu_mm_pool_data_t       d;        // 内存池当前的数据区指针的结构体
     size_t                max;      // 当前数据块最大可分配的内存大小（Bytes）

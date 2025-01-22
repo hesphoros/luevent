@@ -1,12 +1,12 @@
 #include "lu_mm_core.h"
- 
+
 
 static inline void *lu_mm_palloc_small(lu_mm_pool_t *pool, size_t size,
     lu_uintptr_t align);
 static void *lu_mm_palloc_block(lu_mm_pool_t *pool, size_t size);
 static void *lu_mm_palloc_large(lu_mm_pool_t *pool, size_t size);
 
- 
+
 
 
 lu_mm_pool_t * lu_mm_create_pool(size_t size)
@@ -92,7 +92,7 @@ void lu_mm_destroy_pool(lu_mm_pool_t *pool)
 void lu_mm_reset_pool(lu_mm_pool_t *pool)
 {
     lu_mm_pool_t      *p;
-    
+
     lu_mm_pool_large_t  *l;
 
     for (l = pool->large; l; l = l->next) {

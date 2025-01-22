@@ -1,0 +1,1 @@
+gcc lu_mm_pool_palloc.c lu_mm_alloc.c test_mm_main.c  -o test_mm_main

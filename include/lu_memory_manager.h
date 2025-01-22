@@ -16,7 +16,7 @@ void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment);
 
 void  lu_enable_default_memory_logging(int);
 
-//global memory log 
+//global memory log
 extern void* lu_log_functions_global_[];
 
 #endif // LU_MEMORY_MANAGER_H

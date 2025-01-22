@@ -54,7 +54,7 @@ typedef struct lu_log_callback_s {
 
 static  struct {
 	void* data;
-		
+
 	int severity;
 	int quiet;
 	lu_log_callback_t callbacks;
@@ -75,7 +75,7 @@ static const char* lu_log_level_strings[] = {
 
 #ifdef LU_LOG_USE_COLOR
 static const char* lu_level_colors[] = {
-	
+
 	"\x1b[36m",  // DEBUG
 	"\x1b[32m",  // MSG
 	"\x1b[33m",  // WARN
@@ -85,7 +85,7 @@ static const char* lu_level_colors[] = {
 #endif
 
 static void lu_event_log_(int severity, const char *msg) { 
-        
+
     if(lu_event_log_global_fn_)	
         lu_event_log_global_fn_(severity, msg);
     else{
@@ -106,8 +106,8 @@ static void lu_event_log_(int severity, const char *msg) {
             default:
                 severity_str = "UNKNOWN_LEVEL";
                 break;
-        }		
-			
+        }
+
         //void to avoid unused variable warning
         (void)fprintf(stderr, "[%s] %s\n", severity_str, msg);
     }
@@ -115,7 +115,7 @@ static void lu_event_log_(int severity, const char *msg) {
 }
 
 void lu_event_set_log_callback(lu_event_log_cb log_cb){
-    lu_event_log_global_fn_ = log_cb;    
+    lu_event_log_global_fn_ = log_cb;
 }
 
 void lu_event_enable_debug_logging(lu_uint32_t which_mask)
@@ -148,12 +148,12 @@ void lu_event_logv_(int severity, const char *errstr, const char *fmt, va_list a
         len = lu_evutil_vsnprintf(buff, sizeof(buff), fmt, ap); 
     else
         buff[0] = '\0';
-    
+
     if(errstr){
         len = strlen(buff);
         if(len < sizeof(buff)-1){
             lu_evutil_snprintf(buff+len, sizeof(buff)-len, ": %s", errstr);
-        }        
+        }
     }
     lu_event_log_(severity, buff);
 }
@@ -170,7 +170,7 @@ void lu_event_error(int errnum, const char* file, int line, const char *fmt,...)
 }
 
 void lu_event_fatal(const char* file, int line, const char* fmt, ...){
-   
+
     va_list ap;
     va_start(ap, fmt);
     //lu_event_logv_(LU_EVENT_LOG_LEVEL_FATAL, NULL, fmt, ap);
@@ -189,7 +189,7 @@ void lu_event_errorv(const char* file, int line, const char* fmt, ...){
     va_end(ap);
 }
 
-//void lu_event_warn(const char *fmt,...) 
+//void lu_event_warn(const char *fmt,...)
 void lu_event_warn(const char *file, int line, const char *fmt,...){
     va_list ap;
     va_start(ap, fmt);
@@ -241,10 +241,10 @@ void lu_event_errorx(int eval, const char* file, int line,const char *fmt, ...) 
     //lu_event_logv_(LU_EVENT_LOG_LEVEL_ERROR, strerror(eval), fmt, ap);
     lu_event_log_logv_(LU_EVENT_LOG_LEVEL_ERROR,  strerror(eval), file ,line, fmt, ap);
     va_end(ap);
-    lu_event_exit(eval);    
+    lu_event_exit(eval);
 }
 
-//void lu_event_warnx(const char *fmt, ...) 
+//void lu_event_warnx(const char *fmt, ...)
 void lu_event_warnx(const char *file, int line,const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
@@ -339,7 +339,7 @@ void lu_log_set_quiet(int enable)
 
 int lu_log_add_handler(lu_log_handler_t handler, void* data, int level)
 {
-	
+
     lu_log_config_t.callbacks = (lu_log_callback_t){ handler,data,level };
 
 	return 0;
@@ -375,7 +375,7 @@ static void lu_init_event(lu_log_event_t* log_event, void* data) {
 }
 
 
- 
+
 
 
 //int severity, const char *errstr, const char *fmt, va_list ap
@@ -424,7 +424,7 @@ void lu_event_log_logv_(int severity, const char* errstr, const char *file, int 
     // Only output logs that match the current severity level and are not in quiet mode
     if (!lu_log_config_t.quiet && severity >= lu_log_config_t.severity) {
         // Initialize event and output to standard error
-        
+
         lu_init_event(&log_event, stderr);
         lu_stdout_handler(&log_event);
     }
@@ -468,23 +468,23 @@ void lu_enable_default_file_logging(const char* filename, int level)
 {
     //TODO :
     //如果filename 中包含目录，则创建目录
-    
+
 
     if(level < LU_EVENT_LOG_LEVEL_DEBUG || level > LU_EVENT_LOG_LEVEL_ERROR)
     {
         level = LU_EVENT_LOG_LEVEL_DEBUG;
     }
 
-   
+
     const char* default_filename = "./log/lu_event.log";
-  
+
     if(filename != NULL)
     {
         if(lu_evutil_check_contain_directory(filename))
         {
             char path[1024];
             lu_evutil_get_directory(filename, path, sizeof(path));
-           
+
             int ret = lu_evutil_create_dictionay(path);
             if (ret != 0) {
                 printf("Error: create dictionary failed ret[%d] str [%s]\n",ret,lu_get_error_string(ret));
@@ -501,12 +501,12 @@ void lu_enable_default_file_logging(const char* filename, int level)
             return;
         }
     }
-    
-  
-    
+
+
+
     default_file_log_fp_ = fopen(filename, "a");
     lu_log_add_fp(default_file_log_fp_, level);
     printf("[ INFO ] Enable file logging to %s with level %s\n", filename, level[lu_log_level_strings]);
     enbale_default_file_log_ = 1;
-    
+
 }

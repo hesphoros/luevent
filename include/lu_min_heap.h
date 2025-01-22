@@ -77,11 +77,11 @@ int lu_min_heap_reserve_(lu_min_heap_t * heap, size_t n){
     }
     if (!(new_elements = (lu_event_t**)mm_realloc(heap->elements, new_capacity * sizeof *new_elements)))
       return -1;
-    
+
     heap->elements = new_elements;
     heap->capacity = new_capacity;
   }
-  
+
   return 0;
 }
 
@@ -122,9 +122,9 @@ int  lu_min_heap_adjust_(lu_min_heap_t * heap, lu_event_t * event){
 
 int  lu_min_heap_erase_(lu_min_heap_t * heap, lu_event_t * event)
 {
-  if (LU_SIZE_MAX != event->ev_timeout_pos.min_heap_idx) 
+  if (LU_SIZE_MAX != event->ev_timeout_pos.min_heap_idx)
   {
-	
+
 		lu_event_t *last = heap->elements[--heap->n];
 		size_t parent = (event->ev_timeout_pos.min_heap_idx - 1) / 2;
 		/* we replace e with the last element in the heap.  We might need to

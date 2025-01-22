@@ -14,3 +14,4 @@ tests/lib/libluevent_static.a
 .VSCodeCounter/
 build/install_manifest.txt
 tests/lib/libluevent_static.a
+tests/test_lu_mm_pool/test_mm_main

@@ -14,6 +14,7 @@ extern "C" {
 #include <sys/time.h>
 #include "lu_mm-internal.h"
 #include "lu_changelist-internal.h"
+#include "lu_min_heap.h"
 
 TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
 
@@ -24,7 +25,7 @@ typedef struct lu_event_op_s lu_event_op_t;
 struct lu_event_callback_s ;
 typedef struct lu_event_s lu_event_t;
 
-typedef enum lu_event_base_config_flag_u {
+typedef enum lu_event_base_config_flag_e {
 
     /**
      * 不要为event_base分配锁。
@@ -81,13 +82,13 @@ typedef struct lu_event_changelist_s{
 	int changes_size;
 }lu_event_changelist_t;
 
-
+//表示signalfd的相关信息
 typedef struct lu_evsig_info_s{
     //TODO:
     int summyl;
 }lu_evsig_info_t;
 
-
+//超时列表
 typedef struct lu_common_timeout_list_s {
 	//TODO:
     int paser;
@@ -105,10 +106,6 @@ typedef struct lu_event_signal_map_s{
     int summyl;
 }lu_event_signal_map_t;
 
-typedef struct min_heap {
-    //TODO:
-    int paser;
-}min_heap_t;
 
 typedef struct evutil_weakrand_state_s{
     //TODO:
@@ -173,7 +170,7 @@ typedef struct lu_event_s{
             LIST_ENTRY(lu_event_s) ev_signal_next;
             short ev_signum;
             //Allow deletes in signal callback
-            short* ev_pncalls; 
+            short* ev_pncalls;
         }ev_signal;
     }ev_;
 
@@ -247,7 +244,7 @@ typedef struct lu_event_base_s {
 
 
     /** Priority queue of events with timeouts. */
-	struct min_heap timeheap;
+	lu_min_heap_t timeheap;
     /** Stored timeval: used to avoid calling gettimeofday/clock_gettime
 	 * too often. */
 	struct timeval tv_cache;

@@ -33,3 +33,54 @@
 
 - [ ] 对tests下的test_main内部的TEST进行模块划分
 - [ ]  解决undefined reference to lu_mm_pool_alloc(lu_mm_pool_s*, unsigned long) 等问题
+- [ ] 完善lu_event的支持
+
+1. 网络IO事件
+2. 定时器事件(时间事件)
+3. 信号事件
+4. 活动的事件队列
+5. 信号操作的函数接口
+6. IO操作的函数接口
+
+~~~cpp
+只实现epollops, pollops,selectops
+/* Array of backends in order of preference. */
+static const struct eventop *eventops[] = {
+#ifdef EVENT__HAVE_EVENT_PORTS
+	&evportops,
+#endif
+#ifdef EVENT__HAVE_WORKING_KQUEUE
+	&kqops,
+#endif
+#ifdef EVENT__HAVE_EPOLL
+	&epollops,
+#endif
+#ifdef EVENT__HAVE_DEVPOLL
+	&devpollops,
+#endif
+#ifdef EVENT__HAVE_POLL
+	&pollops,
+#endif
+#ifdef EVENT__HAVE_SELECT
+	&selectops,
+#endif
+#ifdef _WIN32
+	&win32ops,
+#endif
+#ifdef EVENT__HAVE_WEPOLL
+	&wepollops,
+#endif
+	NULL
+};
+~~~
+
+
+![alt text](image.png)
+
+## 2025-1-23
+
+no progress
+
+## 2025-1-24
+
+1. 完成ev_base 后端的封装，支持epool select poll 等后端

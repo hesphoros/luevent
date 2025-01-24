@@ -116,6 +116,8 @@ extern "C" {
 #define STRDUP_STR                  "__STRDUP__"
 #define MM_ALIGEND_MALLOC_STR       "__MM_ALIG_M__"
 #define ALIGEND_MALLOC_STR          "__ALIGNED_M__"
+#define MM_MEMZERO_STR              "__MM_MEMZERO__"
+#define MEMZERO_STR                 "__MEMZERO__"
 /**@}*/
 
 //debug level
@@ -153,7 +155,7 @@ LU_EVENT_EXPORT_SYMBOL int lu_evutil_vsnprintf(char *buf, size_t buflen, const c
 #endif
 ;
 
- 
+
 /**
    @name Socket error functions
    @{
@@ -187,25 +189,65 @@ LU_EVENT_EXPORT_SYMBOL const char *lu_evutil_socket_error_to_string(int errcode)
 
 
 typedef struct lu_evutil_monotonic_timer_s{
-    //TODO: to be implemented
-    int dummy;
+        //posix 系统直接使用 clock_gettime 获取时间，
+        int monotonic_clock;
+        //用于调整单调时钟的时间。timeval 结构体包含秒和微秒，可以用来微调定时器，或者处理时钟漂移问题
+        struct timeval adjust_monotonic_clock;
+
+        //这个字段通常用来计算时间间隔，表示上次记录的时间点
+        struct timeval last_time;
 }lu_evutil_monotonic_timer_t;
 
 
-const char * lu_evutil_getenv_(const char *varname);
-int lu_evutil_configure_monotonic_time_( lu_evutil_monotonic_timer_t *base,int flags);
+void lu_evutil_adjust_monotonic_time(lu_evutil_monotonic_timer_t *base,struct timeval *tv);
 
+const char * lu_evutil_getenv_(const char *varname);
+LU_EVENT_EXPORT_SYMBOL
+    int lu_evutil_configure_monotonic_time_( lu_evutil_monotonic_timer_t *base,int flags);
+
+LU_EVENT_EXPORT_SYMBOL
+    int lu_evutil_gettime_monotonic_(lu_evutil_monotonic_timer_t * base,struct timeval * tv);
+
+
+
+/**文件操作相关函数 */
 int lu_evutil_create_dictionay(const char * path);
 int lu_evutil_check_dict_file_exist(const char *path);
 int lu_evutil_check_contain_directory(const char *filename);
-
 const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t out_buffer_size);
+
+//只对posix系统有效，对windows系统无效(不打算做windows兼容)
+#define lu_evutil_gettimeofday(tv,tz) gettimeofday((tv),(tz))
+
 
 //lu_evutil_timercmp
 #define lu_evutil_timercmp(tvp,uvp,cmp) \
     (((tvp)->tv_sec == (uvp)->tv_sec) ? \
     ((tvp)->tv_usec cmp (uvp)->tv_usec) :       \
      ((tvp)->tv_sec cmp (uvp)->tv_sec))
+
+//时间加法
+#define lu_evutil_timeradd(tvp, uvp, vvp)					\
+	do {								\
+		(vvp)->tv_sec = (tvp)->tv_sec + (uvp)->tv_sec;		\
+		(vvp)->tv_usec = (tvp)->tv_usec + (uvp)->tv_usec;       \
+		if ((vvp)->tv_usec >= 1000000) {			\
+			(vvp)->tv_sec++;				\
+			(vvp)->tv_usec -= 1000000;			\
+		}							\
+	} while (0)
+
+
+//时间减法
+#define	lu_evutil_timersub(tvp, uvp, vvp)					\
+	do {								\
+		(vvp)->tv_sec = (tvp)->tv_sec - (uvp)->tv_sec;		\
+		(vvp)->tv_usec = (tvp)->tv_usec - (uvp)->tv_usec;	\
+		if ((vvp)->tv_usec < 0) {				\
+			(vvp)->tv_sec--;				\
+			(vvp)->tv_usec += 1000000;			\
+		}							\
+	} while (0)
 
 
 #ifdef __cplusplus

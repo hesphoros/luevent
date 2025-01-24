@@ -222,6 +222,30 @@ src/lu_event.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_event.c.s
 .PHONY : src/lu_event.c.s
 
+src/lu_evutil_time.o: src/lu_evutil_time.c.o
+.PHONY : src/lu_evutil_time.o
+
+# target to build an object file
+src/lu_evutil_time.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evutil_time.c.o
+.PHONY : src/lu_evutil_time.c.o
+
+src/lu_evutil_time.i: src/lu_evutil_time.c.i
+.PHONY : src/lu_evutil_time.i
+
+# target to preprocess a source file
+src/lu_evutil_time.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evutil_time.c.i
+.PHONY : src/lu_evutil_time.c.i
+
+src/lu_evutil_time.s: src/lu_evutil_time.c.s
+.PHONY : src/lu_evutil_time.s
+
+# target to generate assembly for a file
+src/lu_evutil_time.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evutil_time.c.s
+.PHONY : src/lu_evutil_time.c.s
+
 src/lu_hash_table.o: src/lu_hash_table.c.o
 .PHONY : src/lu_hash_table.o
 
@@ -409,6 +433,9 @@ help:
 	@echo "... src/lu_event.o"
 	@echo "... src/lu_event.i"
 	@echo "... src/lu_event.s"
+	@echo "... src/lu_evutil_time.o"
+	@echo "... src/lu_evutil_time.i"
+	@echo "... src/lu_evutil_time.s"
 	@echo "... src/lu_hash_table.o"
 	@echo "... src/lu_hash_table.i"
 	@echo "... src/lu_hash_table.s"

@@ -14,6 +14,8 @@ void* lu_event_mm_realloc_  (void* ptr,     size_t size);
 void  lu_event_mm_free_     (void* ptr);
 void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment);
 
+void* lu_event_mm_memzero_  (void* ptr, size_t size);
+
 void  lu_enable_default_memory_logging(int);
 
 //global memory log

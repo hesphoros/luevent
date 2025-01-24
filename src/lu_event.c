@@ -1,16 +1,23 @@
+#include "lu_event-internal.h"
 #include "lu_log-internal.h"
 #include "lu_memory_manager.h"
+#include "lu_min_heap.h"
 #include "lu_changelist-internal.h"
-#include "lu_event-internal.h"
 #include "lu_event.h"
 #include "lu_util.h"
 
+
+
+#include <sys/time.h>
+#include <time.h>
 #include <stdio.h>
 #include <limits.h>
 #include <error.h>
 #include <stdlib.h>
 
 
+#define LU_EVENT_BASE_ASSERT_LOCKED(base) \
+  LU_EVLOCK_ASSERT_LOCKED((base)->th_base_lock)
 
 static void lu_event_config_entry_free(lu_event_config_entry_t * entry);
 
@@ -30,13 +37,26 @@ lu_event_config_t * lu_event_config_new(void)
     return (ev_cfg_t);
 }
 
-
+/// @brief 从事件基础结构 base 中获取当前时间，并将其存储在 timeval 结构体 tp 中
+/// @param base
+/// @param tp
+/// @return
 static int
 gettime(lu_event_base_t *base, struct timeval *tp)
 {
-  LU_UNUSED(base);
-  LU_UNUSED(tp);
-	//TODO: to be implemented
+  LU_EVENT_BASE_ASSERT_LOCKED(base);
+  //如果缓存时间有效，则直接返回缓存时间
+  if(base->tv_cache.tv_sec){
+    *tp = base->tv_cache;
+    return 0;
+  }
+
+  if(lu_evutil_gettime_monotonic_(&base->monotonic_timer, tp)== -1){
+    return -1;
+  }
+
+
+
   return 0;
 }
 

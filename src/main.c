@@ -2,6 +2,8 @@
 #define LU_USE_DEBUG
 #include "lu_mm_core.h"
 #include "lu_memory_manager.h"
+#include "lu_min_heap.h"
+#include "lu_event-internal.h"
 #include <stdio.h>
 #include "lu_erron.h"
 #include <memory.h>

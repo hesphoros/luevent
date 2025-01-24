@@ -25,6 +25,7 @@ static void*(*lu_mm_free_fn_)(void *ptr) = NULL;
 //int posix_memalign(void **memptr, size_t alignment, size_t size);
 static int(*lu_mm_aligned_malloc_fn_)(void **ptr,size_t size, size_t alignment) = NULL;
 
+static void* (*lu_mm_memzero_fn_)(void *ptr, size_t size) = NULL;
 
 //static 日志函数指针
 static void (*lu_mm_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
@@ -32,7 +33,7 @@ static void (*lu_mm_calloc_log_fn_)(const char* operation, void* ptr, size_t siz
 static void (*lu_mm_realloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 static void (*lu_mm_free_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 static void (*lu_mm_aligned_malloc_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
-
+static void (*lu_mm_memzero_log_fn_)(const char* operation, void* ptr, size_t size) = NULL;
 
 /**
  * This functions is luevent's offer for custom memory management functions
@@ -65,7 +66,7 @@ extern void* lu_log_functions_global_[];
 #define mm_realloc(ptr, size) 		    lu_event_mm_realloc_((ptr), (size))
 #define mm_free(ptr) 				    lu_event_mm_free_((ptr))
 #define mm_memalign(size, alignment)    lu_event_mm_aligned_malloc_((size), (alignment))
-
+#define mm_memzero(ptr, size) 		    lu_event_mm_memzero_((ptr), (size))
 #else
 // If custom memory management is disabled, use malloc, calloc, etc. from the standard library
 #define mm_malloc(sz) malloc(sz)
@@ -73,6 +74,7 @@ extern void* lu_log_functions_global_[];
 #define mm_strdup(s) strdup(s)
 #define mm_realloc(p, sz) realloc((p), (sz))
 #define mm_free(p) free(p)
+#define mm_memzero(p, sz) memset((p), 0, (sz))
 #endif
 
 /** @}  */

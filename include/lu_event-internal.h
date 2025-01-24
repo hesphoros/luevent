@@ -2,13 +2,6 @@
 #define LU_EVENT_INTERNAL_H_INCLUDED_
 
 
-
-//#include <bits/types/struct_timeval.h>
-#ifdef __cplusplus
-extern "C" {
-#endif  //__cplusplus
-
-
 #include <sys/queue.h>
 #include "lu_util.h"
 #include <sys/time.h>
@@ -16,14 +9,22 @@ extern "C" {
 #include "lu_changelist-internal.h"
 #include "lu_min_heap.h"
 
+//#include <bits/types/struct_timeval.h>
+#ifdef __cplusplus
+extern "C" {
+#endif  //__cplusplus
+
+
+
 TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
 
 
 typedef struct lu_event_base_s lu_event_base_t;
 typedef struct lu_event_op_s lu_event_op_t;
 
-struct lu_event_callback_s ;
+typedef struct lu_event_callback_s lu_event_callback_t;
 typedef struct lu_event_s lu_event_t;
+
 
 typedef enum lu_event_base_config_flag_e {
 
@@ -118,9 +119,6 @@ typedef struct evwatch_list_s{
 }evwatch_list_t;
 
 
- 
-
-
 typedef struct lu_event_callback_s{
 
     TAILQ_ENTRY(lu_event_callback_s) evcb_active_next;
@@ -145,8 +143,9 @@ typedef struct lu_event_callback_s{
 
 
 
+
 typedef struct lu_event_s{
-    lu_event_callback_t ev_callback_;
+    lu_event_callback_t ev_callback;
     //表示事件在不同类型的超时列表中的位置。根据事件类型，这个成员的不同部分会被使用。
     union
     {
@@ -180,7 +179,12 @@ typedef struct lu_event_s{
 }lu_event_t;
 
 
+
+
+
 #define EVWATCH_MAX     2
+
+
 typedef struct lu_event_base_s {
 
     /** Function pointers and other data to describe this event_base's
@@ -244,7 +248,7 @@ typedef struct lu_event_base_s {
 
 
     /** Priority queue of events with timeouts. */
-	lu_min_heap_t timeheap;
+	lu_min_heap_t time_heap;
     /** Stored timeval: used to avoid calling gettimeofday/clock_gettime
 	 * too often. */
 	struct timeval tv_cache;
@@ -259,7 +263,18 @@ typedef struct lu_event_base_s {
 	time_t last_updated_clock_diff;
 
 
-
+#ifndef LU_EVENT__DISABLE_THREAD_SUPPORT
+	/* threading support */
+	/** The thread currently running the event_loop for this base */
+	unsigned long th_owner_id;
+	/** A lock to prevent conflicting accesses to this event_base */
+	void *th_base_lock;
+	/** A condition that gets signalled when we're done processing an
+	 * event with waiters on it. */
+	void *current_event_cond;
+	/** Number of threads blocking on current_event_cond. */
+	int current_event_waiters;
+#endif
 
     lu_event_callback_t *current_event;
 

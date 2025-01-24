@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 
 #include "lu_memory_manager.h"
 #include "lu_hash_table-internal.h"
@@ -153,15 +154,7 @@ const char *lu_evutil_getenv_(const char *varname)
 }
 
 
-int lu_evutil_configure_monotonic_time_(lu_evutil_monotonic_timer_t *base,
-    int flags)
-{
-    LU_UNUSED(base);
-    LU_UNUSED(flags);
-    //TODO: to be implemented
 
- return 0;
-}
 
 int lu_evutil_check_dict_file_exist(const char *path){
     if (path == NULL || strlen(path) == 0) {

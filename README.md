@@ -85,4 +85,17 @@ no progress
 
 1. 完成ev_base 后端的封装，支持epool select poll 等后端
 
+- [ ] 完善了mm_internal 中的memzero模块,~lu_event_mm_memzero_~
+- [ ] 修复了lu_event_mm_free_中的悬挂指针问题
+- [ ] lu_log_functions_global_中完善了memzero模块，日志回调函数也支持了memzero的回调
+- [ ] 修复了lu_mm_aligned_malloc_fn_ 函数指针的返回值int-> void*
+- [ ] 编写monotonic_time的documenation文档
+- [ ] 编写struct_timespec_documenation文档
+- [ ] 在lu_event_internal中对lu_min_heap_ 重复包含问题进行修复
+- [ ] 添加了lu_evthread-internal.h用于内部保证线程安全
+- [ ] 优化了lu_utils中的时间函数 时间加法  时间减法  时间比较
+- [ ] 更新对posix的单调时钟support
+- [ ] 完成此方法lu_evutil_configure_monotonic_time_ 
+
+
 ## 2025-1-25

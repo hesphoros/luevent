@@ -95,7 +95,19 @@ no progress
 - [ ] 添加了lu_evthread-internal.h用于内部保证线程安全
 - [ ] 优化了lu_utils中的时间函数 时间加法  时间减法  时间比较
 - [ ] 更新对posix的单调时钟support
-- [ ] 完成此方法lu_evutil_configure_monotonic_time_ 
-
+- [ ] 完成此方法lu_evutil_configure_monotonic_time_
 
 ## 2025-1-25
+
+- [X] lu_evutil_monotonic_timer_t 定义且完成单调计时器
+- [X] 重构了lu_event_struct ,移动了lu_event_t 和lu_callback_t 到lu_event_struct中
+- [X] 修复了lu_event_base_s中的active_queues active_later_queue 成员；
+	   其类型TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t)
+- [X] 添加了lu_evsiganl-internal.h 用于内部的信号处理
+- [X] 在lu_evsiganl-internal中提案加了LU_EVTHREAD_GET_ID LU_EVBASE_IN_THREAD。。。等宏函数
+- [X] 在lu_evsiganl.c中完成lu_evthread_condition_callbacks_t 等 lu_evthread_set_condition_callbacks等的定义
+- [X] 完成了lu_evsignal_info_t 结构体，保存signal的相关信息
+- [X] 修复了lu_min_heap_ 中的函数，去除了static修饰符，,使代码全文可见
+- [X] 在lu_utils中添加了断言辅助宏函数
+- [X] 完善了mm_internal `lu_event_base_new_with_config`函数中的最小时间堆的初始化，以及信号通知
+- [X] 在main.c 中include 新增头文件

@@ -6,7 +6,7 @@
 
 
 /// @brief 最小时间堆构造函数
-/// @param heap 
+/// @param heap
 void lu_min_heap_constructor_(lu_min_heap_t *heap) {
   heap->elements = NULL;
   heap->n = 0;

@@ -3,6 +3,7 @@
 
 
 #include "lu_visibility.h"
+
 #include <time.h>
 #include <stdarg.h>
 #include <stdint.h>
@@ -193,7 +194,6 @@ typedef struct lu_evutil_monotonic_timer_s{
         int monotonic_clock;
         //用于调整单调时钟的时间。timeval 结构体包含秒和微秒，可以用来微调定时器，或者处理时钟漂移问题
         struct timeval adjust_monotonic_clock;
-
         //这个字段通常用来计算时间间隔，表示上次记录的时间点
         struct timeval last_time;
 }lu_evutil_monotonic_timer_t;
@@ -249,6 +249,18 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 		}							\
 	} while (0)
 
+
+//断言
+#define LU_EVUTIL_ASSERT(cond)                                 \
+    do {                                                        \
+        if (!(cond)) {                                          \
+            LU_EVENT_LOG_WARNX(LU_EVENT_ERROR_ABORT_,"%s:%d: Assertion %s failed in %s",\
+            __FILE__,__LINE__,#cond,__func__);                    \
+            /* 如果用户提供的处理程序尝试 */                     \
+            /* 将控制权返回给我们，在此记录并中止。 */              \
+            (void)fprintf(stderr, "Assertion %s failed in %s:%d\n", #cond, __FILE__, __LINE__); \
+        }                                                      \
+    } while (0)
 
 #ifdef __cplusplus
 }

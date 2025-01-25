@@ -17,6 +17,7 @@
 #include "lu_event-internal.h"
 #include "lu_event_struct.h"
 #include "lu_min_heap.h"
+
 #include "lu_mutex-internal.h"
 #include "lu_visibility.h"
 #include <sys/types.h>

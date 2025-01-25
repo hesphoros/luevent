@@ -105,8 +105,8 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
   evbase->th_notify_fd[0] = -1;
   evbase->th_notify_fd[1] = -1;
 
-  TAILQ_INIT(&evbase->active_later_queue)
-
+  TAILQ_INIT(&evbase->active_later_queue);
+  
 
   //TODO: 信号处理
   //TODO: 延迟事件激活队列

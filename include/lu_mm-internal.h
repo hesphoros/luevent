@@ -23,7 +23,7 @@ static void*(*lu_mm_realloc_fn_)(void *ptr, size_t size) = NULL;
 static void*(*lu_mm_free_fn_)(void *ptr) = NULL;
 
 //int posix_memalign(void **memptr, size_t alignment, size_t size);
-static void*(*lu_mm_aligned_malloc_fn_)(void **ptr,size_t size, size_t alignment) = NULL;
+static int(*lu_mm_aligned_malloc_fn_)(void **ptr,size_t size, size_t alignment) = NULL;
 
 static void* (*lu_mm_memzero_fn_)(void *ptr, size_t size) = NULL;
 

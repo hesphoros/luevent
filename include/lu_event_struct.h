@@ -3,7 +3,28 @@
 
 
 #include <sys/queue.h>
+#include <sys/time.h>
+#include <time.h>
+
 #include "lu_util.h"
+#include "lu_evmap.h"
+
+//如果定义了LU_EVMAP_USE_HASHTABLE，则io map使用hash表，否则使用链表。
+
+//DELETEME:LU_EVMAP_USE_HASHTABLE 仅供测试使用
+//#define LU_EVMAP_USE_HASHTABLE
+
+#ifdef LU_EVMAP_USE_HASHTABLE
+#include "lu_hash_table-internal.h"
+#define HASH_TABLE_NO_CACHE_HASH_VALUES
+struct lu_event_map_entry_s ;
+lu_hash_table_t  *lu_event_io_map_t ;
+
+#define  lu_event_io_map_t  lu_hash_table_t*
+
+#else
+#define lu_event_io_map_t lu_event_signal_map_t
+#endif //LU_EVMAP_USE_HASHTABLE
 
 #ifdef __cplusplus
 extern "C" {

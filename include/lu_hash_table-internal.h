@@ -179,6 +179,17 @@ int	 lu_hash_function(int key, size_t table_size);
 #define LU_HASH_TABLE_DESTROY(table)			lu_hash_table_destroy(table)
 #define LU_HASH_FUNCTION(key,size)				lu_hash_function(key,size)
 
+
+#define LU_HASHTABLE_HEAD(name,type)	\
+	struct name{						\
+		struct type** hth_table;			/* 哈希表的桶数组 */\
+		size_t    hth_size;				 /* 哈希表的大小 */        \
+		size_t    hth_ele_count;		 /* 当前元素数量 */   		\
+		unsigned  hth_load_limit;		 /* 负载因子阈值 */          \
+		int hth_prime_idx;               /* 质数表的索引，用于调整哈希表大小 */ \
+    }
+
+
 #ifdef __cplusplus
 }
 #endif

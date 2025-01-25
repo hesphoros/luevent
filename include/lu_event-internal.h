@@ -8,8 +8,10 @@
 #include "lu_mm-internal.h"
 #include "lu_evsignal-internal.h"
 #include "lu_changelist-internal.h"
+#include "lu_hash_table-internal.h"
 #include "lu_event_struct.h"
 #include "lu_min_heap.h"
+#include "lu_evmap.h"
 
 //#include <bits/types/struct_timeval.h>
 #ifdef __cplusplus
@@ -17,7 +19,7 @@ extern "C" {
 #endif  //__cplusplus
 
 
-//FIXME 
+//FIXME:
 TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
 
 
@@ -85,24 +87,27 @@ typedef struct lu_event_changelist_s{
 	int changes_size;
 }lu_event_changelist_t;
 
-//表示signalfd的相关信息
-//超时列表
+
+
+lu_hash_table_t * lu_event_io_hash_table = NULL;
+
 typedef struct lu_common_timeout_list_s {
 	//TODO:
     int paser;
 }lu_common_timeout_list_t;
 
+//TODO: 完成lu_event_map_entry_t
 
-
-typedef struct lu_event_io_map_s {
-    //TODO:
-    int summyl;
-}lu_event_io_map_t;
+//io fd map
 
 typedef struct lu_event_signal_map_s{
-    //TODO:
-    int summyl;
+   /* An array of evmap_io * or of evmap_signal *; empty entries are
+	 * set to NULL. */
+	void **entries;
+	/* The number of entries available in entries */
+	int nentries;
 }lu_event_signal_map_t;
+
 
 
 typedef struct evutil_weakrand_state_s{
@@ -142,6 +147,7 @@ typedef struct lu_event_base_s {
     const struct lu_event_op_s* evsigsel_op;
 
     /**Data to implement the common signal handler code */
+    //数据实现通用信号处理代码
     lu_evsig_info_t sig_info_;
 
     int virtual_event_count; //Number of virtual events in this event_base.
@@ -185,7 +191,7 @@ typedef struct lu_event_base_s {
 
     /**Common timeout logic */
     struct common_timeout_list** common_timeout_queues;
- 
+
 
     /** The number of entries used in common_timeout_queues */
 	int n_common_timeouts;

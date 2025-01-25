@@ -96,8 +96,10 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * ev_cfg_t_) {
     flags = precise_time ? LU_EVENT_MONOT_PRECISE : 0;
     lu_evutil_configure_monotonic_time_(&ev_base_t->monotonic_timer, flags);
     // 捕捉当前时间
-    gettime(ev_base_t,&tmp_timeval); //TODO: to be implemented
+    gettime(ev_base_t,&tmp_timeval);
   }
+
+  
 
 
   //TODO: 最小堆

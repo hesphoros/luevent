@@ -1,6 +1,11 @@
+#define _POSIX_C_SOURCE 199309L
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <limits.h>
+
 
 #include "lu_util.h"
 #include "lu_memory_manager.h"

@@ -23,6 +23,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include "lu_evthread-internal.h"
+#include "lu_thread.h"
 
 
 #define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING

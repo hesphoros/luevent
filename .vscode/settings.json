@@ -63,7 +63,18 @@
         "lu_hash_table-internal.h": "c",
         "string.h": "c",
         "lu_event.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "fcntl.h": "c",
+        "lu_evthread-internal.h": "c",
+        "lu_thread.h": "c",
+        "inttypes.h": "c",
+        "assert.h": "c",
+        "error.h": "c",
+        "limits": "c",
+        "algorithm": "c",
+        "lu_evsignal-internal.h": "c",
+        "signal.h": "c",
+        "signalfd.h": "c"
     },
     "Codegeex.RepoIndex": true
 }

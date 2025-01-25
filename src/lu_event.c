@@ -43,7 +43,6 @@ lu_event_config_t * lu_event_config_new(void)
 static int
 gettime(lu_event_base_t *base, struct timeval *tp)
 {
-
   //如果缓存时间有效，则直接返回缓存时间
   if(base->tv_cache.tv_sec){
     *tp = base->tv_cache;

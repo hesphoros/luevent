@@ -74,7 +74,12 @@
         "algorithm": "c",
         "lu_evsignal-internal.h": "c",
         "signal.h": "c",
-        "signalfd.h": "c"
+        "signalfd.h": "c",
+        "optional": "c",
+        "thread": "cpp",
+        "lu_evmap.h": "c",
+        "semaphore.h": "c",
+        "memory": "c"
     },
     "Codegeex.RepoIndex": true
 }

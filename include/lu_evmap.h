@@ -10,17 +10,13 @@ extern "C" {
 #endif
 
 
-
-
-struct event_dlist {
-    TAILQ_HEAD(, lu_event_t) events;
-};
+LIST_HEAD(lu_event_dlist, lu_event_t);
 
 /** evmap_io 列表的条目：记录想要在给定 fd
  * 上读取或写入的所有事件，以及每个事件的数量。
 */
 typedef struct lu_evmap_io_s {
-	struct event_dlist events;
+	struct lu_event_dlist events;
 	lu_uint16_t nread;
 	lu_uint16_t nwrite;
 	lu_uint16_t nclose;

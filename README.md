@@ -111,7 +111,8 @@ no progress
 - [X] 在lu_utils中添加了断言辅助宏函数
 - [X] 完善了mm_internal `lu_event_base_new_with_config`函数中的最小时间堆的初始化，以及信号通知
 - [X] 在main.c 中include 新增头文件
-[text](README.md)
+
 ## 2025-1-26
 
-- [X] 在eventbase->io :(type):lu_event_io_map_t中决策不使用内部的hash表而是使用默认的链表结构即event_struct 中的lu_event_signal_map_t
+- [X] 在eventbase->io :(type):lu_event_io_map_t中决策不使用内部的hash表而是使用默认的表结构即event_struct 中的lu_event_signal_map_t
+- [X] 修复了lu_event_dlist的定义，为双向链表结构；使用LIST_HEAD(lu_event_dlist, lu_event_t) 进行定义；定于于lu_event_struct中

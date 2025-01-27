@@ -6,7 +6,7 @@
 - [X] 添加了GTest来进行单元测试
 - [ ] 完成luevent的基本功能，包括事件的创建、订阅、发布、删除等
 
-## 2025-1-18 
+## 2025-1-18
 
 - [X] 添加了luevent-memory-pool的错误码
 
@@ -29,6 +29,7 @@
 - [x] feat: 添加VSCode配置文件并优化日志路径处理
 
 ## 2025-1-22
+
 ✅hesphoros
 
 - [ ] 对tests下的test_main内部的TEST进行模块划分
@@ -47,33 +48,32 @@
 /* Array of backends in order of preference. */
 static const struct eventop *eventops[] = {
 #ifdef EVENT__HAVE_EVENT_PORTS
-	&evportops,
+ &evportops,
 #endif
 #ifdef EVENT__HAVE_WORKING_KQUEUE
-	&kqops,
+ &kqops,
 #endif
 #ifdef EVENT__HAVE_EPOLL
-	&epollops,
+ &epollops,
 #endif
 #ifdef EVENT__HAVE_DEVPOLL
-	&devpollops,
+ &devpollops,
 #endif
 #ifdef EVENT__HAVE_POLL
-	&pollops,
+ &pollops,
 #endif
 #ifdef EVENT__HAVE_SELECT
-	&selectops,
+ &selectops,
 #endif
 #ifdef _WIN32
-	&win32ops,
+ &win32ops,
 #endif
 #ifdef EVENT__HAVE_WEPOLL
-	&wepollops,
+ &wepollops,
 #endif
-	NULL
+ NULL
 };
 ~~~
-
 
 ![alt text](image.png)
 
@@ -102,7 +102,7 @@ no progress
 - [X] lu_evutil_monotonic_timer_t 定义且完成单调计时器
 - [X] 重构了lu_event_struct ,移动了lu_event_t 和lu_callback_t 到lu_event_struct中
 - [X] 修复了lu_event_base_s中的active_queues active_later_queue 成员；
-	   其类型TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t)
+    其类型TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t)
 - [X] 添加了lu_evsiganl-internal.h 用于内部的信号处理
 - [X] 在lu_evsiganl-internal中提案加了LU_EVTHREAD_GET_ID LU_EVBASE_IN_THREAD。。。等宏函数
 - [X] 在lu_evsiganl.c中完成lu_evthread_condition_callbacks_t 等 lu_evthread_set_condition_callbacks等的定义
@@ -116,3 +116,13 @@ no progress
 
 - [X] 在eventbase->io :(type):lu_event_io_map_t中决策不使用内部的hash表而是使用默认的表结构即event_struct 中的lu_event_signal_map_t
 - [X] 修复了lu_event_dlist的定义，为双向链表结构；使用LIST_HEAD(lu_event_dlist, lu_event_t) 进行定义；定于于lu_event_struct中
+
+## 2025-1-27
+
+- [X] 更新了luevent的开发文档
+- [X] 在lu_changelist-internal.h中修正了lu_event_changelist_t lu_event_change_t的定义
+- [X] lu_changelist-internal.h中支持了cpp包含
+- [X] 将lu_event_io_map_t的定义更改到lu_evmap.h中 且修正了重复包含问题
+- [X] 在lu_event-internal.h中include lu_evmap.h 且move lu_event_changelist_t
+- [X] lu_event_base_new_with_config 新增信号 io 初始化逻辑位于lu_evmap.c中
+- [X] lu_evmap.c中 lu_event_changelist_init lu_evmap_siganl_initmap lu_evmap_io_initmap 完成初始化

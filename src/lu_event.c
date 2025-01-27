@@ -1,4 +1,5 @@
 #include "lu_event-internal.h"
+#include "lu_event_struct.h"
 #include "lu_evthread-internal.h"
 #include "lu_log-internal.h"
 #include "lu_memory_manager.h"
@@ -6,7 +7,7 @@
 #include "lu_changelist-internal.h"
 #include "lu_event.h"
 #include "lu_util.h"
-
+#include "lu_evmap.h"
 
 #include <sys/time.h>
 #include <time.h>
@@ -106,8 +107,11 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
   evbase->th_notify_fd[1] = -1;
 
   TAILQ_INIT(&evbase->active_later_queue);
-  
+  //初始化事件处理器队列 默认采用链表结构
+  lu_evmap_io_initmap(&evbase->io);
+  lu_evmap_siganl_initmap(&evbase->signal);
 
+  lu_event_changelist_init(&evbase->changelist);
   //TODO: 信号处理
   //TODO: 延迟事件激活队列
   //TODO: 超时事件激活队列

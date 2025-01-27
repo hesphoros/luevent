@@ -25,6 +25,21 @@
 #include "lu_util.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+typedef struct lu_event_changelist_s lu_event_changelist_t;
+typedef struct lu_event_change_s lu_event_change_t;
+
+//需要更改event的链表 存储一组事件的变更
+typedef struct lu_event_changelist_s{
+
+    lu_event_change_t *changes;
+    int n_changes;
+	int changes_size;
+}lu_event_changelist_t;
 
 typedef struct lu_event_change_s {
     /**The fd or signal whose events are to be changed. */
@@ -79,5 +94,11 @@ typedef struct lu_event_change_s {
 // /** Implementation of eventop_del that queues the event in a changelist. */
 // int lu_event_changelist_del_(lu_event_base_t *base, lu_evutil_socket_t fd, short old, short events,
 //     void *p);
+
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* LU_CHANGELIST_INTERNAL_H */

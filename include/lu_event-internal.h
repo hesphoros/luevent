@@ -11,6 +11,7 @@
 #include "lu_hash_table-internal.h"
 #include "lu_event_struct.h"
 #include "lu_min_heap.h"
+#include "lu_log-internal.h"
 
 
 //#include <bits/types/struct_timeval.h>
@@ -22,6 +23,8 @@ extern "C" {
 
 //FIXME:
 TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
+
+
 
 
 typedef struct lu_event_base_s lu_event_base_t;

@@ -106,18 +106,18 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_fatal(const char* file, int line, const cha
 /**New log func implementation*/
 LU_EVENT_EXPORT_SYMBOL void lu_event_log_logv_(int severity, const char* errstr, const char *file, int line, const char* fmt, va_list ap) LU_EV_CHECK_FMT(5,0);
 
-#define LU_EVENT_LOG_ERROR(errnum, fmt, ...) lu_event_error(errnum, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LU_EVENT_LOG_WARN(fmt, ...) lu_event_warn(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LU_EVENT_LOG_SOCK_ERROR(eval, sock, fmt, ...) lu_event_sock_error(eval, sock, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LU_EVENT_LOG_SOCK_WARN(sock, fmt, ...) lu_event_sock_warn(sock, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_ERROR(errnum, fmt, ...) lu_event_error(errnum, __FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_WARN(fmt, ...) lu_event_warn(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_SOCK_ERROR(eval, sock, fmt, ...) lu_event_sock_error(eval, sock, __FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_SOCK_WARN(sock, fmt, ...) lu_event_sock_warn(sock, __FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 
-#define LU_EVENT_LOG_ERRORX(errnum, fmt, ...) lu_event_errorx(errnum, __FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LU_EVENT_LOG_WARNX(fmt, ...) lu_event_warnx(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LU_EVENT_LOG_MSGX(fmt, ...) lu_event_msgx(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LU_EVENT_LOG_DEBUGX(fmt, ...) lu_event_debugx_(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_ERRORX(errnum, fmt, ...) lu_event_errorx(errnum, __FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_WARNX(fmt, ...) lu_event_warnx(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_MSGX(fmt, ...) lu_event_msgx(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_DEBUGX(fmt, ...) lu_event_debugx_(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 
-#define LU_EVENT_LOG_ERRORV(fmt,...) lu_event_errorv(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
-#define LU_EVENT_LOG_FATAL(fmt, ...) lu_event_fatal(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define LU_EVENT_LOG_ERRORV(fmt,...) lu_event_errorv(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_FATAL(fmt, ...) lu_event_fatal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 
 void lu_log_set_level(int level);
 /**

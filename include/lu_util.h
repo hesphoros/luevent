@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -261,15 +262,21 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 #ifndef LU_EVENT_ERROR_ABORT_
 #define LU_EVENT_ERROR_ABORT_ ((int)0xdeaddead)
 #endif
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define LU_EVUTIL_UNLIKELY(x) __builtin_expect((x), 0)
+#endif
+
 //断言
 #define LU_EVUTIL_ASSERT(cond)                                 \
     do {                                                        \
-        if (!(cond)) {                                          \
-            LU_EVENT_LOG_WARNX(LU_EVENT_ERROR_ABORT_,"%s:%d: Assertion %s failed in %s",\
+        if (LU_EVUTIL_UNLIKELY(!(cond))) {                                          \
+            LU_EVENT_LOG_ERRORX(LU_EVENT_ERROR_ABORT_,"%s:%d: Assertion %s failed in %s",\
             __FILE__,__LINE__,#cond,__func__);                    \
             /* 如果用户提供的处理程序尝试 */                     \
             /* 将控制权返回给我们，在此记录并中止。 */              \
             (void)fprintf(stderr, "Assertion %s failed in %s:%d\n", #cond, __FILE__, __LINE__); \
+            abort();                                              \
         }                                                      \
     } while (0)
 

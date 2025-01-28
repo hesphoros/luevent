@@ -32,7 +32,7 @@ typedef struct lu_evsig_info_s{
 
 int sigfd_init_(lu_event_base_t *base);
 
-
+int lu_evsig_init(lu_event_base_t *base);
 
 
 #ifdef __cplusplus

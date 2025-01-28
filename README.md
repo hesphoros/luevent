@@ -131,7 +131,7 @@ no progress
 - [X] 添加了lu_epoll.h 实现了lu_epoll_ops的初始化函数(epool_ops lu_epool_op)
 - [X] epoll_ops可自定义适配是否使用changelist
 - [X] lu_event-internal.h中增加了lu_event_method_feature_u的相关文档
-- [X] sigfd_init_的实现(根据signalfd)
+- [X] sigfd_init_的实现(根据signalfd )
 - [X] 新增了sigfdops的实现
 - [X] 在lu_memory_managge模块中实现了memzero memcopy 以及内部的日志指针和自定义分配指针 以及相关str宏
 

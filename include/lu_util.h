@@ -283,7 +283,7 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 
 int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd);
 
-
+int lu_evutil_make_internal_pipe_(lu_evutil_socket_t fd[2]);
 
 #ifdef __cplusplus
 }

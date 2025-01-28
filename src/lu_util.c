@@ -3,6 +3,7 @@
 
 #include <pthread.h>
 #include <assert.h>
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <unistd.h>
@@ -14,6 +15,11 @@
 #include "lu_hash_table-internal.h"
 #include "lu_erron.h"
 #include "lu_log-internal.h"
+#define _GNU_SOURCE
+#include <sys/types.h>
+#include <stdio.h>
+#include <fcntl.h>
+
 
 lu_hash_table_t* lu_cached_sock_errs_map;
 
@@ -268,10 +274,17 @@ int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd){
      */
     if (!(flags & FD_CLOEXEC)) {
 		if (fcntl(fd, F_SETFD, flags | FD_CLOEXEC) == -1) {
-			event_warn("fcntl(%d, F_SETFD)", fd);
+			LU_EVENT_LOG_WARN("fcntl(%d, F_SETFD)", fd);
 			return -1;
 		}
 	}
 
     return 0;
+}
+
+
+int lu_evutil_make_internal_pipe_(lu_evutil_socket_t fd[2]){
+    if(pipe(fd,O_NONBLOCK | O_CLOEXEC) == 0){
+        return 0;
+    }
 }

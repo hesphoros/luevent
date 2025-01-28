@@ -13,7 +13,7 @@
 #include "lu_memory_manager.h"
 #include "lu_hash_table-internal.h"
 #include "lu_erron.h"
-
+#include "lu_log-internal.h"
 
 lu_hash_table_t* lu_cached_sock_errs_map;
 
@@ -252,4 +252,26 @@ int lu_evutil_create_dictionay(const char * path){
     }
 
     return -1; // 目录创建失败
+}
+
+
+int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd){
+    int flags;
+    if(flags = fcntl(fd, F_GETFD, NULL) < 0){
+        LU_EVENT_LOG_WARN("fcntl(%d, F_GETFD)", fd);
+        return -1;
+    }
+    /**
+     * FD_CLOEXEC 标志的作用：它告诉操作系统，当调用 exec() 系列函数（如 execvp()、execl() 等）时，
+     * 自动关闭该文件描述符。这样做通常是为了避免在执行子进程时，
+     * 父进程持有的文件描述符被传递到子进程中，造成资源泄漏或不必要的文件打开。
+     */
+    if (!(flags & FD_CLOEXEC)) {
+		if (fcntl(fd, F_SETFD, flags | FD_CLOEXEC) == -1) {
+			event_warn("fcntl(%d, F_SETFD)", fd);
+			return -1;
+		}
+	}
+
+    return 0;
 }

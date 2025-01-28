@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include "lu_evthread-internal.h"
 #include "lu_thread.h"
+#include "lu_epoll.h"
 
 
 #define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING

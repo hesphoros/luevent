@@ -79,7 +79,18 @@
         "thread": "cpp",
         "lu_evmap.h": "c",
         "semaphore.h": "c",
-        "memory": "c"
+        "memory": "c",
+        "semaphore": "c",
+        "lu_epoll.h": "c",
+        "epoll.h": "c",
+        "cstring": "c",
+        "timerfd.h": "c",
+        "deque": "c",
+        "forward_list": "c",
+        "list": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "lu_evsignalfd.h": "c"
     },
     "Codegeex.RepoIndex": true
 }

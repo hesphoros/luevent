@@ -1,3 +1,5 @@
+#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
+
 #include "test_evutils.h"
 #include "test_lulog.hpp"
 #include "test_lu_erron.hpp"

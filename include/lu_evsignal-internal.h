@@ -6,7 +6,9 @@
 #include "lu_event_struct.h"
 #include <sys/signalfd.h>  // 用于检查是否支持 signalfd
 
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef void(*ev_sighandler_t)(int);
 
@@ -25,6 +27,17 @@ typedef struct lu_evsig_info_s{
     lu_event_t *ev_sigevent;
 
 }lu_evsig_info_t;
+
+
+
+int sigfd_init_(lu_event_base_t *base);
+
+
+
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* _LU_EVENT_SIGNAL_INTERNAL_H_ */

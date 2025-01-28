@@ -9,6 +9,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <inttypes.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,6 +20,8 @@ extern "C" {
 // socket type
 #define lu_evutil_socket_t  int
 #define lu_evutil_socklen_t socklen_t
+
+
 
 /**
  * @name Standard integer types.
@@ -119,6 +123,9 @@ extern "C" {
 #define ALIGEND_MALLOC_STR          "__ALIGNED_M__"
 #define MM_MEMZERO_STR              "__MM_MEMZERO__"
 #define MEMZERO_STR                 "__MEMZERO__"
+#define MM_MEMCPY_STR               "__MM_MEMCPY__"
+#define MEMCPY_STR                  "__MEMCPY__"
+
 /**@}*/
 
 //debug level
@@ -250,6 +257,10 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 	} while (0)
 
 
+
+#ifndef LU_EVENT_ERROR_ABORT_
+#define LU_EVENT_ERROR_ABORT_ ((int)0xdeaddead)
+#endif
 //断言
 #define LU_EVUTIL_ASSERT(cond)                                 \
     do {                                                        \
@@ -261,6 +272,11 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
             (void)fprintf(stderr, "Assertion %s failed in %s:%d\n", #cond, __FILE__, __LINE__); \
         }                                                      \
     } while (0)
+
+
+int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd);
+
+
 
 #ifdef __cplusplus
 }

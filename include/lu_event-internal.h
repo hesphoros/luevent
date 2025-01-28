@@ -115,7 +115,7 @@ typedef struct lu_event_base_s {
 
     /** Function pointers and other data to describe this event_base's
 	 * backend. */
-    const struct lu_event_op_s* evsel_op;
+    const struct lu_event_op_s* evsel_op; //such as epoll poll select kqueue
     void* evbase;
 
     //List of changes to tell backend about next dispatch.Only used bt O(1) backends.
@@ -219,6 +219,9 @@ typedef struct lu_event_base_s {
 
     struct timeval max_dispatch_time;
     int max_dispatch_callbacks;
+
+    //在优先级之后限制回调
+    /**有时可能需要确保某些事件的回调（如资源释放、状态更新等）在更重要的回调之后进行，以避免冲突或资源竞争。 */
     int limit_callbacks_after_priority;
     /* Notify main thread to wake up break, etc. */
 	/** True if the base already has a pending notify, and we don't need
@@ -254,14 +257,32 @@ typedef struct lu_event_base_s {
    event_config_require_features() to tell luevent to only proceed if your
    event_base implements a given feature, and you can receive this type from
    event_base_get_features() to see which features are available.
-*/
-typedef enum lu_event_method_feature_u {
+*/typedef enum lu_event_method_feature_u {
 
-    LU_EVENT_FEATURE_ET = 0x01,
-    LU_EVENT_FEATURE_O1 = 0x02,
-    LU_EVENT_FEATURE_FDS = 0x04,
-    LU_EVENT_FEATURE_EARLY_CLOSE = 0x08,
-}lu_event_method_feature_t;
+    /**
+     * 
+     * LU_EVENT_FEATURE_ET: 这个枚举值表示事件方法支持 边缘触发（ET） 模式。在 ET 模式下，当事件的状态发生变化时，事件会被触发一次，并且不会重复触发，直到状态再次变化。这有助于减少重复触发事件。
+
+     * LU_EVENT_FEATURE_O1: 这个枚举值表示事件方法支持 一次性事件（One-shot） 模式。在 O1 模式下，事件只会触发一次，触发后会自动取消注册，直到应用程序显式重新注册该事件。
+
+     * LU_EVENT_FEATURE_FDS: 这个枚举值表示事件方法支持 文件描述符（FDs）。这通常用于事件驱动的 I/O 操作，比如处理网络套接字或文件系统事件。
+
+     * LU_EVENT_FEATURE_EARLY_CLOSE: 这个枚举值表示事件方法支持 早期关闭（Early Close） 功能。早期关闭可以优化性能，允许在处理事件之前提前关闭连接或文件描述符，以减少不必要的 I/O 操作。
+     */
+
+    // 支持边缘触发（Edge Triggered）的事件方法
+    LU_EVENT_FEATURE_ET = 0x01,  // Edge Triggered (ET)模式，适用于事件驱动模型，确保尽可能少地触发事件。
+
+    // 支持一次性事件（One-shot）的事件方法
+    LU_EVENT_FEATURE_O1 = 0x02,  // One-shot模式，一旦事件被触发就不再重复触发，直到重新注册。
+
+    // 支持文件描述符的事件方法
+    LU_EVENT_FEATURE_FDS = 0x04, // 文件描述符（File Descriptors）支持，适用于处理网络套接字或文件I/O事件。
+
+    // 支持早期关闭事件的方法
+    LU_EVENT_FEATURE_EARLY_CLOSE = 0x08,  // 早期关闭（Early Close）支持，允许在事件处理前关闭连接，以提升性能或响应速度。
+
+} lu_event_method_feature_t;
 
 typedef struct lu_event_op_s {
     const char* name;
@@ -270,7 +291,7 @@ typedef struct lu_event_op_s {
      *  create a new lu_event_base_t and return it.On failture,this function should return NULL
      */
     void* (*init)(lu_event_base_t*);
-    int* (*add)(lu_event_base_t*, lu_evutil_socket_t fd,short old,short events, void* fdinfo);
+    int (*add)(lu_event_base_t*, lu_evutil_socket_t fd,short old,short events, void* fdinfo);
      /** 类似于'add'函数，但'events'参数表示我们要禁用的事件类型。 */
     int (*del)( lu_event_base_t *, lu_evutil_socket_t fd, short old, short events, void *fdinfo);
 

@@ -15,7 +15,8 @@ void* lu_log_functions_global_[] = {
     &lu_mm_realloc_log_fn_,
     &lu_mm_free_log_fn_,
     &lu_mm_aligned_malloc_log_fn_,
-    &lu_mm_memzero_log_fn_
+    &lu_mm_memzero_log_fn_,
+    &lu_mm_memcpy_log_fn_,
 };
 
 void lu_enable_default_memory_logging(int enable) {
@@ -189,6 +190,30 @@ void* lu_event_mm_memzero_(void* ptr, size_t size) {
 
     return p;
 }
+
+void* lu_event_mm_memcpy_(void* dest, const void* src, size_t size) {
+    void *p = NULL;
+
+    // 如果自定义的 memcpy 函数指针存在，使用它
+    if (lu_mm_memcpy_fn_) {
+        p = lu_mm_memcpy_fn_(dest, src, size);
+        if (p && lu_mm_memcpy_log_fn_) {
+            lu_mm_memcpy_log_fn_(MM_MEMCPY_STR, p, size);  // 如果有日志函数，记录日志
+        }
+        return p;
+    }
+
+    // 如果没有自定义函数，使用标准的 memcpy 复制内存
+    else {
+        p = memcpy(dest, src, size);  // 使用标准的 memcpy 复制
+        if (p && lu_mm_memcpy_log_fn_) {
+            lu_mm_memcpy_log_fn_(MEMCPY_STR, p, size);  // 如果有日志函数，记录日志
+        }
+    }
+
+    return p;
+}
+
 
 
 void* lu_event_mm_aligned_malloc_(size_t size, size_t alignment) {

@@ -8,6 +8,7 @@
 #include "lu_event.h"
 #include "lu_util.h"
 #include "lu_evmap.h"
+#include "lu_epoll.h"
 
 #include <sys/time.h>
 #include <time.h>
@@ -18,6 +19,18 @@
 
 #define LU_EVENT_BASE_ASSERT_LOCKED(evbase)                    \
   LU_EVLOCK_ASSERT_LOCKED((evbase)->th_base_lock)
+
+static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char *method_name) ;
+
+
+static const lu_event_op_t* eventops[] = {
+  &epool_ops,
+ // &lu_poll_ops,
+  //&lu_kqueue_ops,
+  //&lu_select_ops,
+
+};
+
 
 static void lu_event_config_entry_free(lu_event_config_entry_t * entry);
 
@@ -65,7 +78,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
 //TODO: to be implemented
   int i;
   lu_event_base_t * evbase;
-  int should_check_enviroment;
+  int should_check_environment;
 
   // 安全分配内存用于存储 event_base 结构体，并初始化为 0
   if(NULL == (evbase = mm_calloc(1, sizeof(lu_event_base_t)))) {
@@ -75,7 +88,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
   }
   if(cfg)
     cfg->flags = evbase->flags;
-  should_check_enviroment =
+  should_check_environment =
     !(cfg && (cfg->flags & LU_EVENT_BASE_FLAG_IGNORE_ENV));
 
   {
@@ -84,7 +97,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
     int precise_time =
       (cfg && (cfg->flags & LU_EVENT_BASE_FLAG_PRECISE_TIMER));
     int flags;
-    if(should_check_enviroment && !precise_time){
+    if(should_check_environment && !precise_time){
       //如果环境变量中设置了精确时间，则启用精确时间
       precise_time = lu_evutil_getenv_("LU_EVENT_PRECISE_TIMER") != NULL;
       if(precise_time)
@@ -112,10 +125,48 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
   lu_evmap_siganl_initmap(&evbase->signal);
 
   lu_event_changelist_init(&evbase->changelist);
-  //TODO: 信号处理
-  //TODO: 延迟事件激活队列
-  //TODO: 超时事件激活队列
-  //TODO: 事件处理器
+  evbase->evbase = NULL;
+
+  if(cfg){
+    mm_memcpy(&evbase->max_dispatch_time, &cfg->max_dispatch_interval, sizeof(struct timeval));
+    evbase->limit_callbacks_after_priority = cfg->limit_callbacks_after_priority;
+  }else{
+    evbase->max_dispatch_time.tv_sec = -1;
+    evbase->limit_callbacks_after_priority = 1;//默认限制回调函数数量
+  }
+  if (cfg && cfg->max_dispatch_callbacks >= 0) {
+    evbase->max_dispatch_callbacks = cfg->max_dispatch_callbacks;
+  }else{
+    evbase->max_dispatch_callbacks = INT_MAX;
+  }
+
+  if(evbase->max_dispatch_callbacks == INT_MAX && 
+    evbase->max_dispatch_time.tv_sec == -1)
+    evbase->limit_callbacks_after_priority = INT_MAX;
+
+//**选择合适的后端 */
+
+	for (i = 0; eventops[i] && !evbase->evbase; i++) {
+		if (cfg != NULL) {
+			/* determine if this backend should be avoided */
+			if (lu_event_config_is_avoided_method(cfg,
+				eventops[i]->name))
+				continue;
+			if ((eventops[i]->features & cfg->required_features)
+			    != cfg->required_features)
+				continue;
+		}
+
+		/* also obey the environment variables */
+		if (should_check_environment &&
+		    event_is_method_disabled(eventops[i]->name))
+			continue;
+
+		evbase->evsel_op = eventops[i];
+
+		evbase->evbase = evbase->evsel_op->init(evbase);
+	}
+
   //TODO: 事件处理器队列
   return (evbase);
 }
@@ -150,3 +201,23 @@ lu_event_base_t *lu_event_base_new(void) {
 }
 
 
+// 用于检查给定的方法名是否在事件配置中被避免
+static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char *method_name)
+{
+    // 定义一个指向事件配置条目的指针
+    lu_event_config_entry_t *entry;
+    // 使用TAILQ_FOREACH宏遍历cfg->entries链表
+    // entry是指向当前遍历条目的指针
+    // &cfg->entries是链表的头指针
+    // next是链表中每个条目的下一个条目的指针字段
+    TAILQ_FOREACH(entry, &cfg->entries, next) {
+        // 检查当前条目的avoid_method字段是否不为NULL
+        // 并且避免的方法名与给定的方法名相等
+      if(entry->avoid_method != NULL &&
+        strcmp(entry->avoid_method, method_name) == 0)
+          // 如果条件满足，返回1，表示该方法名被避免
+        return (1);
+    }
+    // 如果遍历完所有条目都没有找到匹配的方法名，返回0
+  return 0;
+}

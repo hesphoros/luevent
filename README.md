@@ -126,3 +126,13 @@ no progress
 - [X] 在lu_event-internal.h中include lu_evmap.h 且move lu_event_changelist_t
 - [X] lu_event_base_new_with_config 新增信号 io 初始化逻辑位于lu_evmap.c中
 - [X] lu_evmap.c中 lu_event_changelist_init lu_evmap_siganl_initmap lu_evmap_io_initmap 完成初始化
+- [X] 修正了lu_event_op_s 中的int指针错误
+- [X] 添加了epoll_create的开发文档
+- [X] 添加了lu_epoll.h 实现了lu_epoll_ops的初始化函数(epool_ops lu_epool_op)
+- [X] epoll_ops可自定义适配是否使用changelist
+- [X] lu_event-internal.h中增加了lu_event_method_feature_u的相关文档
+- [X] sigfd_init_的实现(根据signalfd)
+- [X] 新增了sigfdops的实现
+- [X] 在lu_memory_managge模块中实现了memzero memcopy 以及内部的日志指针和自定义分配指针 以及相关str宏
+
+## 2025-1-28

@@ -91,7 +91,7 @@ static void* lu_epoll_init(lu_event_base_t* base){
 #endif
 
 	if (sigfd_init_(base) < 0)
-		evsig_init_(base);
+		lu_evsig_init_(base);
 
 	return (epoll_op);
 

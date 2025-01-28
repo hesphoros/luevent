@@ -134,5 +134,8 @@ no progress
 - [X] sigfd_init_的实现(根据signalfd )
 - [X] 新增了sigfdops的实现
 - [X] 在lu_memory_managge模块中实现了memzero memcopy 以及内部的日志指针和自定义分配指针 以及相关str宏
+- [X] feat(api): 添加lu_event_assign函数及信号处理相关改进
 
 ## 2025-1-28
+
+- [X] 完善了lu_event_assign的实现

@@ -285,6 +285,10 @@ int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd);
 
 int lu_evutil_make_internal_pipe_(lu_evutil_socket_t fd[2]);
 
+int lu_evutil_fast_socket_nonblocking(lu_evutil_socket_t fd);
+int lu_evutil_fast_socket_closeonexec(lu_evutil_socket_t fd);
+
+
 #ifdef __cplusplus
 }
 #endif

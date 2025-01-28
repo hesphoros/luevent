@@ -21,6 +21,10 @@ typedef struct lu_evsig_info_s{
     int ev_signal_added;
     /* 当前正在观察的信号数量。 */
     int ev_n_signals_added;
+
+    // 这是一个指向 sigaction 结构体指针的指针，用于保存信号处理程序的旧设置。
+    // sigaction 结构体用于描述信号处理的行为。例如，指定信号发生时应该执行的处理函数。
+    // 该字段用于保存信号处理程序被安装之前的原始信号处理设置，便于之后恢复
     struct sigaction **sh_old;
     /* Size of sh_old. */
 	int sh_old_max;
@@ -32,7 +36,7 @@ typedef struct lu_evsig_info_s{
 
 int sigfd_init_(lu_event_base_t *base);
 
-int lu_evsig_init(lu_event_base_t *base);
+int lu_evsig_init_(lu_event_base_t *base);
 
 
 #ifdef __cplusplus

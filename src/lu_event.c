@@ -32,6 +32,14 @@ static const lu_event_op_t* eventops[] = {
 };
 
 
+
+/* Global state; deprecated */
+LU_EVENT_EXPORT_SYMBOL
+lu_event_base_t *event_global_current_base_ = NULL;
+#define current_base event_global_current_base_
+/* Global state */
+static void *event_self_cbarg_ptr_ = NULL;
+
 static void lu_event_config_entry_free(lu_event_config_entry_t * entry);
 
 lu_event_config_t * lu_event_config_new(void)
@@ -220,4 +228,18 @@ static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char
     }
     // 如果遍历完所有条目都没有找到匹配的方法名，返回0
   return 0;
+}
+
+
+
+int
+/* workaround for -Werror=maybe-uninitialized bug in gcc 11/12 */
+#if defined(__GNUC__) && (__GNUC__ == 11 || __GNUC__ == 12)
+__attribute__((noinline))
+#endif
+lu_event_assign(lu_event_t *ev, lu_event_base_t *base, lu_evutil_socket_t fd, short events, lu_event_callback_fn callback, void *callback_arg) {
+  if(!base)
+    base = current_base;
+  if(callback_arg == &event_self_cbarg_ptr_)
+    callback_arg  = ev;
 }

@@ -284,7 +284,37 @@ int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd){
 
 
 int lu_evutil_make_internal_pipe_(lu_evutil_socket_t fd[2]){
-    if(pipe(fd,O_NONBLOCK | O_CLOEXEC) == 0){
+    if(pipe(fd) == 0){
+        if(lu_evutil_fast_socket_nonblocking(fd[0]) < 0 ||
+                lu_evutil_fast_socket_nonblocking(fd[1]) < 0 ||
+                lu_evutil_fast_socket_closeonexec(fd[0]) < 0 ||
+                lu_evutil_fast_socket_closeonexec(fd[1]) < 0){
+                close(fd[0]);
+                close(fd[1]);
+                return -1;
+            }
         return 0;
+    }else{
+        LU_EVENT_LOG_WARN("%s pipe",__func__);
+        return -1;
     }
+
 }
+
+int lu_evutil_fast_socket_nonblocking(lu_evutil_socket_t fd){
+    if(fcntl(fd, F_SETFL, O_NONBLOCK) == -1){
+        LU_EVENT_LOG_WARN("fcntl(%d,F_SETFL)",fd);
+        return -1;
+    }
+    return 0;
+}
+
+
+int lu_evutil_fast_socket_closeonexec(lu_evutil_socket_t fd){
+    if(fcntl(fd, F_SETFD, FD_CLOEXEC) == -1){
+        LU_EVENT_LOG_WARN("fcntl(%d,F_SETFD)",fd);
+        return -1;
+    }
+    return 0;
+}
+

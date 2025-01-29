@@ -174,6 +174,30 @@ luevent_static/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/build
 .PHONY : luevent_static/fast
 
+src/lu_epool.o: src/lu_epool.c.o
+.PHONY : src/lu_epool.o
+
+# target to build an object file
+src/lu_epool.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_epool.c.o
+.PHONY : src/lu_epool.c.o
+
+src/lu_epool.i: src/lu_epool.c.i
+.PHONY : src/lu_epool.i
+
+# target to preprocess a source file
+src/lu_epool.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_epool.c.i
+.PHONY : src/lu_epool.c.i
+
+src/lu_epool.s: src/lu_epool.c.s
+.PHONY : src/lu_epool.s
+
+# target to generate assembly for a file
+src/lu_epool.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_epool.c.s
+.PHONY : src/lu_epool.c.s
+
 src/lu_error.o: src/lu_error.c.o
 .PHONY : src/lu_error.o
 
@@ -221,6 +245,54 @@ src/lu_event.s: src/lu_event.c.s
 src/lu_event.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_event.c.s
 .PHONY : src/lu_event.c.s
+
+src/lu_evmap.o: src/lu_evmap.c.o
+.PHONY : src/lu_evmap.o
+
+# target to build an object file
+src/lu_evmap.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evmap.c.o
+.PHONY : src/lu_evmap.c.o
+
+src/lu_evmap.i: src/lu_evmap.c.i
+.PHONY : src/lu_evmap.i
+
+# target to preprocess a source file
+src/lu_evmap.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evmap.c.i
+.PHONY : src/lu_evmap.c.i
+
+src/lu_evmap.s: src/lu_evmap.c.s
+.PHONY : src/lu_evmap.s
+
+# target to generate assembly for a file
+src/lu_evmap.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evmap.c.s
+.PHONY : src/lu_evmap.c.s
+
+src/lu_evsignal.o: src/lu_evsignal.c.o
+.PHONY : src/lu_evsignal.o
+
+# target to build an object file
+src/lu_evsignal.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evsignal.c.o
+.PHONY : src/lu_evsignal.c.o
+
+src/lu_evsignal.i: src/lu_evsignal.c.i
+.PHONY : src/lu_evsignal.i
+
+# target to preprocess a source file
+src/lu_evsignal.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evsignal.c.i
+.PHONY : src/lu_evsignal.c.i
+
+src/lu_evsignal.s: src/lu_evsignal.c.s
+.PHONY : src/lu_evsignal.s
+
+# target to generate assembly for a file
+src/lu_evsignal.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evsignal.c.s
+.PHONY : src/lu_evsignal.c.s
 
 src/lu_evutil_time.o: src/lu_evutil_time.c.o
 .PHONY : src/lu_evutil_time.o
@@ -294,6 +366,30 @@ src/lu_log.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_log.c.s
 .PHONY : src/lu_log.c.s
 
+src/lu_min_heap.o: src/lu_min_heap.c.o
+.PHONY : src/lu_min_heap.o
+
+# target to build an object file
+src/lu_min_heap.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_min_heap.c.o
+.PHONY : src/lu_min_heap.c.o
+
+src/lu_min_heap.i: src/lu_min_heap.c.i
+.PHONY : src/lu_min_heap.i
+
+# target to preprocess a source file
+src/lu_min_heap.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_min_heap.c.i
+.PHONY : src/lu_min_heap.c.i
+
+src/lu_min_heap.s: src/lu_min_heap.c.s
+.PHONY : src/lu_min_heap.s
+
+# target to generate assembly for a file
+src/lu_min_heap.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_min_heap.c.s
+.PHONY : src/lu_min_heap.c.s
+
 src/lu_mm-internal.o: src/lu_mm-internal.c.o
 .PHONY : src/lu_mm-internal.o
 
@@ -366,6 +462,30 @@ src/lu_mm_pool_palloc.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_mm_pool_palloc.c.s
 .PHONY : src/lu_mm_pool_palloc.c.s
 
+src/lu_signalfd.o: src/lu_signalfd.c.o
+.PHONY : src/lu_signalfd.o
+
+# target to build an object file
+src/lu_signalfd.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_signalfd.c.o
+.PHONY : src/lu_signalfd.c.o
+
+src/lu_signalfd.i: src/lu_signalfd.c.i
+.PHONY : src/lu_signalfd.i
+
+# target to preprocess a source file
+src/lu_signalfd.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_signalfd.c.i
+.PHONY : src/lu_signalfd.c.i
+
+src/lu_signalfd.s: src/lu_signalfd.c.s
+.PHONY : src/lu_signalfd.s
+
+# target to generate assembly for a file
+src/lu_signalfd.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_signalfd.c.s
+.PHONY : src/lu_signalfd.c.s
+
 src/lu_util.o: src/lu_util.c.o
 .PHONY : src/lu_util.o
 
@@ -427,12 +547,21 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... luevent_static"
+	@echo "... src/lu_epool.o"
+	@echo "... src/lu_epool.i"
+	@echo "... src/lu_epool.s"
 	@echo "... src/lu_error.o"
 	@echo "... src/lu_error.i"
 	@echo "... src/lu_error.s"
 	@echo "... src/lu_event.o"
 	@echo "... src/lu_event.i"
 	@echo "... src/lu_event.s"
+	@echo "... src/lu_evmap.o"
+	@echo "... src/lu_evmap.i"
+	@echo "... src/lu_evmap.s"
+	@echo "... src/lu_evsignal.o"
+	@echo "... src/lu_evsignal.i"
+	@echo "... src/lu_evsignal.s"
 	@echo "... src/lu_evutil_time.o"
 	@echo "... src/lu_evutil_time.i"
 	@echo "... src/lu_evutil_time.s"
@@ -442,6 +571,9 @@ help:
 	@echo "... src/lu_log.o"
 	@echo "... src/lu_log.i"
 	@echo "... src/lu_log.s"
+	@echo "... src/lu_min_heap.o"
+	@echo "... src/lu_min_heap.i"
+	@echo "... src/lu_min_heap.s"
 	@echo "... src/lu_mm-internal.o"
 	@echo "... src/lu_mm-internal.i"
 	@echo "... src/lu_mm-internal.s"
@@ -451,6 +583,9 @@ help:
 	@echo "... src/lu_mm_pool_palloc.o"
 	@echo "... src/lu_mm_pool_palloc.i"
 	@echo "... src/lu_mm_pool_palloc.s"
+	@echo "... src/lu_signalfd.o"
+	@echo "... src/lu_signalfd.i"
+	@echo "... src/lu_signalfd.s"
 	@echo "... src/lu_util.o"
 	@echo "... src/lu_util.i"
 	@echo "... src/lu_util.s"

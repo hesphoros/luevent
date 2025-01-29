@@ -150,4 +150,4 @@ no progress
 - [X] lu_event_t=>ev_signal-> ev_signum to ev_ncalls
 - [X] 定义LU_EV_LIST_TIMEOUT等宏
 - [X] define Event closure codes : LU_EV_CLOSURE_EVENT
-- [X] 完善了lu_event_base_s中的成员函
+- [X] 完善了lu_event_base_s中的成员函数

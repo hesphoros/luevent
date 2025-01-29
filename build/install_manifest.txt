@@ -1,1 +1,0 @@
-/root/luevent/tests/lib/libluevent_static.a

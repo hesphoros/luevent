@@ -26,6 +26,30 @@ TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
 
 
 
+/** @name Event closure codes
+
+    Possible values for evcb_closure in struct event_callback
+
+    @{
+ */
+/** A regular event. Uses the evcb_callback callback */
+#define LU_EV_CLOSURE_EVENT 0
+/** A signal event. Uses the evcb_callback callback */
+#define LU_EV_CLOSURE_EVENT_SIGNAL 1
+/** A persistent non-signal event. Uses the evcb_callback callback */
+#define LU_EV_CLOSURE_EVENT_PERSIST 2
+/** A simple callback. Uses the evcb_selfcb callback. */
+#define LU_EV_CLOSURE_CB_SELF 3
+/** A finalizing callback. Uses the evcb_cbfinalize callback. */
+#define LU_EV_CLOSURE_CB_FINALIZE 4
+/** A finalizing event. Uses the evcb_evfinalize callback. */
+#define LU_EV_CLOSURE_EVENT_FINALIZE 5
+/** A finalizing event that should get freed after. Uses the evcb_evfinalize
+ * callback. */
+#define LU_EV_CLOSURE_EVENT_FINALIZE_FREE 6
+/** @} */
+
+
 
 typedef struct lu_event_base_s lu_event_base_t;
 typedef struct lu_event_op_s lu_event_op_t;

@@ -62,8 +62,9 @@ typedef struct lu_event_s lu_event_t;
 
 typedef struct lu_event_callback_s{
 
+
     TAILQ_ENTRY(lu_event_callback_s) evcb_active_next;
-    short evcb_events;
+    short evcb_flags;
 
     //Smaller numbers are higher priority.
     lu_uint8_t evcb_pri;//优先级
@@ -85,7 +86,7 @@ typedef struct lu_event_callback_s{
 
 
 typedef struct lu_event_s{
-    lu_event_callback_t ev_callback;
+    lu_event_callback_t ev_evcallback;
     //表示事件在不同类型的超时列表中的位置。根据事件类型，这个成员的不同部分会被使用。
     union
     {
@@ -101,13 +102,13 @@ typedef struct lu_event_s{
     union {
         //used for io events
         struct{
-            LIST_ENTRY(lu_event_s) ev_io_next;
+            LIST_ENTRY( lu_event_s) ev_io_next;
             struct timeval ev_timeout;
         }ev_io;
         //used for signal events
         struct{
             LIST_ENTRY(lu_event_s) ev_signal_next;
-            short ev_signum;
+            short ev_ncalls;
             //Allow deletes in signal callback
             short* ev_pncalls;
         }ev_signal;
@@ -118,6 +119,18 @@ typedef struct lu_event_s{
 
 }lu_event_t;
 
+
+
+#define LU_EV_LIST_TIMEOUT	    0x01
+#define LU_EV_LIST_INSERTED	    0x02
+#define LU_EV_LIST_SIGNAL	    0x04
+#define LU_EVLIST_ACTIVE	    0x08
+#define LU_EVLIST_INTERNAL	    0x10
+#define LU_EVLIST_ACTIVE_LATER  0x20
+#define LU_EVLIST_FINALIZING    0x40
+#define LU_EVLIST_INIT	        0x80
+
+#define LU_EVLIST_ALL           0xff
 
 
 #ifdef __cplusplus

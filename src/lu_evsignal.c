@@ -32,7 +32,7 @@ int lu_evsig_init_(lu_event_base_t *base){
     base->sig_info_.sh_old = NULL;
     base->sig_info_.sh_old_max = 0;
 
-    lu_event_assign();
+    //lu_event_assign();
 }
 
 

@@ -139,3 +139,15 @@ no progress
 ## 2025-1-28
 
 - [X] 完善了lu_event_assign的实现
+
+## 2025-1-29
+
+- [X] 完成了lu_event_assign的基本实现
+- [x] 完善了lu_event_t内部成员变量的快速访问宏 ev_io_timeout ev_callback ev_arg 等
+- [X] 完成了 lu_event_t的 flags LU_EV_TIMEOUT LU_EV_ET
+- [X] 在struct lu_event_callback_s 中rename value evcb_events to evcb_flags
+- [X] rename lu_event_t->ev_callback to ev_evcallback
+- [X] lu_event_t=>ev_signal-> ev_signum to ev_ncalls
+- [X] 定义LU_EV_LIST_TIMEOUT等宏
+- [X] define Event closure codes : LU_EV_CLOSURE_EVENT
+- [X] 完善了lu_event_base_s中的成员函

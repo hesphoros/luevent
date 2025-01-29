@@ -232,14 +232,82 @@ static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char
 
 
 
+#define ev_io_timeout	ev_.ev_io.ev_timeout
+#define ev_callback ev_evcallback.evcb_cb_union.evcb_callback
+#define ev_arg ev_evcallback.evcb_arg
+#define ev_flags ev_evcallback.evcb_flags
+
+#define ev_ncalls	ev_.ev_signal.ev_ncalls
+#define ev_pncalls	ev_.ev_signal.ev_pncalls
+#define ev_closure ev_evcallback.evcb_closure
+
+//priority
+#define ev_pri ev_evcallback.evcb_pri
+
+
 int
 /* workaround for -Werror=maybe-uninitialized bug in gcc 11/12 */
 #if defined(__GNUC__) && (__GNUC__ == 11 || __GNUC__ == 12)
 __attribute__((noinline))
 #endif
 lu_event_assign(lu_event_t *ev, lu_event_base_t *base, lu_evutil_socket_t fd, short events, lu_event_callback_fn callback, void *callback_arg) {
-  if(!base)
-    base = current_base;
-  if(callback_arg == &event_self_cbarg_ptr_)
-    callback_arg  = ev;
+    if(!base)
+      base = current_base;
+    if(callback_arg == &event_self_cbarg_ptr_)
+      callback_arg  = ev;
+    if(!events & (LU_EV_SIGNAL))
+      lu_event_debug_assert_socket_nonblocking(fd);
+    lu_event_debug_assert_not_added_(ev);
+    ev->ev_base = base;
+    ev->ev_callback= callback;
+    ev->ev_arg = callback_arg;
+    ev->ev_events = events;
+    ev->ev_res = 0;
+    ev->ev_flags = LU_EVLIST_INIT;
+    ev->ev_ncalls = 0;
+    ev->ev_pncalls = NULL;
+
+
+    if (events & LU_EV_SIGNAL) {
+        if ((events & (LU_EV_READ|LU_EV_WRITE|LU_EV_CLOSED)) != 0) {
+          LU_EVENT_LOG_WARNX("%s: EV_SIGNAL is not compatible with "
+              "EV_READ, EV_WRITE or EV_CLOSED", __func__);
+          return -1;
+        }
+        ev->ev_closure = LU_EV_CLOSURE_EVENT_SIGNAL;
+      } else {
+        if (events & LU_EV_PERSIST) {
+          evutil_timerclear(&ev->ev_io_timeout);
+          ev->ev_closure = LU_EV_CLOSURE_EVENT_PERSIST;
+        } else {
+          ev->ev_closure = LU_EV_CLOSURE_EVENT;
+        }
+    }
+
+    lu_min_heap_element_init_(ev);
+    if(base != NULL) {
+      	/* 默认情况下，我们将新事件置于中等优先级 */
+		    ev->ev_pri = base->nactivequeues / 2;
+    }
+    lu_event_debug_note_setup_(ev);
+    return 0;
 }
+
+static void lu_event_debug_assert_socket_nonblocking(lu_evutil_socket_t fd) {
+  if(!event_debug_mode_on_)
+    return;
+  if(fd < 0)
+    return;
+  int flags;
+  if((flags = fcntl(fd, F_GETFL, 0)) >=  0)
+    LU_EVUTIL_ASSERT(flags & O_NONBLOCK);
+
+}
+
+static void lu_event_debug_assert_not_added_(const lu_event_t *ev)
+{
+  //TODO:
+  LU_UNUSED(ev);
+}
+
+

@@ -21,6 +21,7 @@
 #include <fcntl.h>
 
 
+
 lu_hash_table_t* lu_cached_sock_errs_map;
 
 //缓存存储 socket 错误信息
@@ -32,7 +33,8 @@ typedef struct lu_cached_sock_errs_entry_s {
 static pthread_mutex_t linux_socket_errors_lock_ = PTHREAD_MUTEX_INITIALIZER;
 
 
-static lu_hash_table_t  *lu_cached_sock_errs_map_ = NULL; 
+static lu_hash_table_t  *lu_cached_sock_errs_map_ = NULL;
+
 
 
 // 析构函数，释放缓存
@@ -323,4 +325,13 @@ int lu_evutil_fast_socket_closeonexec(lu_evutil_socket_t fd){
     }
     return 0;
 }
+
+
+// 内联函数实现
+static inline void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) {
+    fprintf(stderr, "Assertion %s failed in %s:%d\n", cond, file, line);
+    LU_EVENT_LOG_ERRORX(LU_EVENT_ERROR_ABORT_, "%s:%d: Assertion %s failed in %s", file, line, cond, func);
+    abort();
+}
+
 

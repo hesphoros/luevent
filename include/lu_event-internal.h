@@ -12,6 +12,7 @@
 #include "lu_event_struct.h"
 #include "lu_min_heap.h"
 #include "lu_log-internal.h"
+#include "lu_watch.h"
 
 
 //#include <bits/types/struct_timeval.h>
@@ -23,7 +24,8 @@ extern "C" {
 
 //FIXME:
 TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
-
+TAILQ_HEAD (lu_event_list, lu_event_t);
+TAILQ_HEAD(lu_evwatch_list, lu_evwatch_t);
 
 
 /** @name Event closure codes
@@ -112,8 +114,16 @@ typedef enum lu_event_base_config_flag_e {
 lu_hash_table_t * lu_event_io_hash_table = NULL;
 
 typedef struct lu_common_timeout_list_s {
-	//TODO:
-    int paser;
+    /*当前在队列中等待的事件列表. */
+	struct lu_event_list events;
+	/* 'magic' timeval used to indicate the duration of events in this
+	 * queue. */
+	struct timeval duration;
+	/* Event that triggers whenever one of the events in the queue is
+	 * ready to activate */
+    lu_event_t timeout_event;
+	/* The event_base that this timeout list is part of */
+	lu_event_base_t *base;
 }lu_common_timeout_list_t;
 
 //TODO: 完成lu_event_map_entry_t
@@ -127,10 +137,25 @@ typedef struct evutil_weakrand_state_s{
     int summy;
 } evutil_weakrand_state_t;
 
-typedef struct evwatch_list_s{
-    //TODO:
-    int summy;
-}evwatch_list_t;
+
+
+typedef struct lu_evwatch_s {
+	/** Tail queue pointers, called "next" by convention in libevent.
+	 * See <sys/queue.h> */
+	TAILQ_ENTRY(lu_evwatch_s) next;
+
+	/** Pointer to owning event loop */
+	lu_event_base_t *base;
+
+	/** Watcher type (see above) */
+	unsigned type;
+
+	/** Callback function */
+	union lu_evwatch_cb_u callback;
+
+	/** User-defined argument for callback function */
+	void *arg;
+}lu_evwatch_t;
 
 
 
@@ -187,7 +212,7 @@ typedef struct lu_event_base_s {
     //用于标记已deferred_cbs的数量
     int n_deferred_queued;
 
-    struct lu_evcallback_list* active_queues;
+    struct lu_evcallback_list* activequeues;
     /** The length of the activequeues array */
 	int nactivequeues;
     /** A list of event_callbacks that should become active the next time
@@ -196,7 +221,7 @@ typedef struct lu_event_base_s {
 
 
     /**Common timeout logic */
-    struct common_timeout_list** common_timeout_queues;
+    lu_common_timeout_list_t** common_timeout_queues;
 
 
     /** The number of entries used in common_timeout_queues */
@@ -207,7 +232,7 @@ typedef struct lu_event_base_s {
     /**Mapping from file descriptor to enabled(added)   events */
     lu_event_io_map_t io;
     /**Mapping from signal number to enabled(added) events */
-    lu_event_signal_map_t signal;
+    lu_event_signal_map_t sigmap;
 
 
     /** Priority queue of events with timeouts. */
@@ -272,7 +297,7 @@ typedef struct lu_event_base_s {
 	LIST_HEAD(once_event_list, event_once) once_events;
 
 	/** "Prepare" and "check" watchers. */
-	struct evwatch_list_s watchers[EVWATCH_MAX];
+	struct lu_evwatch_list watchers[EVWATCH_MAX];
 
 } lu_event_base_t;
 

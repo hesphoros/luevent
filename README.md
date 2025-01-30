@@ -155,3 +155,11 @@ no progress
 ## 2025-1-30
 
 - [X] 修复了lu_evutil_getenv_内部getenv返回值为空的处理
+- [X] feat: 添加事件优先级设置与删除函数
+- [X] style: 移除多余空行
+- [X] refactor: 添加错误检查并优化代码
+- [x] 完善了lu_common_timeout_list_s的实现,lu_common_timeout_list_t->events的队头定义
+
+## 2025-1-31
+
+- [x] 完善了lu_common_timeout_list_s的实现,lu_common_timeout_list_t->events的队头定义

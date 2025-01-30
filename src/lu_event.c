@@ -6,6 +6,7 @@
 #include "lu_min_heap.h"
 #include "lu_changelist-internal.h"
 #include "lu_event.h"
+
 #include "lu_util.h"
 #include "lu_evmap.h"
 #include "lu_epoll.h"
@@ -22,7 +23,7 @@
 
 static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char *method_name) ;
 static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers);
-static int lu_event_del_(lu_event_t * *ev, int blocking);
+static int lu_event_del_(lu_event_t  *ev, int blocking);
 
 static const lu_event_op_t* eventops[] = {
   &epool_ops,
@@ -120,7 +121,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
   }
   //构造evbase中的时间堆  处理时间堆
   lu_min_heap_constructor_(&evbase->time_heap);
-  //TODO: signal info 初始化
+ 
   evbase->sig_info_.ev_signal_pair[0] = -1;
   evbase->sig_info_.ev_signal_pair[1] = -1;
 
@@ -131,7 +132,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
   TAILQ_INIT(&evbase->active_later_queue);
   //初始化事件处理器队列 默认采用链表结构
   lu_evmap_io_initmap(&evbase->io);
-  lu_evmap_siganl_initmap(&evbase->signal);
+  lu_evmap_siganl_initmap(&evbase->sigmap);
 
   lu_event_changelist_init(&evbase->changelist);
   evbase->evbase = NULL;
@@ -167,7 +168,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
 
 		/* also obey the environment variables */
 		if (should_check_environment &&
-		    event_is_method_disabled(eventops[i]->name))
+		    lu_event_is_method_disabled(eventops[i]->name))
 			continue;
 
 		evbase->evsel_op = eventops[i];
@@ -242,7 +243,7 @@ static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char
 
 void lu_event_base_free(lu_event_base_t *base)
 {
-	event_base_free_(base, 1);
+	lu_event_base_free_(base, 1);
 }
 
 
@@ -257,7 +258,7 @@ lu_event_assign(lu_event_t *ev, lu_event_base_t *base, lu_evutil_socket_t fd, sh
       base = current_base;
     if(callback_arg == &event_self_cbarg_ptr_)
       callback_arg  = ev;
-    if(!events & (LU_EV_SIGNAL))
+   if (!(events & LU_EV_SIGNAL))
       lu_event_debug_assert_socket_nonblocking(fd);
     lu_event_debug_assert_not_added_(ev);
     ev->ev_base = base;
@@ -325,16 +326,27 @@ static void lu_event_debug_assert_not_added_(const lu_event_t *ev)
 }
 
 
+void lu_event_debug_unassign(lu_event_t *ev)
+{
+	lu_event_debug_assert_not_added_(ev);
+	lu_event_debug_note_teardown_(ev);
+
+	ev->ev_flags &= ~LU_EVLIST_INIT;
+}
+
+
 static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
+  //TODO: finish this function
   int i;
 	size_t n_deleted=0;
-	struct event *ev;
-	struct evwatch *watcher;
+	lu_event_t *ev;
+	lu_evwatch_t *watcher;
+
 	/* XXXX grab the lock? If there is contention when one thread frees
 	 * the base, then the contending thread will be very sad soon. */
 
-	/* event_base_free(NULL) is how to free the current_base if we
-	 * made it with event_init and forgot to hold a reference to it. */
+	/* lu_event_base_free(NULL) is how to free the current_base if we
+	 * made it with lu_event_init and forgot to hold a reference to it. */
 	if (base == NULL && current_base)
 		base = current_base;
 	/* Don't actually free NULL. */
@@ -346,32 +358,32 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 
 	/* threading fds if we have them */
 	if (base->th_notify_fd[0] != -1) {
-		event_del(&base->th_notify);
+		lu_event_del(&base->th_notify);
 		LU_EVUTIL_CLOSESOCKET(base->th_notify_fd[0]);
 		if (base->th_notify_fd[1] != -1)
 			LU_EVUTIL_CLOSESOCKET(base->th_notify_fd[1]);
 		base->th_notify_fd[0] = -1;
 		base->th_notify_fd[1] = -1;
-		event_debug_unassign(&base->th_notify);
+		lu_event_debug_unassign(&base->th_notify);
 	}
 	/* XXX(niels) - check for internal events first */
   /* Delete all non-internal events. */
-	evmap_delete_all_(base);
+	lu_evmap_delete_all_(base);
 
-	while ((ev = min_heap_top_(&base->timeheap)) != NULL) {
-		event_del(ev);
+	while ((ev = min_heap_top_(&base->time_heap)) != NULL) {
+		lu_event_del(ev);
 		++n_deleted;
 	}
 	for (i = 0; i < base->n_common_timeouts; ++i) {
-		struct common_timeout_list *ctl =
+		lu_common_timeout_list_t  *ctl =
 		    base->common_timeout_queues[i];
-		event_del(&ctl->timeout_event); /* Internal; doesn't count */
-		event_debug_unassign(&ctl->timeout_event);
+		lu_event_del(&ctl->timeout_event); /* Internal; doesn't count */
+		lu_event_debug_unassign(&ctl->timeout_event);
 		for (ev = TAILQ_FIRST(&ctl->events); ev; ) {
-			struct event *next = TAILQ_NEXT(ev,
+			lu_event_t *next = TAILQ_NEXT(ev,
 			    ev_timeout_pos.ev_next_with_common_timeout);
-			if (!(ev->ev_flags & EVLIST_INTERNAL)) {
-				event_del(ev);
+			if (!(ev->ev_flags & LU_EVLIST_INTERNAL)) {
+				lu_event_del(ev);
 				++n_deleted;
 			}
 			ev = next;
@@ -390,7 +402,8 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 		 *
 		 * A simple case is bufferevent with underlying (i.e. filters).
 		 */
-		int i = event_base_free_queues_(base, run_finalizers);
+    //TODO: finish lu_event_base_free_queues_ function
+		int i = lu_event_base_free_queues_(base, run_finalizers);
 		event_debug(("%s: %d events freed", __func__, i));
 		if (!i) {
 			break;
@@ -406,14 +419,14 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 		mm_free(eonce);
 	}
 
-	if (base->evsel != NULL && base->evsel->dealloc != NULL)
-		base->evsel->dealloc(base);
+	if (base->evsel_op != NULL && base->evsel_op->dealloc != NULL)
+		base->evsel_op->dealloc(base);
 
 	for (i = 0; i < base->nactivequeues; ++i)
 		EVUTIL_ASSERT(TAILQ_EMPTY(&base->activequeues[i]));
 
-	EVUTIL_ASSERT(min_heap_empty_(&base->timeheap));
-	min_heap_dtor_(&base->timeheap);
+	EVUTIL_ASSERT(min_heap_empty_(&base->time_heap));
+	min_heap_dtor_(&base->time_heap);
 
 	mm_free(base->activequeues);
 
@@ -446,6 +459,7 @@ int lu_event_del(lu_event_t* ev){
 
 // 定义一个静态函数，用于删除事件
 static int lu_event_del_(lu_event_t  *ev, int blocking){
+  //TODO: TO FINISH
   int res; // 定义一个整型变量用于存储函数返回值
   // 获取事件的基础结构指针
 	lu_event_base_t *base = ev->ev_base;
@@ -460,8 +474,72 @@ static int lu_event_del_(lu_event_t  *ev, int blocking){
 
   // 获取基础结构的锁，确保线程安全
 	LU_EVBASE_ACQUIRE_LOCK(base, th_base_lock);
-	res = event_del_nolock_(ev, blocking);
+	res = lu_event_del_nolock_(ev, blocking);
 	LU_EVBASE_RELEASE_LOCK(base, th_base_lock);
 
 	return (res);
+}
+
+int lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers){
+  //TODO: finish this function
+  int deleted = 0,  i ;
+  for (i = 0; i < base->nactivequeues; ++i) {
+		lu_event_callback_t *evcb, *next;
+		for (evcb = TAILQ_FIRST(&base->activequeues[i]); evcb; ) {
+			next = TAILQ_NEXT(evcb, evcb_active_next);
+			deleted += lu_event_base_cancel_single_callback_(base, evcb, run_finalizers);
+			evcb = next;
+		}
+	}
+
+	{
+		lu_event_callback_t *evcb;
+		while ((evcb = TAILQ_FIRST(&base->active_later_queue))) {
+			deleted += lu_event_base_cancel_single_callback_(base, evcb, run_finalizers);
+		}
+	}
+
+	return deleted;
+}
+
+static inline struct event *lu_event_callback_to_event(lu_event_callback_t *evcb)
+{
+	LU_EVUTIL_ASSERT((evcb->evcb_flags & LU_EVLIST_INIT));
+	return LU_EVUTIL_UPCAST(evcb, lu_event_t, ev_evcallback);
+}
+
+static int lu_event_base_cancel_single_callback_(lu_event_base_t *base,lu_event_callback_t *evcb,int run_finalizers){
+  int result = 0;
+
+	if (evcb->evcb_flags & LU_EVLIST_INIT){
+		lu_event_t *ev = lu_event_callback_to_event(evcb);
+		if (!(ev->ev_flags & LU_EVLIST_INTERNAL)) {
+			lu_event_del(ev);
+			result = 1;
+		}
+	} else {
+		LU_EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+		lu_event_callback_cancel_nolock_(base, evcb, 1);
+		LU_EVBASE_RELEASE_LOCK(base, th_base_lock);
+		result = 1;
+	}
+
+	if (run_finalizers && (evcb->evcb_flags & LU_EVLIST_FINALIZING)) {
+		switch (evcb->evcb_closure) {
+		case LU_EV_CLOSURE_EVENT_FINALIZE:
+		case LU_EV_CLOSURE_EVENT_FINALIZE_FREE: {
+			lu_event_t *ev = lu_event_callback_to_event(evcb);
+			ev->ev_evcallback.evcb_cb_union.evcb_cbfinalize(ev, ev->ev_arg);
+			if (evcb->evcb_closure == LU_EV_CLOSURE_EVENT_FINALIZE_FREE)
+				mm_free(ev);
+			break;
+		}
+		case LU_EV_CLOSURE_CB_FINALIZE:
+			evcb->evcb_cb_union.evcb_cbfinalize(evcb, evcb->evcb_arg);
+			break;
+		default:
+			break;
+		}
+	}
+	return result;
 }

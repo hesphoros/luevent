@@ -146,10 +146,10 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_set_log_callback(lu_event_log_cb log_cb);
 /**
  * Turn on debuging logs and have them output to the default log handeler.
  * This is a global setting and affects all logs.
- * @param which_mask Controls which debug messages are enabled. 
+ * @param which_mask Controls which debug messages are enabled.
  * This function set lu_event_debug_logging_mask_ to the new mask(which_mask).
    you must pass the constant "LU_EVENT_DBG_NONE" to turn off all debug messages
-   you can pass the constant "LU_EVENT_DBG_ALL" to turn on all debug messages   
+   you can pass the constant "LU_EVENT_DBG_ALL" to turn on all debug messages
 */
 LU_EVENT_EXPORT_SYMBOL void lu_event_enable_debug_logging(lu_uint32_t which_mask);
 

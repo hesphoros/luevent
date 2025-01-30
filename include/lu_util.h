@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -267,19 +268,22 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 #define LU_EVUTIL_UNLIKELY(x) __builtin_expect((x), 0)
 #endif
 
-//断言
-#define LU_EVUTIL_ASSERT(cond)                                 \
-    do {                                                        \
-        if (LU_EVUTIL_UNLIKELY(!(cond))) {                                          \
-            LU_EVENT_LOG_ERRORX(LU_EVENT_ERROR_ABORT_,"%s:%d: Assertion %s failed in %s",\
-            __FILE__,__LINE__,#cond,__func__);                    \
-            /* 如果用户提供的处理程序尝试 */                     \
-            /* 将控制权返回给我们，在此记录并中止。 */              \
-            (void)fprintf(stderr, "Assertion %s failed in %s:%d\n", #cond, __FILE__, __LINE__); \
-            abort();                                              \
-        }                                                      \
-    } while (0)
+
+static inline void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func);
+
+
+#define LU_EVUTIL_ASSERT(cond) do {                              \
+    if (LU_EVUTIL_UNLIKELY(!(cond))) {                           \
+        lu_evutil_assert_impl(__FILE__, __LINE__, #cond, __func__); \
+    }                                                            \
+} while(0)
+
 #define LU_EVUTIL_FAILURE_CHECK(cond) LU_EVUTIL_UNLIKELY(cond)
+
+
+#define LU_EVUTIL_UPCAST(ptr, type, field)				\
+	((type *)(((char*)(ptr)) - offsetof(type, field)))
+
 
 int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd);
 
@@ -287,6 +291,10 @@ int lu_evutil_make_internal_pipe_(lu_evutil_socket_t fd[2]);
 
 int lu_evutil_fast_socket_nonblocking(lu_evutil_socket_t fd);
 int lu_evutil_fast_socket_closeonexec(lu_evutil_socket_t fd);
+
+int lu_evutil_closesocket(lu_evutil_socket_t s){ return close(s); }
+
+#define LU_EVUTIL_CLOSESOCKET(s) lu_evutil_closesocket(s)
 
 #define LU_EVUTIL_ERR_IS_EAGAIN(e) \
 	((e) == EAGAIN)

@@ -6,6 +6,8 @@
 
 #include <sys/queue.h>
 #include "lu_changelist-internal.h"
+// #include "lu_event-internal.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,6 +37,7 @@ typedef struct lu_event_signal_map_s lu_event_signal_map_t;
 typedef struct lu_evmap_io_s lu_evmap_io_t;
 typedef lu_event_signal_map_t lu_event_io_map_t;
 typedef struct lu_event_map_entry_s lu_event_map_entry_t;
+typedef struct lu_event_base_s  lu_event_base_t;
 //#define lu_event_io_map_t lu_event_signal_map_t
 LIST_HEAD(lu_event_dlist, lu_event_t);
 
@@ -63,6 +66,11 @@ typedef struct lu_event_map_entry_s{
 
 
 
+/* An entry for an lu_evmap_signal list: notes all the events that want to know
+   when a signal triggers. */
+typedef struct lu_evmap_signal_s {
+	struct lu_event_dlist events;
+}lu_evmap_signal_t;
 
 typedef struct lu_event_signal_map_s{
    /* An array of evmap_io * or of evmap_signal *; empty entries are
@@ -72,11 +80,25 @@ typedef struct lu_event_signal_map_s{
 	int nentries;
 }lu_event_signal_map_t;
 
+typedef int (*lu_evmap_signal_foreach_signal_cb)(lu_event_base_t *, int, lu_evmap_signal_t *, void *);
 
+static int
+lu_evmap_signal_delete_all_iter_fn(lu_event_base_t *base, int signum,
+    lu_evmap_signal_t *sig_info, void *arg);
+
+static int lu_evmap_signal_foreach_signal(lu_event_base_t *base,
+    lu_evmap_signal_foreach_signal_cb fn,
+    void *arg);
 
 void lu_evmap_io_initmap(lu_event_io_map_t* ctx);
 void lu_evmap_siganl_initmap(lu_event_signal_map_t* ctx);
-void lu_event_changelist_init(lu_event_changelist_t* ctx);
+
+
+
+/* Callback type for evmap_signal_foreach_signal */
+
+
+void lu_evmap_delete_all_(lu_event_base_t *base);
 
 #ifdef __cplusplus
 }

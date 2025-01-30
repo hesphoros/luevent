@@ -11,7 +11,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <errno.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -279,7 +279,7 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
             abort();                                              \
         }                                                      \
     } while (0)
-
+#define LU_EVUTIL_FAILURE_CHECK(cond) LU_EVUTIL_UNLIKELY(cond)
 
 int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd);
 
@@ -288,6 +288,17 @@ int lu_evutil_make_internal_pipe_(lu_evutil_socket_t fd[2]);
 int lu_evutil_fast_socket_nonblocking(lu_evutil_socket_t fd);
 int lu_evutil_fast_socket_closeonexec(lu_evutil_socket_t fd);
 
+#define LU_EVUTIL_ERR_IS_EAGAIN(e) \
+	((e) == EAGAIN)
+
+#define LU_EVUTIL_ERR_RW_RETRIABLE(e)				\
+	((e) == EINTR || LU_EVUTIL_ERR_IS_EAGAIN(e))
+
+
+#define LU_EV_SIZE_FMT "%lu"
+#define LU_EV_SSIZE_FMT "%zd"
+#define LU_EV_SIZE_ARG(x) (unsigned long)(x)
+#define LU_EV_SSIZE_ARG(x) (long)(x)
 
 #ifdef __cplusplus
 }

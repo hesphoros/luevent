@@ -21,7 +21,8 @@
   LU_EVLOCK_ASSERT_LOCKED((evbase)->th_base_lock)
 
 static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char *method_name) ;
-
+static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers);
+static int lu_event_del_(lu_event_t * *ev, int blocking);
 
 static const lu_event_op_t* eventops[] = {
   &epool_ops,
@@ -148,12 +149,11 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
     evbase->max_dispatch_callbacks = INT_MAX;
   }
 
-  if(evbase->max_dispatch_callbacks == INT_MAX && 
+  if(evbase->max_dispatch_callbacks == INT_MAX &&
     evbase->max_dispatch_time.tv_sec == -1)
     evbase->limit_callbacks_after_priority = INT_MAX;
 
-//**选择合适的后端 */
-
+  //**选择合适的后端 */ 
 	for (i = 0; eventops[i] && !evbase->evbase; i++) {
 		if (cfg != NULL) {
 			/* determine if this backend should be avoided */
@@ -174,6 +174,14 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
 
 		evbase->evbase = evbase->evsel_op->init(evbase);
 	}
+
+  	if (evbase->evbase == NULL) {
+      LU_EVENT_LOG_WARNX("%s: no event mechanism available",
+          __func__);
+      evbase->evsel_op = NULL;
+      lu_event_base_free(evbase);
+      return NULL;
+    }
 
   //TODO: 事件处理器队列
   return (evbase);
@@ -232,17 +240,11 @@ static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char
 
 
 
-#define ev_io_timeout	ev_.ev_io.ev_timeout
-#define ev_callback ev_evcallback.evcb_cb_union.evcb_callback
-#define ev_arg ev_evcallback.evcb_arg
-#define ev_flags ev_evcallback.evcb_flags
+void lu_event_base_free(lu_event_base_t *base)
+{
+	event_base_free_(base, 1);
+}
 
-#define ev_ncalls	ev_.ev_signal.ev_ncalls
-#define ev_pncalls	ev_.ev_signal.ev_pncalls
-#define ev_closure ev_evcallback.evcb_closure
-
-//priority
-#define ev_pri ev_evcallback.evcb_pri
 
 
 int
@@ -304,6 +306,18 @@ static void lu_event_debug_assert_socket_nonblocking(lu_evutil_socket_t fd) {
 
 }
 
+int lu_event_priority_set(lu_event_t *ev, int pri){
+  lu_event_debug_assert_is_setup_(ev);
+  if(ev->ev_flags & LU_EVLIST_ACTIVE){
+    return (-1);
+  }
+  //判断pri是否在有效范围内
+  if(pri < 0 || pri >= ev->ev_base->nactivequeues)
+    return (-1);
+  ev->ev_pri = pri;
+  return (0);
+}
+
 static void lu_event_debug_assert_not_added_(const lu_event_t *ev)
 {
   //TODO:
@@ -311,3 +325,143 @@ static void lu_event_debug_assert_not_added_(const lu_event_t *ev)
 }
 
 
+static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
+  int i;
+	size_t n_deleted=0;
+	struct event *ev;
+	struct evwatch *watcher;
+	/* XXXX grab the lock? If there is contention when one thread frees
+	 * the base, then the contending thread will be very sad soon. */
+
+	/* event_base_free(NULL) is how to free the current_base if we
+	 * made it with event_init and forgot to hold a reference to it. */
+	if (base == NULL && current_base)
+		base = current_base;
+	/* Don't actually free NULL. */
+	if (base == NULL) {
+		LU_EVENT_LOG_WARNX("%s: no base to free", __func__);
+		return;
+	}
+
+
+	/* threading fds if we have them */
+	if (base->th_notify_fd[0] != -1) {
+		event_del(&base->th_notify);
+		LU_EVUTIL_CLOSESOCKET(base->th_notify_fd[0]);
+		if (base->th_notify_fd[1] != -1)
+			LU_EVUTIL_CLOSESOCKET(base->th_notify_fd[1]);
+		base->th_notify_fd[0] = -1;
+		base->th_notify_fd[1] = -1;
+		event_debug_unassign(&base->th_notify);
+	}
+	/* XXX(niels) - check for internal events first */
+  /* Delete all non-internal events. */
+	evmap_delete_all_(base);
+
+	while ((ev = min_heap_top_(&base->timeheap)) != NULL) {
+		event_del(ev);
+		++n_deleted;
+	}
+	for (i = 0; i < base->n_common_timeouts; ++i) {
+		struct common_timeout_list *ctl =
+		    base->common_timeout_queues[i];
+		event_del(&ctl->timeout_event); /* Internal; doesn't count */
+		event_debug_unassign(&ctl->timeout_event);
+		for (ev = TAILQ_FIRST(&ctl->events); ev; ) {
+			struct event *next = TAILQ_NEXT(ev,
+			    ev_timeout_pos.ev_next_with_common_timeout);
+			if (!(ev->ev_flags & EVLIST_INTERNAL)) {
+				event_del(ev);
+				++n_deleted;
+			}
+			ev = next;
+		}
+		mm_free(ctl);
+	}
+	if (base->common_timeout_queues)
+		mm_free(base->common_timeout_queues);
+
+	for (;;) {
+		/* For finalizers we can register yet another finalizer out from
+		 * finalizer, and iff finalizer will be in active_later_queue we can
+		 * add finalizer to activequeues, and we will have events in
+		 * activequeues after this function returns, which is not what we want
+		 * (we even have an assertion for this).
+		 *
+		 * A simple case is bufferevent with underlying (i.e. filters).
+		 */
+		int i = event_base_free_queues_(base, run_finalizers);
+		event_debug(("%s: %d events freed", __func__, i));
+		if (!i) {
+			break;
+		}
+		n_deleted += i;
+	}
+
+	if (n_deleted)
+    LU_EVENT_LOG_DEBUGX("%s: "LU_EV_SIZE_FMT" events were still set in base", __func__, n_deleted);
+	while (LIST_FIRST(&base->once_events)) {
+		 lu_event_once_t *eonce = LIST_FIRST(&base->once_events);
+		LIST_REMOVE(eonce, next_once);
+		mm_free(eonce);
+	}
+
+	if (base->evsel != NULL && base->evsel->dealloc != NULL)
+		base->evsel->dealloc(base);
+
+	for (i = 0; i < base->nactivequeues; ++i)
+		EVUTIL_ASSERT(TAILQ_EMPTY(&base->activequeues[i]));
+
+	EVUTIL_ASSERT(min_heap_empty_(&base->timeheap));
+	min_heap_dtor_(&base->timeheap);
+
+	mm_free(base->activequeues);
+
+	evmap_io_clear_(&base->io);
+	evmap_signal_clear_(&base->sigmap);
+	event_changelist_freemem_(&base->changelist);
+
+	EVTHREAD_FREE_LOCK(base->th_base_lock, 0);
+	EVTHREAD_FREE_COND(base->current_event_cond);
+
+	/* Free all event watchers */
+	for (i = 0; i < EVWATCH_MAX; ++i) {
+		while (!TAILQ_EMPTY(&base->watchers[i])) {
+			watcher = TAILQ_FIRST(&base->watchers[i]);
+			TAILQ_REMOVE(&base->watchers[i], watcher, next);
+			mm_free(watcher);
+		}
+	}
+
+	/* If we're freeing current_base, there won't be a current_base. */
+	if (base == current_base)
+		current_base = NULL;
+	mm_free(base);
+}
+
+int lu_event_del(lu_event_t* ev){
+  //TODO:
+  lu_event_del_(ev, LU_EVENT_DEL_AUTOBLOCK);
+}
+
+// 定义一个静态函数，用于删除事件
+static int lu_event_del_(lu_event_t  *ev, int blocking){
+  int res; // 定义一个整型变量用于存储函数返回值
+  // 获取事件的基础结构指针
+	lu_event_base_t *base = ev->ev_base;
+
+  // 检查事件基础结构是否为空
+	if (LU_EVUTIL_FAILURE_CHECK(!base)) {
+		// 如果基础结构为空，记录警告日志
+		LU_EVENT_LOG_WARNX("%s: event has no event_base set.", __func__);
+		// 返回-1表示失败
+		return -1;
+	}
+
+  // 获取基础结构的锁，确保线程安全
+	LU_EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+	res = event_del_nolock_(ev, blocking);
+	LU_EVBASE_RELEASE_LOCK(base, th_base_lock);
+
+	return (res);
+}

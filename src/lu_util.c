@@ -156,7 +156,13 @@ const char *lu_evutil_getenv_(const char *varname)
     //如果是非 root 用户，则不允许获取环境变量
     if (lu_evutil_issetugid())
 		return NULL;
-    return getenv(varname);
+    char * value = getenv(varname);
+    if (value == NULL) {
+        return NULL;
+        LU_EVENT_LOG_WARN("getenv(%s) failed", varname);
+    }
+    return value;
+
 }
 
 

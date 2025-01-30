@@ -9,7 +9,11 @@
 #include <sys/timerfd.h>
 #include <sys/types.h>
 
+#ifndef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC 1
+#endif
 
+//初始化epoll句柄
 static void* lu_epoll_init(lu_event_base_t* base){
 
     lu_epoll_handle_t epoll_fd = INVALID_EPOLL_HANDLE;
@@ -94,7 +98,6 @@ static void* lu_epoll_init(lu_event_base_t* base){
 		lu_evsig_init_(base);
 
 	return (epoll_op);
-
 
 }
 

@@ -18,9 +18,11 @@ extern "C" {
 static int sigfd_add(lu_event_base_t *, lu_evutil_socket_t, short, short, void *);
 static int sigfd_del(lu_event_base_t *, lu_evutil_socket_t, short, short, void *);
 
+//TODO: implement the signalfd_add and sigfd_del functions
+static int evsig_del(lu_event_base_t *base, lu_evutil_socket_t evsignal, short old, short events, void *p);
+static int evsig_add(lu_event_base_t *base, lu_evutil_socket_t evsignal, short old, short events, void *p);
 
-
-
+//TODO: implement the signalfd_add and sigfd_del functions
 static const  lu_event_op_t sigfdops = {
 	"signalfd_signal",
 	NULL,
@@ -31,6 +33,16 @@ static const  lu_event_op_t sigfdops = {
 	(int)0, (int)0,(int) 0
 };
 
+
+static const lu_event_op_t  evsigops = {
+	"signal",
+	NULL,
+	evsig_add,
+	evsig_del,
+	NULL,
+	NULL,
+	0, 0, 0
+};
 
 
 #ifdef __cplusplus

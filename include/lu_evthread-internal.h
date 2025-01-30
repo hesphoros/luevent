@@ -80,7 +80,7 @@ extern int evthread_lock_debugging_enabled_;//是否开启了debug调试
 
 
 /** 如果已设置锁定，则锁定 event_base。获取字段名为“lockvar”的基础结构中的锁。*/
-#define LU_EVBASE_ACQUIRE_LOCK(evabse,lockvar)			\
+#define LU_EVBASE_ACQUIRE_LOCK(evbase,lockvar)			\
 	do {													\
 		LU_EVLOCK_LOCK((evbase)->lockvar,0);							\
 	} while(0)

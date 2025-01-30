@@ -287,7 +287,7 @@ typedef struct lu_event_base_s {
 */typedef enum lu_event_method_feature_u {
 
     /**
-     * 
+     *
      * LU_EVENT_FEATURE_ET: 这个枚举值表示事件方法支持 边缘触发（ET） 模式。在 ET 模式下，当事件的状态发生变化时，事件会被触发一次，并且不会重复触发，直到状态再次变化。这有助于减少重复触发事件。
 
      * LU_EVENT_FEATURE_O1: 这个枚举值表示事件方法支持 一次性事件（One-shot） 模式。在 O1 模式下，事件只会触发一次，触发后会自动取消注册，直到应用程序显式重新注册该事件。
@@ -371,6 +371,13 @@ typedef struct lu_event_config_s {
 
 }lu_event_config_t;
 
+
+typedef struct lu_event_once_s{
+    LIST_ENTRY(lu_event_once_s) next_once ;
+    lu_event_t ev;
+    void (*cb)(lu_evutil_socket_t,short,void*);
+    void *arg;
+}lu_event_once_t;
 
 
 #ifdef __cplusplus

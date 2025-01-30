@@ -151,3 +151,7 @@ no progress
 - [X] 定义LU_EV_LIST_TIMEOUT等宏
 - [X] define Event closure codes : LU_EV_CLOSURE_EVENT
 - [X] 完善了lu_event_base_s中的成员函数
+
+## 2025-1-30
+
+- [X] 修复了lu_evutil_getenv_内部getenv返回值为空的处理

@@ -14,8 +14,11 @@ static void lu_event_debug_assert_not_added_(const lu_event_t *ev);
 static void lu_event_debug_assert_socket_nonblocking(lu_evutil_socket_t fd);
 int lu_event_assign(lu_event_t *ev, lu_event_base_t *base, lu_evutil_socket_t fd, short events, lu_event_callback_fn callback, void *callback_arg);
 static void lu_event_debug_note_setup_(const lu_event_t*ev) { (void)ev; }
+static void lu_event_debug_assert_is_setup_(const lu_event_t*ev) { (void)ev; }
+int lu_event_priority_set(lu_event_t *ev, int pri);
 
-
+void lu_event_base_free(lu_event_base_t *base);
+int lu_event_del(lu_event_t* ev);
 
 /**
  * @name event flags
@@ -64,6 +67,39 @@ static void lu_event_debug_note_setup_(const lu_event_t*ev) { (void)ev; }
 
 
 int event_debug_mode_on_ = 0;
+
+
+#define ev_signal_next	ev_.ev_signal.ev_signal_next
+#define ev_io_next	ev_.ev_io.ev_io_next
+#define ev_io_timeout	ev_.ev_io.ev_timeout
+
+
+#define ev_io_timeout	ev_.ev_io.ev_timeout
+#define ev_callback ev_evcallback.evcb_cb_union.evcb_callback
+#define ev_arg ev_evcallback.evcb_arg
+#define ev_flags ev_evcallback.evcb_flags
+
+#define ev_ncalls	ev_.ev_signal.ev_ncalls
+#define ev_pncalls	ev_.ev_signal.ev_pncalls
+#define ev_closure ev_evcallback.evcb_closure
+
+//priority
+#define ev_pri ev_evcallback.evcb_pri
+
+/** Argument for event_del_nolock_. Tells event_del not to block on the event
+ * if it's running in another thread. */
+#define LU_EVENT_DEL_NOBLOCK 0
+/** Argument for event_del_nolock_. Tells event_del to block on the event
+ * if it's running in another thread, regardless of its value for EV_FINALIZE
+ */
+#define LU_EVENT_DEL_BLOCK 1
+/** Argument for event_del_nolock_. Tells event_del to block on the event
+ * if it is running in another thread and it doesn't have EV_FINALIZE set.
+ */
+#define LU_EVENT_DEL_AUTOBLOCK 2
+/** Argument for event_del_nolock_. Tells event_del to proceed even if the
+ * event is set up for finalization rather for regular use.*/
+#define LU_EVENT_DEL_EVEN_IF_FINALIZING 3
 
 
 #endif  //LU_EVENT_H

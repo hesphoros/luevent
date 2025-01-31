@@ -163,3 +163,14 @@ no progress
 ## 2025-1-31
 
 - [x] 完善了lu_common_timeout_list_s的实现,lu_common_timeout_list_t->events的队头定义
+- [X] 添加了LU_EVUTIL_TOLOWER_TABLE LU_EVUTIL_TOUPPER_TABLE 字符大小写映射表
+- [X] LU_EVUTIL_TOLOWER_ LU_EVUTIL_TOUPPER_ 转换宏
+- [X] lu_evutil_timerclear 宏函数的定义
+- [X] lu_event_s内部添加了ev_fd
+- [X] 添加lu_event_del_noblock函数
+- [X] 修复了LU_EVBASE_NEED_NOTIFY 宏函数的语法错误
+- [ ] 修复LU_EVBASE_RELEASE_LOCK 函数的多定义
+- [X] 新增LU_EV_SOCK_FMT LU_EV_SOCK_ARG等宏
+- [ ] 实现lu_event_del_nolock_ 函数
+- [ ] 实现lu_event_del_noblock函数
+- [ ] 实现lu_event_is_method_disabled函数

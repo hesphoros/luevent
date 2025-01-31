@@ -20,6 +20,7 @@ int lu_event_priority_set(lu_event_t *ev, int pri);
 void lu_event_debug_unassign(lu_event_t *ev);
 void lu_event_base_free(lu_event_base_t *base);
 int lu_event_del(lu_event_t* ev);
+int lu_event_del_noblock(lu_event_t  *ev);
 
 int lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers);
 

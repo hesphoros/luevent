@@ -18,12 +18,18 @@
 #include <error.h>
 #include <stdlib.h>
 
-#define LU_EVENT_BASE_ASSERT_LOCKED(evbase)                    \
-  LU_EVLOCK_ASSERT_LOCKED((evbase)->th_base_lock)
+#define LU_EVENT_BASE_ASSERT_LOCKED(evbase)				\
+		LU_EVLOCK_ASSERT_LOCKED((evbase)->th_base_lock)
+
 
 static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char *method_name) ;
 static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers);
 static int lu_event_del_(lu_event_t  *ev, int blocking);
+static int lu_event_is_method_disabled(const char *method_name);
+int lu_event_del_nolock_(lu_event_t *ev, int blocking);
+
+
+
 
 static const lu_event_op_t* eventops[] = {
   &epool_ops,
@@ -280,7 +286,7 @@ lu_event_assign(lu_event_t *ev, lu_event_base_t *base, lu_evutil_socket_t fd, sh
         ev->ev_closure = LU_EV_CLOSURE_EVENT_SIGNAL;
       } else {
         if (events & LU_EV_PERSIST) {
-          evutil_timerclear(&ev->ev_io_timeout);
+          lu_evutil_timerclear(&ev->ev_io_timeout);
           ev->ev_closure = LU_EV_CLOSURE_EVENT_PERSIST;
         } else {
           ev->ev_closure = LU_EV_CLOSURE_EVENT;
@@ -337,7 +343,7 @@ void lu_event_debug_unassign(lu_event_t *ev)
 
 static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
   //TODO: finish this function
-  int i;
+  	int i;
 	size_t n_deleted=0;
 	lu_event_t *ev;
 	lu_evwatch_t *watcher;
@@ -370,7 +376,7 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
   /* Delete all non-internal events. */
 	lu_evmap_delete_all_(base);
 
-	while ((ev = min_heap_top_(&base->time_heap)) != NULL) {
+	while ((ev = lu_min_heap_top_(&base->time_heap)) != NULL) {
 		lu_event_del(ev);
 		++n_deleted;
 	}
@@ -379,7 +385,7 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 		    base->common_timeout_queues[i];
 		lu_event_del(&ctl->timeout_event); /* Internal; doesn't count */
 		lu_event_debug_unassign(&ctl->timeout_event);
-		for (ev = TAILQ_FIRST(&ctl->events); ev; ) {
+		for (ev =  (lu_event_t*)TAILQ_FIRST(&ctl->events); ev; ) {
 			lu_event_t *next = TAILQ_NEXT(ev,
 			    ev_timeout_pos.ev_next_with_common_timeout);
 			if (!(ev->ev_flags & LU_EVLIST_INTERNAL)) {
@@ -404,7 +410,8 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 		 */
     //TODO: finish lu_event_base_free_queues_ function
 		int i = lu_event_base_free_queues_(base, run_finalizers);
-		event_debug(("%s: %d events freed", __func__, i));
+
+		LU_EVENT_LOG_DEBUGX("%s: %d events freed", __func__, i);
 		if (!i) {
 			break;
 		}
@@ -543,3 +550,112 @@ static int lu_event_base_cancel_single_callback_(lu_event_base_t *base,lu_event_
 	}
 	return result;
 }
+
+int lu_event_del_noblock(lu_event_t  *ev){
+  //TODO: finish this function
+  return lu_event_del_(ev, LU_EVENT_DEL_NOBLOCK);
+}
+
+
+static int lu_event_is_method_disabled(const char *method_name){
+	//TODO: finish this function
+	char environment[64];
+	int i;
+
+	lu_evutil_snprintf(environment, sizeof(environment), "EVENT_NO%s", method_name);
+	for (i = 8; environment[i] != '\0'; ++i)
+		environment[i] = LU_EVUTIL_TOUPPER_(environment[i]);
+	/* Note that evutil_getenv_() ignores the environment entirely if
+	 * we're setuid */
+	return (lu_evutil_getenv_(environment) != NULL);
+}
+
+
+/** Helper for event_del: always called with th_base_lock held.
+ *
+ * "blocking" must be one of the EVENT_DEL_{BLOCK, NOBLOCK, AUTOBLOCK,
+ * EVEN_IF_FINALIZING} values. See those for more information.
+ */
+int lu_event_del_nolock_(lu_event_t *ev, int blocking){
+  //TODO: finish thie func
+  lu_event_base_t * base;
+  int res = 0,notify = 0;
+  LU_EVENT_LOG_DEBUGX("event_del: %p (fd "LU_EV_SOCK_FMT"),callback %p",
+			(void*)ev, LU_EV_SOCK_ARG(ev->ev_fd), (void*)ev->ev_callback);
+  	/* An event without a base has not been added */
+	if (ev->ev_base == NULL){
+    return (-1);
+  }
+
+  LU_EVENT_BASE_ASSERT_LOCKED(ev->ev_base);
+
+	if (blocking != LU_EVENT_DEL_EVEN_IF_FINALIZING) {
+		if (ev->ev_flags & LU_EVLIST_FINALIZING){
+			/* XXXX Debug */
+			return 0;
+		}
+	}
+  base = ev->ev_base;
+  LU_EVUTIL_ASSERT(!(ev->ev_flags & ~LU_EVLIST_ALL));
+  /* See if we are just active executing this event in a loop */
+	if (ev->ev_events & LU_EV_SIGNAL) {
+		if (ev->ev_ncalls && ev->ev_pncalls) {
+			/* Abort loop */
+			*ev->ev_pncalls = 0;
+		}
+	}
+
+	if (ev->ev_flags & LU_EV_LIST_TIMEOUT) {
+		/* Notify the base if this was the minimal timeout */
+		if (min_heap_top_(&base->time_heap) == ev)
+			notify = 1;
+		event_queue_remove_timeout(base, ev);
+	}
+
+	if (ev->ev_flags & LU_EVLIST_ACTIVE)
+		event_queue_remove_active(base, event_to_event_callback(ev));
+	else if (ev->ev_flags & LU_EVLIST_ACTIVE_LATER)
+		event_queue_remove_active_later(base, event_to_event_callback(ev));
+
+	if (ev->ev_flags & LU_EV_LIST_INSERTED) {
+		event_queue_remove_inserted(base, ev);
+		if (ev->ev_events & (LU_EV_READ|LU_EV_WRITE|LU_EV_CLOSED))
+			res = evmap_io_del_(base, ev->ev_fd, ev);
+		else
+			res = evmap_signal_del_(base, (int)ev->ev_fd, ev);
+		if (res == 1) {
+			/* evmap says we need to notify the main thread. */
+			notify = 1;
+			res = 0;
+		}
+		/* If we do not have events, let's notify event base so it can
+		 * exit without waiting */
+		if (!event_haveevents(base) && !N_ACTIVE_CALLBACKS(base))
+			notify = 1;
+	}
+
+	/* if we are not in the right thread, we need to wake up the loop */
+	if (res != -1 && notify && LU_EVBASE_NEED_NOTIFY(base) )
+		evthread_notify_base(base);
+
+	event_debug_note_del_(ev);
+
+	/* If the main thread is currently executing this event's callback,
+	 * and we are not the main thread, then we want to wait until the
+	 * callback is done before returning. That way, when this function
+	 * returns, it will be safe to free the user-supplied argument.
+	 */
+#ifndef LU_EVENT__DISABLE_THREAD_SUPPORT
+	if (blocking != LU_EVENT_DEL_NOBLOCK &&
+	    base->current_event == event_to_event_callback(ev) &&
+	    !LU_EVBASE_IN_THREAD(base) &&
+	    (blocking == LU_EVENT_DEL_BLOCK || !(ev->ev_events & LU_EV_FINALIZE))) {
+		++base->current_event_waiters;
+		LU_EVTHREAD_COND_WAIT(base->current_event_cond, base->th_base_lock);
+	}
+#endif
+
+	return (res);
+}
+
+

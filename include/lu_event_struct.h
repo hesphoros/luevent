@@ -94,6 +94,7 @@ typedef struct lu_event_s{
         lu_size_t min_heap_idx;//该事件在最小堆（min heap）中的索引，用于快速查找最早的超时事件。
     }ev_timeout_pos;
 
+    lu_evutil_socket_t ev_fd;
     short ev_events;
     short ev_res;//result passed to event callback
 

@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -229,6 +230,8 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 #define lu_evutil_gettimeofday(tv,tz) gettimeofday((tv),(tz))
 
 
+// #define lu_evutil_timerclear(tvp) (tvp)->tv_sec = (tvp)->tv_usec = 0
+#define lu_evutil_timerclear(tvp) timerclear(tvp)
 //lu_evutil_timercmp
 #define lu_evutil_timercmp(tvp,uvp,cmp) \
     (((tvp)->tv_sec == (uvp)->tv_sec) ? \
@@ -307,6 +310,14 @@ int lu_evutil_closesocket(lu_evutil_socket_t s){ return close(s); }
 #define LU_EV_SSIZE_FMT "%zd"
 #define LU_EV_SIZE_ARG(x) (unsigned long)(x)
 #define LU_EV_SSIZE_ARG(x) (long)(x)
+
+
+#define LU_EV_SOCK_FMT "%d"
+#define LU_EV_SOCK_ARG(x) (x)
+
+
+char LU_EVUTIL_TOUPPER_(char c);
+char LU_EVUTIL_TOLOWER_(char c);
 
 #ifdef __cplusplus
 }

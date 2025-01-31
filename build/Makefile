@@ -174,6 +174,30 @@ luevent_static/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/build
 .PHONY : luevent_static/fast
 
+src/lu_changelist.o: src/lu_changelist.c.o
+.PHONY : src/lu_changelist.o
+
+# target to build an object file
+src/lu_changelist.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_changelist.c.o
+.PHONY : src/lu_changelist.c.o
+
+src/lu_changelist.i: src/lu_changelist.c.i
+.PHONY : src/lu_changelist.i
+
+# target to preprocess a source file
+src/lu_changelist.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_changelist.c.i
+.PHONY : src/lu_changelist.c.i
+
+src/lu_changelist.s: src/lu_changelist.c.s
+.PHONY : src/lu_changelist.s
+
+# target to generate assembly for a file
+src/lu_changelist.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_changelist.c.s
+.PHONY : src/lu_changelist.c.s
+
 src/lu_epool.o: src/lu_epool.c.o
 .PHONY : src/lu_epool.o
 
@@ -293,6 +317,30 @@ src/lu_evsignal.s: src/lu_evsignal.c.s
 src/lu_evsignal.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evsignal.c.s
 .PHONY : src/lu_evsignal.c.s
+
+src/lu_evthread.o: src/lu_evthread.c.o
+.PHONY : src/lu_evthread.o
+
+# target to build an object file
+src/lu_evthread.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evthread.c.o
+.PHONY : src/lu_evthread.c.o
+
+src/lu_evthread.i: src/lu_evthread.c.i
+.PHONY : src/lu_evthread.i
+
+# target to preprocess a source file
+src/lu_evthread.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evthread.c.i
+.PHONY : src/lu_evthread.c.i
+
+src/lu_evthread.s: src/lu_evthread.c.s
+.PHONY : src/lu_evthread.s
+
+# target to generate assembly for a file
+src/lu_evthread.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/luevent_static.dir/build.make CMakeFiles/luevent_static.dir/src/lu_evthread.c.s
+.PHONY : src/lu_evthread.c.s
 
 src/lu_evutil_time.o: src/lu_evutil_time.c.o
 .PHONY : src/lu_evutil_time.o
@@ -547,6 +595,9 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... luevent_static"
+	@echo "... src/lu_changelist.o"
+	@echo "... src/lu_changelist.i"
+	@echo "... src/lu_changelist.s"
 	@echo "... src/lu_epool.o"
 	@echo "... src/lu_epool.i"
 	@echo "... src/lu_epool.s"
@@ -562,6 +613,9 @@ help:
 	@echo "... src/lu_evsignal.o"
 	@echo "... src/lu_evsignal.i"
 	@echo "... src/lu_evsignal.s"
+	@echo "... src/lu_evthread.o"
+	@echo "... src/lu_evthread.i"
+	@echo "... src/lu_evthread.s"
 	@echo "... src/lu_evutil_time.o"
 	@echo "... src/lu_evutil_time.i"
 	@echo "... src/lu_evutil_time.s"

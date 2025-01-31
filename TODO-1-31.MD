@@ -12,7 +12,7 @@
 - [X] `LU_EVTHREAD_FREE_COND`
 - [X] `lu_event_callback_cancel_nolock_`
 - [X] `event_base_once`
-- [ ] `event_queue_remove_timeout`
+- [X] `lu_event_queue_remove_timeout`
 - [ ] `event_queue_remove_active`
 - [ ] `event_to_event_callback`
 - [ ] `event_queue_remove_active_later`

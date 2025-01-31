@@ -37,6 +37,8 @@ lu_event_once_cb(lu_evutil_socket_t fd, short events, void *arg);
 static void
 lu_event_queue_remove_timeout(lu_event_base_t *base, lu_event_t *ev);
 
+static inline lu_common_timeout_list_t *lu_get_common_timeout_list(lu_event_base_t *base, const struct timeval *tv);
+
 int lu_event_callback_cancel_nolock_(lu_event_base_t *base,lu_event_callback_t *evcb, int even_if_finalizing);
 static const lu_event_op_t* eventops[] = {
   &epool_ops,

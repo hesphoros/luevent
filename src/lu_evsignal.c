@@ -77,7 +77,7 @@ lu_evsig_cb(lu_evutil_socket_t fd, short what, void *arg)
 		n = read(fd, signals, sizeof(signals));
 
 		if (n == -1) {
-			int err = evutil_socket_geterror(fd);
+			int err = lu_evutil_socket_geterror(fd);
 			if (! LU_EVUTIL_ERR_RW_RETRIABLE(err))
 				event_sock_err(1, fd, "%s: recv", __func__);
 			break;

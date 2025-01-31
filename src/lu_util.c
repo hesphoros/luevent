@@ -46,6 +46,16 @@ __attribute__((constructor)) void lu_util_sock_hash_table_constructor(void) {
     lu_cached_sock_errs_map_ = lu_hash_table_init(LU_HASH_TABLE_DEFAULT_SIZE);
 }
 
+
+
+// 内联函数实现
+static  void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) {
+    fprintf(stderr, "Assertion %s failed in %s:%d\n", cond, file, line);
+    LU_EVENT_LOG_ERRORX(LU_EVENT_ERROR_ABORT_, "%s:%d: Assertion %s failed in %s", file, line, cond, func);
+    abort();
+}
+
+
 int lu_evutil_snprintf(char *str, size_t size, const char *format,...){
     int ret;
     va_list ap;
@@ -372,12 +382,5 @@ int lu_evutil_fast_socket_closeonexec(lu_evutil_socket_t fd){
     return 0;
 }
 
-
-// 内联函数实现
-static inline void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) {
-    fprintf(stderr, "Assertion %s failed in %s:%d\n", cond, file, line);
-    LU_EVENT_LOG_ERRORX(LU_EVENT_ERROR_ABORT_, "%s:%d: Assertion %s failed in %s", file, line, cond, func);
-    abort();
-}
 
 

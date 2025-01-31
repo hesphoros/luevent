@@ -218,7 +218,7 @@ LU_EVENT_EXPORT_SYMBOL
 LU_EVENT_EXPORT_SYMBOL
     int lu_evutil_gettime_monotonic_(lu_evutil_monotonic_timer_t * base,struct timeval * tv);
 
-
+static void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) ;
 
 /**文件操作相关函数 */
 int lu_evutil_create_dictionay(const char * path);
@@ -272,7 +272,6 @@ const char* lu_evutil_get_directory(const char *filename,char * out_buf,size_t o
 #endif
 
 
-static inline void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func);
 
 
 #define LU_EVUTIL_ASSERT(cond) do {                              \
@@ -298,6 +297,7 @@ int lu_evutil_fast_socket_closeonexec(lu_evutil_socket_t fd);
 int lu_evutil_closesocket(lu_evutil_socket_t s){ return close(s); }
 
 #define LU_EVUTIL_CLOSESOCKET(s) lu_evutil_closesocket(s)
+#define lu_evutil_timerisset(tvp) timerisset(tvp)
 
 #define LU_EVUTIL_ERR_IS_EAGAIN(e) \
 	((e) == EAGAIN)
@@ -314,6 +314,23 @@ int lu_evutil_closesocket(lu_evutil_socket_t s){ return close(s); }
 
 #define LU_EV_SOCK_FMT "%d"
 #define LU_EV_SOCK_ARG(x) (x)
+
+
+
+
+/** Mask used to get the real tv_usec value from a common timeout. */
+#define COMMON_TIMEOUT_MICROSECONDS_MASK       0x000fffff
+#define MICROSECONDS_MASK       COMMON_TIMEOUT_MICROSECONDS_MASK
+#define COMMON_TIMEOUT_IDX_MASK 0x0ff00000
+#define COMMON_TIMEOUT_IDX_SHIFT 20
+#define COMMON_TIMEOUT_MASK     0xf0000000
+#define COMMON_TIMEOUT_MAGIC    0x50000000
+
+#define LU_DECR_EVENT_COUNT(base,flags) \
+	((base)->event_count -= !((flags) & LU_EVLIST_INTERNAL))
+
+#define LU_COMMON_TIMEOUT_IDX(tv) \
+	(((tv)->tv_usec & COMMON_TIMEOUT_IDX_MASK)>>COMMON_TIMEOUT_IDX_SHIFT)
 
 
 char LU_EVUTIL_TOUPPER_(char c);

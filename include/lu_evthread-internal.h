@@ -9,6 +9,8 @@
 extern "C" {
 #endif
 
+int lu_evthread_is_debug_lock_held_(void *lock_);
+
 typedef struct lu_event_base_s lu_event_base_t;
 
 #if ! defined(LU_EVENT__DISABLE_THREAD_SUPPORT)
@@ -90,34 +92,46 @@ extern int lu_evthread_lock_debugging_enabled_;//是否开启了debug调试
 	do {													\
 		LU_EVLOCK_UNLOCK((evbase)->lockvar,0);						\
 	} while(0)
+
+
 //TODO:finish the implementation of thread support
 ///** 如果启用了锁调试，并且锁不为空，则断言“锁”已被 锁定并由我们持有。
-#define LU_EVLOCK_ASSERT_LOCKED(lock)					\
-	do {												\
-		if(lock && lu_evthread_lock_debugging_enabled_){	\
-			LU_EVUTIL_ASSERT(lu_evthread_is_debug_lock_held_(lock));					\
-	}while(0)
+#define LU_EVLOCK_ASSERT_LOCKED(lock)                     \
+    do {                                                  \
+        if (lock && lu_evthread_lock_debugging_enabled_) { \
+            LU_EVUTIL_ASSERT(lu_evthread_is_debug_lock_held_(lock)); \
+        }                                                 \
+    } while (0)
 
-#endif /**!define(LU_EVENT__DISABLE_THREAD_SUPPORT) */
+/** Deallocate and free a condition variable in condvar */
+#define LU_EVTHREAD_FREE_COND(cond)					\
+	do {								\
+		if (cond)						\
+			evthread_condition_fns_.free_condition((cond));	\
+	} while (0)
 
+#elif ! defined(LU_EVENT__DISABLE_THREAD_SUPPORT)
 
 
 
 /** If lock debugging is enabled, and lock is non-null, assert that 'lock' is
  * locked and held by us. */
-/*
+
 #define LU_EVLOCK_ASSERT_LOCKED(lock)					\
 	do {								\
 		if ((lock) && evthreadimpl_is_lock_debugging_enabled_()) { \
 			LU_EVUTIL_ASSERT(evthread_is_debug_lock_held_(lock)); \
 		}							\
 	} while (0)
-*/
 
+
+
+
+
+#endif /* EVENT__DISABLE_THREAD_SUPPORT */
 
 #ifdef __cplusplus
 }
 #endif
-
 
 #endif /* _LU_EVTHREAD_INTERNAL_INCLUDED_H_ */

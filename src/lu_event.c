@@ -26,11 +26,18 @@ static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char
 static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers);
 static int lu_event_del_(lu_event_t  *ev, int blocking);
 static int lu_event_is_method_disabled(const char *method_name);
+
 int lu_event_del_nolock_(lu_event_t *ev, int blocking);
+static inline
+lu_event_t *lu_event_callback_to_event(lu_event_callback_t *evcb);
 
+static void
+lu_event_once_cb(lu_evutil_socket_t fd, short events, void *arg);
 
+static void
+lu_event_queue_remove_timeout(lu_event_base_t *base, lu_event_t *ev);
 
-
+int lu_event_callback_cancel_nolock_(lu_event_base_t *base,lu_event_callback_t *evcb, int even_if_finalizing);
 static const lu_event_op_t* eventops[] = {
   &epool_ops,
  // &lu_poll_ops,
@@ -127,7 +134,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
   }
   //构造evbase中的时间堆  处理时间堆
   lu_min_heap_constructor_(&evbase->time_heap);
- 
+
   evbase->sig_info_.ev_signal_pair[0] = -1;
   evbase->sig_info_.ev_signal_pair[1] = -1;
 
@@ -345,8 +352,9 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
   //TODO: finish this function
   	int i;
 	size_t n_deleted=0;
-	lu_event_t *ev;
-	lu_evwatch_t *watcher;
+	struct lu_event_s *ev;
+
+	struct lu_evwatch_s *watcher;
 
 	/* XXXX grab the lock? If there is contention when one thread frees
 	 * the base, then the contending thread will be very sad soon. */
@@ -385,7 +393,7 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 		    base->common_timeout_queues[i];
 		lu_event_del(&ctl->timeout_event); /* Internal; doesn't count */
 		lu_event_debug_unassign(&ctl->timeout_event);
-		for (ev =  (lu_event_t*)TAILQ_FIRST(&ctl->events); ev; ) {
+		for (ev = TAILQ_FIRST(&ctl->events); ev; ) {
 			lu_event_t *next = TAILQ_NEXT(ev,
 			    ev_timeout_pos.ev_next_with_common_timeout);
 			if (!(ev->ev_flags & LU_EVLIST_INTERNAL)) {
@@ -421,7 +429,7 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 	if (n_deleted)
     LU_EVENT_LOG_DEBUGX("%s: "LU_EV_SIZE_FMT" events were still set in base", __func__, n_deleted);
 	while (LIST_FIRST(&base->once_events)) {
-		 lu_event_once_t *eonce = LIST_FIRST(&base->once_events);
+		struct lu_event_once_s *eonce = LIST_FIRST(&base->once_events);
 		LIST_REMOVE(eonce, next_once);
 		mm_free(eonce);
 	}
@@ -430,19 +438,19 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 		base->evsel_op->dealloc(base);
 
 	for (i = 0; i < base->nactivequeues; ++i)
-		EVUTIL_ASSERT(TAILQ_EMPTY(&base->activequeues[i]));
+		LU_EVUTIL_ASSERT(TAILQ_EMPTY(&base->activequeues[i]));
 
-	EVUTIL_ASSERT(min_heap_empty_(&base->time_heap));
-	min_heap_dtor_(&base->time_heap);
+	LU_EVUTIL_ASSERT(lu_min_heap_empty_(&base->time_heap));
+	lu_min_heap_destructor_(&base->time_heap);
 
 	mm_free(base->activequeues);
 
-	evmap_io_clear_(&base->io);
-	evmap_signal_clear_(&base->sigmap);
-	event_changelist_freemem_(&base->changelist);
+	lu_evmap_io_clear_(&base->io);
+	lu_evmap_signal_clear_(&base->sigmap);
+	lu_event_changelist_freemem_(&base->changelist);
 
-	EVTHREAD_FREE_LOCK(base->th_base_lock, 0);
-	EVTHREAD_FREE_COND(base->current_event_cond);
+	LU_EVTHREAD_FREE_LOCK(base->th_base_lock, 0);
+	LU_EVTHREAD_FREE_COND(base->current_event_cond);
 
 	/* Free all event watchers */
 	for (i = 0; i < EVWATCH_MAX; ++i) {
@@ -491,7 +499,7 @@ int lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers){
   //TODO: finish this function
   int deleted = 0,  i ;
   for (i = 0; i < base->nactivequeues; ++i) {
-		lu_event_callback_t *evcb, *next;
+		struct lu_event_callback_s *evcb, *next;
 		for (evcb = TAILQ_FIRST(&base->activequeues[i]); evcb; ) {
 			next = TAILQ_NEXT(evcb, evcb_active_next);
 			deleted += lu_event_base_cancel_single_callback_(base, evcb, run_finalizers);
@@ -509,7 +517,7 @@ int lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers){
 	return deleted;
 }
 
-static inline struct event *lu_event_callback_to_event(lu_event_callback_t *evcb)
+static inline lu_event_t *lu_event_callback_to_event(lu_event_callback_t *evcb)
 {
 	LU_EVUTIL_ASSERT((evcb->evcb_flags & LU_EVLIST_INIT));
 	return LU_EVUTIL_UPCAST(evcb, lu_event_t, ev_evcallback);
@@ -536,7 +544,7 @@ static int lu_event_base_cancel_single_callback_(lu_event_base_t *base,lu_event_
 		case LU_EV_CLOSURE_EVENT_FINALIZE:
 		case LU_EV_CLOSURE_EVENT_FINALIZE_FREE: {
 			lu_event_t *ev = lu_event_callback_to_event(evcb);
-			ev->ev_evcallback.evcb_cb_union.evcb_cbfinalize(ev, ev->ev_arg);
+			ev->ev_evcallback.evcb_cb_union.evcb_evfinalize(ev, ev->ev_arg);
 			if (evcb->evcb_closure == LU_EV_CLOSURE_EVENT_FINALIZE_FREE)
 				mm_free(ev);
 			break;
@@ -570,6 +578,91 @@ static int lu_event_is_method_disabled(const char *method_name){
 	return (lu_evutil_getenv_(environment) != NULL);
 }
 
+/* One-time callback to implement event_base_once: invokes the user callback,
+ * then deletes the allocated storage */
+static void
+lu_event_once_cb(lu_evutil_socket_t fd, short events, void *arg)
+{
+	lu_event_once_t *eonce = arg;
+
+	(*eonce->cb)(fd, events, eonce->arg);
+	LU_EVBASE_ACQUIRE_LOCK(eonce->ev.ev_base, th_base_lock);
+	LIST_REMOVE(eonce, next_once);
+	LU_EVBASE_RELEASE_LOCK(eonce->ev.ev_base, th_base_lock);
+	lu_event_debug_unassign(&eonce->ev);
+	mm_free(eonce);
+}
+
+/* Schedules an event once */
+int lu_event_base_once(lu_event_base_t *base, lu_evutil_socket_t fd, short events,
+    void (*callback)(lu_evutil_socket_t, short, void *),
+    void *arg, const struct timeval *tv)
+{
+	lu_event_once_t *eonce;
+	int res = 0;
+	int activate = 0;
+
+	if (!base)
+		return (-1);
+
+	/* We cannot support signals that just fire once, or persistent
+	 * events. */
+	if (events & (LU_EV_SIGNAL|LU_EV_PERSIST))
+		return (-1);
+
+	if ((eonce = mm_calloc(1, sizeof(lu_event_once_t))) == NULL)
+		return (-1);
+
+	eonce->cb = callback;
+	eonce->arg = arg;
+
+	if ((events & (LU_EV_TIMEOUT|LU_EV_SIGNAL|LU_EV_READ|LU_EV_WRITE|LU_EV_CLOSED)) == LU_EV_TIMEOUT) {
+		lu_evtimer_assign(&eonce->ev, base, lu_event_once_cb, eonce);
+
+		if (tv == NULL || ! lu_evutil_timerisset(tv)) {
+			/* If the event is going to become active immediately,
+			 * don't put it on the timeout queue.  This is one
+			 * idiom for scheduling a callback, so let's make
+			 * it fast (and order-preserving). */
+			activate = 1;
+		}
+	} else if (events & (LU_EV_READ|LU_EV_WRITE|LU_EV_CLOSED)) {
+		events &= LU_EV_READ|LU_EV_WRITE|LU_EV_CLOSED;
+
+		lu_event_assign(&eonce->ev, base, fd, events, lu_event_once_cb, eonce);
+	} else {
+		/* Bad event combination */
+		mm_free(eonce);
+		return (-1);
+	}
+
+
+	LU_EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+	if (activate)
+		lu_event_active_nolock_(&eonce->ev, LU_EV_TIMEOUT, 1);
+	else
+		res = lu_event_add_nolock_(&eonce->ev, tv, 0);
+
+	if (res != 0) {
+		mm_free(eonce);
+		return (res);
+	} else {
+		LIST_INSERT_HEAD(&base->once_events, eonce, next_once);
+	}
+	LU_EVBASE_RELEASE_LOCK(base, th_base_lock);
+
+	return (0);
+}
+
+
+/* not threadsafe, event scheduled once. */
+int lu_event_once(lu_evutil_socket_t fd, short events,
+	void (*callback)(lu_evutil_socket_t, short, void *),
+	void *arg, const struct timeval *tv)
+{
+	//TODO: finish this function
+	return lu_event_base_once(current_base, fd, events, callback, arg, tv);
+}
 
 /** Helper for event_del: always called with th_base_lock held.
  *
@@ -581,7 +674,7 @@ int lu_event_del_nolock_(lu_event_t *ev, int blocking){
   lu_event_base_t * base;
   int res = 0,notify = 0;
   LU_EVENT_LOG_DEBUGX("event_del: %p (fd "LU_EV_SOCK_FMT"),callback %p",
-			(void*)ev, LU_EV_SOCK_ARG(ev->ev_fd), (void*)ev->ev_callback);
+			(void*)ev, LU_EV_SOCK_ARG(ev->ev_fd), (void*) ev->ev_callback);
   	/* An event without a base has not been added */
 	if (ev->ev_base == NULL){
     return (-1);
@@ -607,7 +700,7 @@ int lu_event_del_nolock_(lu_event_t *ev, int blocking){
 
 	if (ev->ev_flags & LU_EV_LIST_TIMEOUT) {
 		/* Notify the base if this was the minimal timeout */
-		if (min_heap_top_(&base->time_heap) == ev)
+		if (lu_min_heap_top_(&base->time_heap) == ev)
 			notify = 1;
 		event_queue_remove_timeout(base, ev);
 	}
@@ -638,7 +731,7 @@ int lu_event_del_nolock_(lu_event_t *ev, int blocking){
 	if (res != -1 && notify && LU_EVBASE_NEED_NOTIFY(base) )
 		evthread_notify_base(base);
 
-	event_debug_note_del_(ev);
+	lu_event_debug_note_del_(ev);
 
 	/* If the main thread is currently executing this event's callback,
 	 * and we are not the main thread, then we want to wait until the
@@ -656,6 +749,71 @@ int lu_event_del_nolock_(lu_event_t *ev, int blocking){
 #endif
 
 	return (res);
+
 }
 
 
+
+
+int
+lu_event_callback_cancel_nolock_(lu_event_base_t *base,
+    lu_event_callback_t *evcb, int even_if_finalizing)
+
+{
+	//TODO: FINSIH THIS FUNCTION
+	if ((evcb->evcb_flags & LU_EVLIST_FINALIZING) && !even_if_finalizing)
+		return 0;
+
+	if (evcb->evcb_flags & LU_EVLIST_INIT)
+		return event_del_nolock_(event_callback_to_event(evcb),
+		    even_if_finalizing ? LU_EVENT_DEL_EVEN_IF_FINALIZING : LU_EVENT_DEL_AUTOBLOCK);
+
+	switch ((evcb->evcb_flags & (LU_EVLIST_ACTIVE|LU_EVLIST_ACTIVE_LATER))) {
+	default:
+	case LU_EVLIST_ACTIVE|LU_EVLIST_ACTIVE_LATER:
+		EVUTIL_ASSERT(0);
+		break;
+	case LU_EVLIST_ACTIVE:
+		/* We get different kinds of events, add them together */
+		event_queue_remove_active(base, evcb);
+		return 0;
+	case LU_EVLIST_ACTIVE_LATER:
+		event_queue_remove_active_later(base, evcb);
+		break;
+	case 0:
+		break;
+	}
+
+	return 0;
+}
+
+
+static void
+lu_event_queue_remove_timeout(lu_event_base_t *base, lu_event_t *ev){
+
+	LU_EVENT_BASE_ASSERT_LOCKED(base);
+	if (EVUTIL_FAILURE_CHECK(!(ev->ev_flags & LU_EV_LIST_TIMEOUT))) {
+		event_errx(1, "%s: %p(fd "LU_EV_SOCK_FMT") not on queue %x", __func__,
+                   (void *)ev, LU_EV_SOCK_ARG(ev->ev_fd), LU_EV_LIST_TIMEOUT);
+		return;
+	}
+	LU_DECR_EVENT_COUNT(base, ev->ev_flags);
+	ev->ev_flags &= ~LU_EV_LIST_TIMEOUT;
+
+	if (is_common_timeout(&ev->ev_timeout, base)) {
+		lu_common_timeout_list_t *ctl =
+		    lu_get_common_timeout_list(base, &ev->ev_timeout);
+		TAILQ_REMOVE(&ctl->events, ev,
+		    ev_timeout_pos.ev_next_with_common_timeout);
+	} else {
+		lu_min_heap_erase_(&base->time_heap, ev);
+	}
+}
+
+/** Requires that 'tv' is a common timeout.  Return the corresponding
+ * common_timeout_list. */
+static inline lu_common_timeout_list_t *
+lu_get_common_timeout_list(lu_event_base_t *base, const struct timeval *tv)
+{
+	return base->common_timeout_queues[LU_COMMON_TIMEOUT_IDX(tv)];
+}

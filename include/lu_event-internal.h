@@ -15,6 +15,7 @@
 #include "lu_watch.h"
 
 
+
 //#include <bits/types/struct_timeval.h>
 #ifdef __cplusplus
 extern "C" {
@@ -23,9 +24,9 @@ extern "C" {
 
 
 //FIXME:
-TAILQ_HEAD(lu_evcallback_list, lu_event_callback_t);
-TAILQ_HEAD (lu_event_list, lu_event_t);
-TAILQ_HEAD(lu_evwatch_list, lu_evwatch_t);
+TAILQ_HEAD(lu_evcallback_list, lu_event_callback_s);
+TAILQ_HEAD (lu_event_list, lu_event_s);
+TAILQ_HEAD(lu_evwatch_list, lu_evwatch_s);
 
 
 /** @name Event closure codes
@@ -126,7 +127,6 @@ typedef struct lu_common_timeout_list_s {
 	lu_event_base_t *base;
 }lu_common_timeout_list_t;
 
-//TODO: 完成lu_event_map_entry_t
 
 //io fd map
 
@@ -294,7 +294,7 @@ typedef struct lu_event_base_s {
 	struct evutil_weakrand_state_s weakrand_seed;
 
 	/** List of event_onces that have not yet fired. */
-	LIST_HEAD(once_event_list, event_once) once_events;
+	LIST_HEAD(once_event_list, lu_event_once_s) once_events;
 
 	/** "Prepare" and "check" watchers. */
 	struct lu_evwatch_list watchers[EVWATCH_MAX];

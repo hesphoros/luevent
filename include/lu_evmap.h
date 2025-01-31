@@ -92,12 +92,10 @@ static int lu_evmap_signal_foreach_signal(lu_event_base_t *base,
 
 void lu_evmap_io_initmap(lu_event_io_map_t* ctx);
 void lu_evmap_siganl_initmap(lu_event_signal_map_t* ctx);
-
-
+void lu_evmap_signal_clear_(lu_event_signal_map_t *ctx);
+void lu_evmap_io_clear_(lu_event_io_map_t* ctx);
 
 /* Callback type for evmap_signal_foreach_signal */
-
-
 void lu_evmap_delete_all_(lu_event_base_t *base);
 
 #ifdef __cplusplus

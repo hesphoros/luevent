@@ -76,7 +76,7 @@ typedef struct lu_event_callback_s{
         //used for io events
         void (*evcb_callback)(lu_evutil_socket_t,short,void*);//回调函数
         void (*evcb_selfcb)(struct lu_event_callback_s*,void*);//自身回调函数
-        void (*evcb_evfinialize)(struct lu_event_s*,void*);//事件最终化回调函数
+        void (*evcb_evfinalize)(struct lu_event_s*,void*);//事件最终化回调函数
         void (*evcb_cbfinalize)(struct lu_event_callback_s*,void*);//回调最终化回调函数
     }evcb_cb_union;
     void *evcb_arg;//回调函数的参数

@@ -27,6 +27,9 @@ int lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers);
 static int
     lu_event_base_cancel_single_callback_(lu_event_base_t *base,lu_event_callback_t *evcb,int run_finalizers);
 
+int lu_event_once(lu_evutil_socket_t fd, short events,void (*callback)(lu_evutil_socket_t, short, void *),void *arg, const struct timeval *tv);
+
+
 /**
  * @name event flags
  *

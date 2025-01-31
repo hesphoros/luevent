@@ -10,6 +10,9 @@ static int
 lu_evmap_io_delete_all_iter_fn( lu_event_base_t *base, lu_evutil_socket_t fd,
     lu_evmap_io_t *io_info, void *arg);
 
+void lu_evmap_signal_clear_(lu_event_signal_map_t *ctx);
+
+
 void lu_evmap_io_initmap(lu_event_io_map_t* ctx){
     ctx->nentries = 0;
     ctx->entries = NULL;
@@ -71,4 +74,26 @@ lu_evmap_io_delete_all_iter_fn( lu_event_base_t *base, lu_evutil_socket_t fd,
 void lu_evmap_delete_all_(lu_event_base_t *base){
     lu_evmap_signal_foreach_signal(base,lu_evmap_signal_delete_all_iter_fn,NULL);
     lu_evmap_io_foreach_fd(base, lu_evmap_io_delete_all_iter_fn, NULL);
+}
+
+
+
+void
+lu_evmap_signal_clear_(lu_event_signal_map_t *ctx)
+{
+	if (ctx->entries != NULL) {
+		int i;
+		for (i = 0; i < ctx->nentries; ++i) {
+			if (ctx->entries[i] != NULL)
+				mm_free(ctx->entries[i]);
+		}
+		mm_free(ctx->entries);
+		ctx->entries = NULL;
+	}
+	ctx->nentries = 0;
+}
+
+void lu_evmap_io_clear_(lu_event_io_map_t* ctx)
+{
+	lu_evmap_signal_clear_(ctx);
 }

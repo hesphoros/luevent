@@ -58,6 +58,7 @@ typedef struct lu_event_change_s {
 
 
 void lu_event_changelist_init(lu_event_changelist_t* ctx);
+void lu_event_changelist_freemem_(lu_event_changelist_t* changelist);
 
 /* Flags for read_change and write_change. */
 

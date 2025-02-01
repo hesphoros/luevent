@@ -336,6 +336,22 @@ int lu_evutil_closesocket(lu_evutil_socket_t s){ return close(s); }
 char LU_EVUTIL_TOUPPER_(char c);
 char LU_EVUTIL_TOLOWER_(char c);
 
+
+
+/* Set the variable 'x' to the field in event_map 'map' with fields of type
+   'struct type *' corresponding to the fd or signal 'slot'.  Set 'x' to NULL
+   if there are no entries for 'slot'.  Does no bounds-checking. */
+#define GET_SIGNAL_SLOT(x, map, slot, type)			\
+	(x) = (struct type *)((map)->entries[slot])
+#define GET_IO_SLOT(x,map,slot,type) GET_SIGNAL_SLOT(x,map,slot,type)
+#define GET_IO_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)	\
+	GET_SIGNAL_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)
+#define FDINFO_OFFSET sizeof(struct evmap_io)
+
+
+#define N_ACTIVE_CALLBACKS(base)					\
+	((base)->event_count_active)
+
 #ifdef __cplusplus
 }
 #endif

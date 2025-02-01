@@ -169,8 +169,34 @@ no progress
 - [X] lu_event_s内部添加了ev_fd
 - [X] 添加lu_event_del_noblock函数
 - [X] 修复了LU_EVBASE_NEED_NOTIFY 宏函数的语法错误
-- [ ] 修复LU_EVBASE_RELEASE_LOCK 函数的多定义
+- [X] 修复LU_EVBASE_RELEASE_LOCK 函数的多定义
 - [X] 新增LU_EV_SOCK_FMT LU_EV_SOCK_ARG等宏
-- [ ] 实现lu_event_del_nolock_ 函数
-- [ ] 实现lu_event_del_noblock函数
-- [ ] 实现lu_event_is_method_disabled函数
+- [X] 实现lu_event_del_nolock_ 函数
+- [X] 实现lu_event_del_noblock函数
+- [X] 实现lu_event_is_method_disabled函数
+
+## 2025-2-1
+
+- [X] `lu_evmap_io_clear_`
+- [X] `lu_evmap_signal_clear_`
+- [X] `lu_event_changelist_freemem_`
+- [X] `LU_EVTHREAD_FREE_COND`
+- [X] `lu_event_callback_cancel_nolock_`
+- [X] `event_base_once`
+- [X] `lu_event_queue_remove_timeout`
+- [X] `event_queue_remove_active`
+- [X] `event_to_event_callback`
+- [X] `event_queue_remove_active_later`
+- [X] `event_queue_remove_inserted`
+- [X] `evmap_io_del_`
+- [X] `evmap_signal_del_`
+- [X] `event_haveevents`
+- [X] `N_ACTIVE_CALLBACKS`
+- [X] `evthread_notify_base`
+- [X] `lu_event_debug_note_del_`
+- [X] `LU_EVTHREAD_COND_WAIT`
+- [X] `lu_evthread_is_debug_lock_held_`
+- [X] feat: 添加事件优先级设置与删除函数
+- [X] style: 移除多余空行
+- [X] refactor: 添加错误检查并优化代码
+- [X] perf: 完善lu_common_timeout_list_s的实现,优化相关结构定义

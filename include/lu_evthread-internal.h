@@ -4,12 +4,14 @@
 #include "lu_util.h"
 #include "lu_visibility.h"
 #include "lu_thread.h"
+#include "lu_event_struct.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 int lu_evthread_is_debug_lock_held_(void *lock_);
+
 
 typedef struct lu_event_base_s lu_event_base_t;
 
@@ -109,6 +111,14 @@ extern int lu_evthread_lock_debugging_enabled_;//是否开启了debug调试
 		if (cond)						\
 			evthread_condition_fns_.free_condition((cond));	\
 	} while (0)
+
+
+/** Wait until the condition 'cond' is signalled.  Must be called while
+ * holding 'lock'.  The lock will be released until the condition is
+ * signalled, at which point it will be acquired again.  Returns 0 for
+ * success, -1 for failure. */
+#define LU_EVTHREAD_COND_WAIT(cond, lock)					\
+	( (cond) ? evthread_condition_fns_.wait_condition((cond), (lock), NULL) : 0 )
 
 #elif ! defined(LU_EVENT__DISABLE_THREAD_SUPPORT)
 

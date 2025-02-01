@@ -33,6 +33,7 @@ extern "C" {
 // //typedef struct lu_event_signal_map_s lu_event_io_map_t;
 // #endif //LU_EVMAP_USE_HASHTABLE
 
+typedef struct lu_event_s lu_event_t;
 typedef struct lu_event_signal_map_s lu_event_signal_map_t;
 typedef struct lu_evmap_io_s lu_evmap_io_t;
 typedef lu_event_signal_map_t lu_event_io_map_t;
@@ -97,6 +98,11 @@ void lu_evmap_io_clear_(lu_event_io_map_t* ctx);
 
 /* Callback type for evmap_signal_foreach_signal */
 void lu_evmap_delete_all_(lu_event_base_t *base);
+
+int
+lu_evmap_io_del_(lu_event_base_t *base, lu_evutil_socket_t fd, lu_event_t *ev);
+
+int lu_evmap_signal_del_(lu_event_base_t *base, int signum, lu_event_t *ev);
 
 #ifdef __cplusplus
 }

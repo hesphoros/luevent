@@ -20,7 +20,7 @@
 
 #define LU_EVENT_BASE_ASSERT_LOCKED(evbase)				\
 		LU_EVLOCK_ASSERT_LOCKED((evbase)->th_base_lock)
-
+int lu_event_callback_cancel_nolock_(lu_event_base_t *base,lu_event_callback_t *evcb, int even_if_finalizing);
 
 static int lu_event_config_is_avoided_method(lu_event_config_t * cfg, const char *method_name) ;
 static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers);
@@ -39,7 +39,24 @@ lu_event_queue_remove_timeout(lu_event_base_t *base, lu_event_t *ev);
 
 static inline lu_common_timeout_list_t *lu_get_common_timeout_list(lu_event_base_t *base, const struct timeval *tv);
 
-int lu_event_callback_cancel_nolock_(lu_event_base_t *base,lu_event_callback_t *evcb, int even_if_finalizing);
+
+static inline lu_event_callback_t *
+	lu_event_to_event_callback(lu_event_t *ev);
+
+
+static inline lu_event_t *
+	lu_event_callback_to_event(lu_event_callback_t *evcb);
+
+static void
+	lu_event_queue_remove_inserted(lu_event_base_t *, lu_event_t *);
+
+
+static int
+	lu_evthread_notify_base(lu_event_base_t *base);
+
+static int
+	lu_event_haveevents(lu_event_base_t *);
+
 static const lu_event_op_t* eventops[] = {
   &epool_ops,
  // &lu_poll_ops,
@@ -519,11 +536,11 @@ int lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers){
 	return deleted;
 }
 
-static inline lu_event_t *lu_event_callback_to_event(lu_event_callback_t *evcb)
-{
-	LU_EVUTIL_ASSERT((evcb->evcb_flags & LU_EVLIST_INIT));
-	return LU_EVUTIL_UPCAST(evcb, lu_event_t, ev_evcallback);
-}
+// static inline lu_event_t *lu_event_callback_to_event(lu_event_callback_t *evcb)
+// {
+// 	LU_EVUTIL_ASSERT((evcb->evcb_flags & LU_EVLIST_INIT));
+// 	return LU_EVUTIL_UPCAST(evcb, lu_event_t, ev_evcallback);
+// }
 
 static int lu_event_base_cancel_single_callback_(lu_event_base_t *base,lu_event_callback_t *evcb,int run_finalizers){
   int result = 0;
@@ -568,7 +585,7 @@ int lu_event_del_noblock(lu_event_t  *ev){
 
 
 static int lu_event_is_method_disabled(const char *method_name){
-	//TODO: finish this function
+
 	char environment[64];
 	int i;
 
@@ -666,6 +683,57 @@ int lu_event_once(lu_evutil_socket_t fd, short events,
 	return lu_event_base_once(current_base, fd, events, callback, arg, tv);
 }
 
+
+
+static void
+lu_event_queue_remove_active(lu_event_base_t *base, lu_event_callback_t *evcb)
+{
+	LU_EVENT_BASE_ASSERT_LOCKED(base);
+	if (LU_EVUTIL_FAILURE_CHECK(!(evcb->evcb_flags & LU_EVLIST_ACTIVE))) {
+		LU_EVENT_LOG_ERRORX(1, "%s: %p not on queue %x", __func__,
+                          (void *)evcb, LU_EVLIST_ACTIVE);
+		return;
+	}
+	LU_DECR_EVENT_COUNT(base, evcb->evcb_flags);
+	evcb->evcb_flags &= ~LU_EVLIST_ACTIVE;
+	base->event_count_active--;
+
+	TAILQ_REMOVE(&base->activequeues[evcb->evcb_pri],
+	    evcb, evcb_active_next);
+}
+
+
+static void
+lu_event_queue_remove_active_later(lu_event_base_t *base, lu_event_callback_t *evcb)
+{
+	LU_EVBASE_ASSERT_LOCKED(base);
+	if (LU_EVUTIL_FAILURE_CHECK(!(evcb->evcb_flags & LU_EVLIST_ACTIVE_LATER))) {
+		LU_EVENT_LOG_ERRORX(1, "%s: %p not on queue %x", __func__,
+                          (void *)evcb, LU_EVLIST_ACTIVE_LATER);
+		return;
+	}
+	LU_DECR_EVENT_COUNT(base, evcb->evcb_flags);
+	evcb->evcb_flags &= ~LU_EVLIST_ACTIVE_LATER;
+	base->event_count_active--;
+
+	TAILQ_REMOVE(&base->active_later_queue, evcb, evcb_active_next);
+}
+
+
+static inline lu_event_t *
+lu_event_callback_to_event(lu_event_callback_t *evcb)
+{
+	LU_EVUTIL_ASSERT((evcb->evcb_flags & LU_EVLIST_INIT));
+	return LU_EVUTIL_UPCAST(evcb, lu_event_t, ev_evcallback);
+}
+
+static inline lu_event_callback_t *
+lu_event_to_event_callback(lu_event_t *ev)
+{
+	return &ev->ev_evcallback;
+}
+
+
 /** Helper for event_del: always called with th_base_lock held.
  *
  * "blocking" must be one of the EVENT_DEL_{BLOCK, NOBLOCK, AUTOBLOCK,
@@ -686,7 +754,7 @@ int lu_event_del_nolock_(lu_event_t *ev, int blocking){
 
 	if (blocking != LU_EVENT_DEL_EVEN_IF_FINALIZING) {
 		if (ev->ev_flags & LU_EVLIST_FINALIZING){
-			/* XXXX Debug */
+			//XXX DEBUG
 			return 0;
 		}
 	}
@@ -700,38 +768,40 @@ int lu_event_del_nolock_(lu_event_t *ev, int blocking){
 		}
 	}
 
-	if (ev->ev_flags & LU_EV_LIST_TIMEOUT) {
+	if (ev->ev_flags & LU_EVLIST_TIMEOUT) {
 		/* Notify the base if this was the minimal timeout */
 		if (lu_min_heap_top_(&base->time_heap) == ev)
 			notify = 1;
-		event_queue_remove_timeout(base, ev);
+		lu_event_queue_remove_timeout(base, ev);
 	}
 
 	if (ev->ev_flags & LU_EVLIST_ACTIVE)
-		event_queue_remove_active(base, event_to_event_callback(ev));
+		lu_event_queue_remove_active(base, lu_event_to_event_callback(ev));
 	else if (ev->ev_flags & LU_EVLIST_ACTIVE_LATER)
-		event_queue_remove_active_later(base, event_to_event_callback(ev));
+		lu_event_queue_remove_active_later(base, lu_event_to_event_callback(ev));
 
-	if (ev->ev_flags & LU_EV_LIST_INSERTED) {
+	if (ev->ev_flags & LU_EVLIST_INSERTED) {
 		event_queue_remove_inserted(base, ev);
 		if (ev->ev_events & (LU_EV_READ|LU_EV_WRITE|LU_EV_CLOSED))
-			res = evmap_io_del_(base, ev->ev_fd, ev);
+
+			res = lu_evmap_io_del_(base, ev->ev_fd, ev);
 		else
-			res = evmap_signal_del_(base, (int)ev->ev_fd, ev);
+			res = lu_evmap_signal_del_(base, (int)ev->ev_fd, ev);
 		if (res == 1) {
 			/* evmap says we need to notify the main thread. */
 			notify = 1;
 			res = 0;
 		}
+
 		/* If we do not have events, let's notify event base so it can
 		 * exit without waiting */
-		if (!event_haveevents(base) && !N_ACTIVE_CALLBACKS(base))
+		if (!lu_event_haveevents(base) && !N_ACTIVE_CALLBACKS(base))
 			notify = 1;
 	}
-
+	//NOW:
 	/* if we are not in the right thread, we need to wake up the loop */
 	if (res != -1 && notify && LU_EVBASE_NEED_NOTIFY(base) )
-		evthread_notify_base(base);
+		lu_evthread_notify_base(base);
 
 	lu_event_debug_note_del_(ev);
 
@@ -742,7 +812,7 @@ int lu_event_del_nolock_(lu_event_t *ev, int blocking){
 	 */
 #ifndef LU_EVENT__DISABLE_THREAD_SUPPORT
 	if (blocking != LU_EVENT_DEL_NOBLOCK &&
-	    base->current_event == event_to_event_callback(ev) &&
+	    base->current_event == lu_event_to_event_callback(ev) &&
 	    !LU_EVBASE_IN_THREAD(base) &&
 	    (blocking == LU_EVENT_DEL_BLOCK || !(ev->ev_events & LU_EV_FINALIZE))) {
 		++base->current_event_waiters;
@@ -794,13 +864,13 @@ static void
 lu_event_queue_remove_timeout(lu_event_base_t *base, lu_event_t *ev){
 
 	LU_EVENT_BASE_ASSERT_LOCKED(base);
-	if (EVUTIL_FAILURE_CHECK(!(ev->ev_flags & LU_EV_LIST_TIMEOUT))) {
+	if (EVUTIL_FAILURE_CHECK(!(ev->ev_flags & LU_EVLIST_TIMEOUT))) {
 		event_errx(1, "%s: %p(fd "LU_EV_SOCK_FMT") not on queue %x", __func__,
-                   (void *)ev, LU_EV_SOCK_ARG(ev->ev_fd), LU_EV_LIST_TIMEOUT);
+                   (void *)ev, LU_EV_SOCK_ARG(ev->ev_fd), LU_EVLIST_TIMEOUT);
 		return;
 	}
 	LU_DECR_EVENT_COUNT(base, ev->ev_flags);
-	ev->ev_flags &= ~LU_EV_LIST_TIMEOUT;
+	ev->ev_flags &= ~LU_EVLIST_TIMEOUT;
 
 	if (is_common_timeout(&ev->ev_timeout, base)) {
 		lu_common_timeout_list_t *ctl =
@@ -818,4 +888,35 @@ static inline lu_common_timeout_list_t *
 lu_get_common_timeout_list(lu_event_base_t *base, const struct timeval *tv)
 {
 	return base->common_timeout_queues[LU_COMMON_TIMEOUT_IDX(tv)];
+}
+
+static void lu_event_queue_remove_inserted(lu_event_base_t *base, lu_event_t *ev){
+	LU_EVENT_BASE_ASSERT_LOCKED(base);
+	if (LU_EVUTIL_FAILURE_CHECK(!(ev->ev_flags & LU_EVLIST_INSERTED))) {
+		LU_EVENT_LOG_ERRORX(1, "%s: %p(fd "LU_EV_SOCK_FMT") not on queue %x", __func__,
+                   (void *)ev, LU_EV_SOCK_ARG(ev->ev_fd), LU_EVLIST_INSERTED);
+		return;
+	}
+	LU_DECR_EVENT_COUNT(base, ev->ev_flags);
+	ev->ev_flags &= ~LU_EVLIST_INSERTED;
+}
+
+
+
+
+static int lu_event_haveevents(lu_event_base_t *base)
+{
+	/* Caller must hold th_base_lock */
+	return (base->virtual_event_count > 0 || base->event_count > 0);
+}
+
+
+static int lu_evthread_notify_base(lu_event_base_t *base){
+	LU_EVENT_BASE_ASSERT_LOCKED(base);
+	if (!base->th_notify_fn)
+		return -1;
+	if (base->is_notify_pending)
+		return 0;
+	base->is_notify_pending = 1;
+	return base->th_notify_fn(base);
 }

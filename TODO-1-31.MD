@@ -13,22 +13,22 @@
 - [X] `lu_event_callback_cancel_nolock_`
 - [X] `event_base_once`
 - [X] `lu_event_queue_remove_timeout`
-- [ ] `event_queue_remove_active`
-- [ ] `event_to_event_callback`
-- [ ] `event_queue_remove_active_later`
-- [ ] `event_queue_remove_inserted`
-- [ ] `evmap_io_del_`
-- [ ] `evmap_signal_del_`
-- [ ] `event_haveevents`
-- [ ] `N_ACTIVE_CALLBACKS`
-- [ ] `evthread_notify_base`
-- [ ] `lu_event_debug_note_del_`
-- [ ] `LU_EVTHREAD_COND_WAIT`
-- [ ] `lu_evthread_is_debug_lock_held_`
-- [x] feat: 添加事件优先级设置与删除函数
-- [x] style: 移除多余空行
-- [x] refactor: 添加错误检查并优化代码
-- [x] perf: 完善lu_common_timeout_list_s的实现,优化相关结构定义
+- [X] `event_queue_remove_active`
+- [X] `event_to_event_callback`
+- [X] `event_queue_remove_active_later`
+- [X] `event_queue_remove_inserted`
+- [X] `evmap_io_del_`
+- [X] `evmap_signal_del_`
+- [X] `event_haveevents`
+- [X] `N_ACTIVE_CALLBACKS`
+- [X] `evthread_notify_base`
+- [X] `lu_event_debug_note_del_`
+- [X] `LU_EVTHREAD_COND_WAIT`
+- [X] `lu_evthread_is_debug_lock_held_`
+- [X] feat: 添加事件优先级设置与删除函数
+- [X] style: 移除多余空行
+- [X] refactor: 添加错误检查并优化代码
+- [X] perf: 完善lu_common_timeout_list_s的实现,优化相关结构定义
 ## 2. 未定义函数或宏
 以下函数或宏在代码中使用，但未定义。
 

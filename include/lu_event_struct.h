@@ -122,9 +122,9 @@ typedef struct lu_event_s{
 
 
 
-#define LU_EV_LIST_TIMEOUT	    0x01
-#define LU_EV_LIST_INSERTED	    0x02
-#define LU_EV_LIST_SIGNAL	    0x04
+#define LU_EVLIST_TIMEOUT	    0x01
+#define LU_EVLIST_INSERTED	    0x02
+#define LU_EVLIST_SIGNAL	    0x04
 #define LU_EVLIST_ACTIVE	    0x08
 #define LU_EVLIST_INTERNAL	    0x10
 #define LU_EVLIST_ACTIVE_LATER  0x20

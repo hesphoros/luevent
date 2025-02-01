@@ -169,7 +169,7 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
     evbase->max_dispatch_time.tv_sec == -1)
     evbase->limit_callbacks_after_priority = INT_MAX;
 
-  //**选择合适的后端 */ 
+  //**选择合适的后端 */
 	for (i = 0; eventops[i] && !evbase->evbase; i++) {
 		if (cfg != NULL) {
 			/* determine if this backend should be avoided */

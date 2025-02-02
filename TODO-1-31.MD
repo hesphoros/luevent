@@ -32,7 +32,7 @@
 ## 2. 未定义函数或宏
 以下函数或宏在代码中使用，但未定义。
 
-- [ ] `lu_evutil_assert_impl`
+- [X] `lu_evutil_assert_impl`
 - [ ] `lu_epoll_init`
 - [ ] `lu_epoll_nochangelist_add`
 - [ ] `lu_epollnochangelist_del`

@@ -42,7 +42,7 @@ int lu_evsig_init_(lu_event_base_t *base){
 		LU_EV_READ | LU_EV_PERSIST, lu_evsig_cb, base);
 	base->sig_info_.ev_signal.ev_flags |= LU_EVLIST_INTERNAL;
 	lu_event_priority_set(&base->sig_info_.ev_signal, 0);
-	
+
 	base->evsigsel_op = &evsigops;
 
 	return 0;
@@ -95,7 +95,7 @@ lu_evsig_cb(lu_evutil_socket_t fd, short what, void *arg)
 	LU_EVBASE_ACQUIRE_LOCK(base, th_base_lock);
 	for (i = 0; i < NSIG; ++i) {
 		if (ncaught[i])
-			evmap_signal_active_(base, i, ncaught[i]);
+			lu_evmap_signal_active_(base, i, ncaught[i]);
 	}
 	LU_EVBASE_RELEASE_LOCK(base, th_base_lock);
 }

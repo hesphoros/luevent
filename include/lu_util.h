@@ -96,6 +96,10 @@ extern "C" {
 /** @} */
 
 
+
+#define LU_EVUTIL_FALLTHROUGH  __attribute__((fallthrough))
+
+
 /**
    @name Limits for SIZE_T and SSIZE_T
 
@@ -218,7 +222,7 @@ LU_EVENT_EXPORT_SYMBOL
 LU_EVENT_EXPORT_SYMBOL
     int lu_evutil_gettime_monotonic_(lu_evutil_monotonic_timer_t * base,struct timeval * tv);
 
-static void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) ;
+void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) ;
 
 /**文件操作相关函数 */
 int lu_evutil_create_dictionay(const char * path);
@@ -299,6 +303,9 @@ int lu_evutil_closesocket(lu_evutil_socket_t s){ return close(s); }
 #define LU_EVUTIL_CLOSESOCKET(s) lu_evutil_closesocket(s)
 #define lu_evutil_timerisset(tvp) timerisset(tvp)
 
+#define lu_evtimer_assign(ev,b,cb,arg)  \
+    lu_event_assign((ev),(b),-1,0,(cb),(arg))
+
 #define LU_EVUTIL_ERR_IS_EAGAIN(e) \
 	((e) == EAGAIN)
 
@@ -343,10 +350,25 @@ char LU_EVUTIL_TOLOWER_(char c);
    if there are no entries for 'slot'.  Does no bounds-checking. */
 #define GET_SIGNAL_SLOT(x, map, slot, type)			\
 	(x) = (struct type *)((map)->entries[slot])
+
+#define GET_SIGNAL_SLOT_AND_CTOR(x, map, slot, type, ctor, fdinfo_len)	\
+	do {								\
+		if ((map)->entries[slot] == NULL) {			\
+			(map)->entries[slot] =				\
+			    mm_calloc(1,sizeof(struct type)+fdinfo_len); \
+			if (LU_EVUTIL_UNLIKELY((map)->entries[slot] == NULL)) \
+				return (-1);				\
+			(ctor)((struct type *)(map)->entries[slot]);	\
+		}							\
+		(x) = (struct type *)((map)->entries[slot]);		\
+	} while (0)
+
+
 #define GET_IO_SLOT(x,map,slot,type) GET_SIGNAL_SLOT(x,map,slot,type)
 #define GET_IO_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)	\
 	GET_SIGNAL_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)
 #define FDINFO_OFFSET sizeof(struct evmap_io)
+
 
 
 #define N_ACTIVE_CALLBACKS(base)					\

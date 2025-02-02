@@ -114,7 +114,10 @@ LU_EVENT_EXPORT_SYMBOL void lu_event_log_logv_(int severity, const char* errstr,
 #define LU_EVENT_LOG_ERRORX(errnum, fmt, ...) lu_event_errorx(errnum, __FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 #define LU_EVENT_LOG_WARNX(fmt, ...) lu_event_warnx(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 #define LU_EVENT_LOG_MSGX(fmt, ...) lu_event_msgx(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
-#define LU_EVENT_LOG_DEBUGX(fmt, ...) lu_event_debugx_(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
+#define LU_EVENT_LOG_DEBUGX(fmt, ...) \
+    do { \
+        lu_event_debugx_(__FILE__, __LINE__, (fmt), ##__VA_ARGS__); \
+    } while (0)
 
 #define LU_EVENT_LOG_ERRORV(fmt,...) lu_event_errorv(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)
 #define LU_EVENT_LOG_FATAL(fmt, ...) lu_event_fatal(__FILE__, __LINE__, (fmt), ##__VA_ARGS__)

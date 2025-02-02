@@ -49,7 +49,7 @@ __attribute__((constructor)) void lu_util_sock_hash_table_constructor(void) {
 
 
 // 内联函数实现
-static  void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) {
+void lu_evutil_assert_impl(const char *file, int line, const char *cond, const char *func) {
     fprintf(stderr, "Assertion %s failed in %s:%d\n", cond, file, line);
     LU_EVENT_LOG_ERRORX(LU_EVENT_ERROR_ABORT_, "%s:%d: Assertion %s failed in %s", file, line, cond, func);
     abort();

@@ -2,7 +2,6 @@
 #include "lu_util.h"
 #include <errno.h>
 #include "lu_log-internal.h"
-#include "lu_event-internal.h"
 #include "lu_mm-internal.h"
 #include <time.h>
 #include <sys/time.h>

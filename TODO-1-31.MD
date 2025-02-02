@@ -50,7 +50,5 @@
 - [ ] `lu_epoll_dealloc`
 
 ## 4. 语法问题
-- [ ] `LU_EVLOCK_ASSERT_LOCKED` 宏的 `do` 和 `while(0)` 闭合符号问题。
+- [X] `LU_EVLOCK_ASSERT_LOCKED` 宏的 `do` 和 `while(0)` 闭合符号问题。
 ```
-
-你可以根据自己的需要选择将任务标记为 `[x]` 以表示已完成，或者保持 `[ ]` 来标记待处理的任务。

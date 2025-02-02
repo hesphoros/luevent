@@ -94,7 +94,8 @@
         "iterator": "c",
         "lu_watch.h": "c",
         "atomic": "c",
-        "condition_variable": "c"
+        "condition_variable": "c",
+        "map": "c"
     },
     "Codegeex.RepoIndex": true
 }

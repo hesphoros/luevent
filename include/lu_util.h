@@ -359,10 +359,11 @@ char LU_EVUTIL_TOLOWER_(char c);
    if there are no entries for 'slot'.  Does no bounds-checking. */
 #define GET_SIGNAL_SLOT(x, map, slot, type)			\
 	(x) = (struct type *)((map)->entries[slot])
-
-#define GET_IO_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)	\
-	GET_SIGNAL_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)
-
+/* As GET_SLOT, but construct the entry for 'slot' if it is not present,
+   by allocating enough memory for a 'struct type', and initializing the new
+   value by calling the function 'ctor' on it.  Makes the function
+   return -1 on allocation failure.
+ */
 #define GET_SIGNAL_SLOT_AND_CTOR(x, map, slot, type, ctor, fdinfo_len)	\
 	do {								\
 		if ((map)->entries[slot] == NULL) {			\
@@ -375,19 +376,21 @@ char LU_EVUTIL_TOLOWER_(char c);
 		(x) = (struct type *)((map)->entries[slot]);		\
 	} while (0)
 
+/* If we aren't using hashtables, then define the IO_SLOT macros and functions
+   as thin aliases over the SIGNAL_SLOT versions. */
 
 #define GET_IO_SLOT(x,map,slot,type) GET_SIGNAL_SLOT(x,map,slot,type)
+#define GET_IO_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)	\
+	GET_SIGNAL_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)
+#define FDINFO_OFFSET sizeof(struct lu_evmap_io_s)
 
-#define FDINFO_OFFSET sizeof(struct evmap_io)
 
 
 
 #define N_ACTIVE_CALLBACKS(base)					\
 	((base)->event_count_active)
 
-#define EVENT_DEBUG_MODE_IS_ON (event_debug_mode_on_)
-
-
+#define LU_EVENT_DEBUG_MODE_IS_ON() event_debug_mode_on_
 
 
 #ifdef __cplusplus

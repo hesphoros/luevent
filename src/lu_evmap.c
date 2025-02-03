@@ -20,9 +20,19 @@ static void lu_evmap_signal_init(lu_evmap_signal_t *entry);
 
 static int
 	lu_event_delete_all_in_dlist(struct lu_event_dlist *dlist);
+static int
+	lu_evmap_make_space(lu_event_signal_map_t *map, int slot, int msize);
 
+typedef int (*lu_evmap_io_foreach_fd_cb)(
+	lu_event_base_t *, lu_evutil_socket_t, lu_evmap_io_t *, void *);
+
+void lu_evmap_io_init( lu_evmap_io_t *entry);
+
+// 函数声明：初始化事件I/O映射表
 void lu_evmap_io_initmap(lu_event_io_map_t* ctx){
+    // 将映射表中的条目数量初始化为0
     ctx->nentries = 0;
+    // 将映射表中的条目指针初始化为NULL，表示当前没有条目
     ctx->entries = NULL;
 }
 
@@ -88,6 +98,10 @@ static int
 lu_evmap_signal_delete_all_iter_fn(lu_event_base_t *base, int signum,
     lu_evmap_signal_t *sig_info, void *arg)
 {
+	LU_UNUSED(signum);
+	LU_UNUSED(sig_info);
+	LU_UNUSED(arg);
+	LU_UNUSED(base);
 	return lu_event_delete_all_in_dlist(&sig_info->events);
 }
 
@@ -97,8 +111,39 @@ static int
 lu_evmap_io_delete_all_iter_fn( lu_event_base_t *base, lu_evutil_socket_t fd,
     lu_evmap_io_t *io_info, void *arg)
 {
+
+	LU_UNUSED(fd);
+	LU_UNUSED(arg);
+	LU_UNUSED(base);
 	return lu_event_delete_all_in_dlist(&io_info->events);
 }
+
+
+static int
+lu_evmap_io_foreach_fd(lu_event_base_t *base,
+    lu_evmap_io_foreach_fd_cb fn,
+    void *arg)
+{
+	lu_evutil_socket_t fd;
+	lu_event_io_map_t *iomap = &base->io;
+	int r = 0;
+// #ifdef LU_EVMAP_USE_HT
+// 	struct event_map_entry **mapent;
+// 	HT_FOREACH(mapent, event_io_map, iomap) {
+// 		struct evmap_io *ctx = &(*mapent)->ent.evmap_io;
+// 		fd = (*mapent)->fd;
+// #else
+	for (fd = 0; fd < iomap->nentries; ++fd) {
+		lu_evmap_io_t *ctx = iomap->entries[fd];
+		if (!ctx)
+			continue;
+// #endif
+		if ((r = fn(base, fd, ctx, arg)))
+			break;
+	}
+	return r;
+}
+
 
 
 void lu_evmap_delete_all_(lu_event_base_t *base){
@@ -151,7 +196,7 @@ lu_evmap_io_del_(lu_event_base_t *base, lu_evutil_socket_t fd, lu_event_t *ev)
 		return (-1);
 #endif
 
-	GET_IO_SLOT(ctx, io, fd, evmap_io);
+	GET_IO_SLOT(ctx, io, fd, lu_evmap_io_s);
 
 	nread = ctx->nread;
 	nwrite = ctx->nwrite;
@@ -201,13 +246,13 @@ lu_evmap_io_del_(lu_event_base_t *base, lu_evutil_socket_t fd, lu_event_t *ev)
 
 int lu_evmap_signal_del_(lu_event_base_t *base, int sig, lu_event_t *ev){
 	const lu_event_op_t *evsel = base->evsigsel_op;
-	lu_event_signal_map_t *map = &base->sigmap;
+	struct lu_event_signal_map_s *map = &base->sigmap;
 	lu_evmap_signal_t *ctx;
 
 	if (sig < 0 || sig >= map->nentries)
 		return (-1);
 
-	GET_SIGNAL_SLOT(ctx, map, sig, evmap_signal);
+	GET_SIGNAL_SLOT(ctx, map, sig, lu_evmap_signal_s);
 
 	LIST_REMOVE(ev, ev_signal_next);
 
@@ -231,6 +276,41 @@ static void lu_evmap_signal_init(lu_evmap_signal_t *entry)
 
 
 
+/** Expand 'map' with new entries of width 'msize' until it is big enough
+	to store a value in 'slot'.
+ */
+static int
+	lu_evmap_make_space(lu_event_signal_map_t *map, int slot, int msize)
+{
+	if (map->nentries <= slot) {
+		int nentries = map->nentries ? map->nentries : 32;
+		void **tmp;
+
+		if (slot > INT_MAX / 2)
+			return (-1);
+
+		while (nentries <= slot)
+			nentries <<= 1;
+
+		if (nentries > INT_MAX / msize)
+			return (-1);
+
+		tmp = (void **)mm_realloc(map->entries, nentries * msize);
+		if (tmp == NULL)
+			return (-1);
+
+		mm_memzero(&tmp[map->nentries],
+		    (nentries - map->nentries) * msize);
+
+		map->nentries = nentries;
+		map->entries = tmp;
+	}
+
+	return (0);
+}
+
+
+
 int lu_evmap_signal_add_(lu_event_base_t *base, int sig, lu_event_t *ev){
 	const lu_event_op_t *evsel = base->evsigsel_op;
 	lu_event_signal_map_t *map = &base->sigmap;
@@ -240,7 +320,7 @@ int lu_evmap_signal_add_(lu_event_base_t *base, int sig, lu_event_t *ev){
 		return (-1);
 
 	if (sig >= map->nentries) {
-		if (evmap_make_space(
+		if (lu_evmap_make_space(
 			map, sig, sizeof(struct evmap_signal *)) == -1)
 			return (-1);
 	}

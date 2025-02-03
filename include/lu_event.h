@@ -25,13 +25,12 @@ void lu_event_base_free(lu_event_base_t *base);
 int lu_event_del(lu_event_t* ev);
 int lu_event_del_noblock(lu_event_t  *ev);
 void lu_event_active_nolock_(lu_event_t *ev, int res, short count);
-int lu_event_add_nolock_(lu_event_t *ev,const struct timeval *tv, int tv_is_absolute);
-
-int lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers);
-
+int 
+    lu_event_add_nolock_(lu_event_t *ev,const struct timeval *tv, int tv_is_absolute);
+int 
+    lu_event_base_free_queues_(lu_event_base_t *base,int run_finalizers);
 static int
     lu_event_base_cancel_single_callback_(lu_event_base_t *base,lu_event_callback_t *evcb,int run_finalizers);
-
 int
     lu_event_once(lu_evutil_socket_t fd, short events,void (*callback)(lu_evutil_socket_t, short, void *),void *arg, const struct timeval *tv);
 
@@ -39,6 +38,8 @@ static void
     lu_event_queue_remove_active(lu_event_base_t *base, lu_event_callback_t *evcb);
 static void
     lu_event_queue_remove_active_later(lu_event_base_t *base, lu_event_callback_t *evcb);
+
+
 
 
 int lu_event_callback_activate_nolock_(lu_event_base_t *, lu_event_callback_t *);

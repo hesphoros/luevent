@@ -40,7 +40,7 @@ typedef lu_event_signal_map_t lu_event_io_map_t;
 typedef struct lu_event_map_entry_s lu_event_map_entry_t;
 typedef struct lu_event_base_s  lu_event_base_t;
 //#define lu_event_io_map_t lu_event_signal_map_t
-LIST_HEAD(lu_event_dlist, lu_event_t);
+LIST_HEAD(lu_event_dlist, lu_event_s);
 
 /** evmap_io 列表的条目：记录想要在给定 fd
  * 上读取或写入的所有事件，以及每个事件的数量。
@@ -91,6 +91,11 @@ static int lu_evmap_signal_foreach_signal(lu_event_base_t *base,
     lu_evmap_signal_foreach_signal_cb fn,
     void *arg);
 
+/* code specific to file descriptors */
+
+/** Constructor for struct lu_evmap_io_s */
+void lu_evmap_io_init( lu_evmap_io_t *entry);
+
 void lu_evmap_io_initmap(lu_event_io_map_t* ctx);
 void lu_evmap_siganl_initmap(lu_event_signal_map_t* ctx);
 void lu_evmap_signal_clear_(lu_event_signal_map_t *ctx);
@@ -99,10 +104,26 @@ void lu_evmap_io_clear_(lu_event_io_map_t* ctx);
 /* Callback type for evmap_signal_foreach_signal */
 void lu_evmap_delete_all_(lu_event_base_t *base);
 
-int
-lu_evmap_io_del_(lu_event_base_t *base, lu_evutil_socket_t fd, lu_event_t *ev);
+int lu_evmap_io_del_(lu_event_base_t *base, lu_evutil_socket_t fd, lu_event_t *ev);
 
 int lu_evmap_signal_del_(lu_event_base_t *base, int signum, lu_event_t *ev);
+
+
+/** Add an IO event (some combination of EV_READ or EV_WRITE) to an
+    event_base's list of events on a given file descriptor, and tell the
+    underlying eventops about the fd if its state has changed.
+
+    Requires that ev is not already added.
+
+    @param base the event_base to operate on.
+    @param fd the file descriptor corresponding to ev.
+    @param ev the event to add.
+*/
+int lu_evmap_io_add_(lu_event_base_t *base, lu_evutil_socket_t fd, lu_event_t *ev);
+
+
+
+int lu_evmap_signal_add_(lu_event_base_t *base, int sig, lu_event_t *ev);
 
 #ifdef __cplusplus
 }

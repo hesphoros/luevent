@@ -50,11 +50,6 @@ int lu_evsig_init_(lu_event_base_t *base){
 
 
 
-#ifndef NSIG
-#define NSIG 32
-#endif
-
-
 /*
 该函数lu_evsig_cb是一个静态函数，用于处理文件描述符fd上的信号事件。当有信号到达时，该函数会被调用，读取并处理这些信号。*/
 /* Callback for when the signal handler write a byte to our signaling socket */

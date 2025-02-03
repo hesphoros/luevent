@@ -333,12 +333,21 @@ int lu_evutil_closesocket(lu_evutil_socket_t s){ return close(s); }
 #define COMMON_TIMEOUT_MASK     0xf0000000
 #define COMMON_TIMEOUT_MAGIC    0x50000000
 
+#ifndef MAX
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#endif
+
+#define MAX_EVENT_COUNT(var, v) var = MAX(var, v)
+
 #define LU_DECR_EVENT_COUNT(base,flags) \
 	((base)->event_count -= !((flags) & LU_EVLIST_INTERNAL))
 
 #define LU_COMMON_TIMEOUT_IDX(tv) \
 	(((tv)->tv_usec & COMMON_TIMEOUT_IDX_MASK)>>COMMON_TIMEOUT_IDX_SHIFT)
-
+#define LU_INCR_EVENT_COUNT(base,flags) do {					\
+	((base)->event_count += !((flags) & LU_EVLIST_INTERNAL));			\
+	MAX_EVENT_COUNT((base)->event_count_max, (base)->event_count);		\
+} while (0)
 
 char LU_EVUTIL_TOUPPER_(char c);
 char LU_EVUTIL_TOLOWER_(char c);
@@ -350,6 +359,9 @@ char LU_EVUTIL_TOLOWER_(char c);
    if there are no entries for 'slot'.  Does no bounds-checking. */
 #define GET_SIGNAL_SLOT(x, map, slot, type)			\
 	(x) = (struct type *)((map)->entries[slot])
+
+#define GET_IO_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)	\
+	GET_SIGNAL_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)
 
 #define GET_SIGNAL_SLOT_AND_CTOR(x, map, slot, type, ctor, fdinfo_len)	\
 	do {								\
@@ -365,14 +377,16 @@ char LU_EVUTIL_TOLOWER_(char c);
 
 
 #define GET_IO_SLOT(x,map,slot,type) GET_SIGNAL_SLOT(x,map,slot,type)
-#define GET_IO_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)	\
-	GET_SIGNAL_SLOT_AND_CTOR(x,map,slot,type,ctor,fdinfo_len)
+
 #define FDINFO_OFFSET sizeof(struct evmap_io)
 
 
 
 #define N_ACTIVE_CALLBACKS(base)					\
 	((base)->event_count_active)
+
+#define EVENT_DEBUG_MODE_IS_ON (event_debug_mode_on_)
+
 
 #ifdef __cplusplus
 }

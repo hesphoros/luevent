@@ -50,6 +50,8 @@ static inline lu_event_t *
 static void
 	lu_event_queue_remove_inserted(lu_event_base_t *, lu_event_t *);
 
+static void
+	lu_event_queue_insert_inserted(lu_event_base_t *, lu_event_t *);
 
 static int
 	lu_evthread_notify_base(lu_event_base_t *base);
@@ -909,6 +911,20 @@ static void lu_event_queue_remove_inserted(lu_event_base_t *base, lu_event_t *ev
 
 
 
+static void lu_event_queue_insert_inserted(lu_event_base_t *base, lu_event_t *ev){
+	LU_EVENT_BASE_ASSERT_LOCKED(base);
+
+	if (LU_EVUTIL_FAILURE_CHECK(ev->ev_flags & LU_EVLIST_INSERTED)) {
+		LU_EVENT_LOG_ERRORX(1, "%s: %p(fd "LU_EV_SOCK_FMT") already inserted", __func__,(void *)ev, LU_EV_SOCK_ARG(ev->ev_fd));
+		return;
+	}
+
+	LU_INCR_EVENT_COUNT(base, ev->ev_flags);
+
+	ev->ev_flags |= LU_EVLIST_INSERTED;
+}
+
+
 static int lu_event_haveevents(lu_event_base_t *base)
 {
 	/* Caller must hold th_base_lock */
@@ -1189,3 +1205,4 @@ int lu_event_callback_activate_nolock_(lu_event_base_t *base, lu_event_callback_
 
 	return r;
 }
+

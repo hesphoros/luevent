@@ -20,15 +20,15 @@ static void close_epoll_handle(int h) { close(h); }
 //DELTETME:
 #define USING_TIMERFD
 
-static void* lu_epoll_init(lu_event_base_t* );
+void* lu_epoll_init(lu_event_base_t* );
 
-static int lu_epoll_nochangelist_add(lu_event_base_t* , lu_evutil_socket_t , short , short , void* );
+int lu_epoll_nochangelist_add(lu_event_base_t* , lu_evutil_socket_t , short , short , void* );
 
-static int lu_epollnochangelist_del(lu_event_base_t *, lu_evutil_socket_t ,short , short , void *);
+int lu_epollnochangelist_del(lu_event_base_t *, lu_evutil_socket_t ,short , short , void *);
 
-static int lu_epoll_dispatch(lu_event_base_t*, struct timeval *);
+int lu_epoll_dispatch(lu_event_base_t*, struct timeval *);
 
-static void lu_epoll_dealloc(lu_event_base_t *);
+void lu_epoll_dealloc(lu_event_base_t *);
 
 
 int lu_event_changelist_add_(lu_event_base_t *base, lu_evutil_socket_t fd, short old, short events,void *fdinfo);

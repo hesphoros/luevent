@@ -13,7 +13,7 @@
 #endif
 
 //初始化epoll句柄
-static void* lu_epoll_init(lu_event_base_t* base){
+void* lu_epoll_init(lu_event_base_t* base){
 
     lu_epoll_handle_t epoll_fd = INVALID_EPOLL_HANDLE;
     struct epool_op* epoll_op;
@@ -102,7 +102,7 @@ static void* lu_epoll_init(lu_event_base_t* base){
 
 
 
-static int lu_epoll_nochangelist_add(lu_event_base_t* base, lu_evutil_socket_t fd, short old, short events, void* fdinfo){
+int lu_epoll_nochangelist_add(lu_event_base_t* base, lu_evutil_socket_t fd, short old, short events, void* fdinfo){
     LU_UNUSED(base);
     LU_UNUSED(fd);
     LU_UNUSED(old);
@@ -114,7 +114,7 @@ static int lu_epoll_nochangelist_add(lu_event_base_t* base, lu_evutil_socket_t f
 
 
 
-static int lu_epollnochangelist_del(lu_event_base_t *base, lu_evutil_socket_t fd,short old, short events, void *fdinfo)
+int lu_epollnochangelist_del(lu_event_base_t *base, lu_evutil_socket_t fd,short old, short events, void *fdinfo)
 {
     LU_UNUSED(base);
     LU_UNUSED(fd);
@@ -125,13 +125,13 @@ static int lu_epollnochangelist_del(lu_event_base_t *base, lu_evutil_socket_t fd
 }
 
 
-static int lu_epoll_dispatch(lu_event_base_t*base, struct timeval *tv){
+int lu_epoll_dispatch(lu_event_base_t*base, struct timeval *tv){
     LU_UNUSED(base);
     LU_UNUSED(tv);
     return 0;
 }
 
-static void lu_epoll_dealloc(lu_event_base_t *base){
+void lu_epoll_dealloc(lu_event_base_t *base){
     LU_UNUSED(base);
 
 }

@@ -3,6 +3,7 @@
 #include "lu_util.h"
 #include "lu_event-internal.h"
 #include "lu_event.h"
+#include <sys/queue.h>
 #include <signal.h>
 #include <sys/signal.h> // 某些平台需要额外包含
 
@@ -16,6 +17,9 @@ lu_evmap_io_delete_all_iter_fn( lu_event_base_t *base, lu_evutil_socket_t fd,
 void lu_evmap_signal_clear_(lu_event_signal_map_t *ctx);
 
 static void lu_evmap_signal_init(lu_evmap_signal_t *entry);
+
+static int
+	lu_event_delete_all_in_dlist(struct lu_event_dlist *dlist);
 
 void lu_evmap_io_initmap(lu_event_io_map_t* ctx){
     ctx->nentries = 0;
@@ -66,6 +70,17 @@ static int lu_evmap_signal_foreach_signal(lu_event_base_t *base,
 			break;
 	}
 	return r;
+}
+
+
+/* Helper for evmap_delete_all_: delete every event in an event_dlist. */
+static int
+lu_event_delete_all_in_dlist(struct lu_event_dlist *dlist)
+{
+	lu_event_t *ev;
+	while ((ev = LIST_FIRST(dlist)))
+		lu_event_del(ev);
+	return 0;
 }
 
 /* Helper for evmap_delete_all_: delete every event pending on a signal. */

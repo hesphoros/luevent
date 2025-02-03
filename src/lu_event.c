@@ -63,6 +63,13 @@ static int
 static inline int
 	lu_is_common_timeout(const struct timeval *tv,const lu_event_base_t *base);
 
+
+/* Add the timeout for the first event in given common timeout list to the
+ * event_base's minheap. */
+static void
+	lu_common_timeout_schedule(lu_common_timeout_list_t *ctl,const struct timeval *now, lu_event_t *head);
+
+
 static const lu_event_op_t* eventops[] = {
   &epool_ops,
  // &lu_poll_ops,
@@ -493,9 +500,10 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers){
 	mm_free(base);
 }
 
-int lu_event_del(lu_event_t* ev){
+int lu_event_del(lu_event_t* ev)
+{
   //TODO:
-  lu_event_del_(ev, LU_EVENT_DEL_AUTOBLOCK);
+  return lu_event_del_(ev, LU_EVENT_DEL_AUTOBLOCK);
 }
 
 // 定义一个静态函数，用于删除事件
@@ -1201,8 +1209,37 @@ int lu_event_callback_activate_nolock_(lu_event_base_t *base, lu_event_callback_
 	lu_event_queue_insert_active(base, evcb);
 
 	if (LU_EVBASE_NEED_NOTIFY(base))
-		evthread_notify_base(base);
+		lu_evthread_notify_base(base);
 
 	return r;
 }
 
+
+
+static void lu_common_timeout_schedule(lu_common_timeout_list_t *ctl,const struct timeval *now, lu_event_t *head){
+
+	LU_UNUSED(now);
+	struct timeval timeout = head->ev_timeout;
+	timeout.tv_usec &= MICROSECONDS_MASK;
+	lu_event_add_nolock_(&ctl->timeout_event, &timeout, 1);
+}
+
+
+static void lu_event_queue_insert_active(lu_event_base_t *base,  lu_event_callback_t *evcb){
+
+	LU_EVENT_BASE_ASSERT_LOCKED(base);
+	if (evcb->evcb_flags & LU_EVLIST_ACTIVE) {
+		/* Double insertion is possible for active events */
+		return;
+	}
+
+	LU_INCR_EVENT_COUNT(base, evcb->evcb_flags);
+
+	evcb->evcb_flags |= LU_EVLIST_ACTIVE;
+
+	base->event_count_active++;
+	MAX_EVENT_COUNT(base->event_count_active_max, base->event_count_active);
+	LU_EVUTIL_ASSERT(evcb->evcb_pri < base->nactivequeues);
+	TAILQ_INSERT_TAIL(&base->activequeues[evcb->evcb_pri],
+	    evcb, evcb_active_next);
+}

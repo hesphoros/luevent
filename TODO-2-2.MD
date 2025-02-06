@@ -42,7 +42,7 @@ lu_event_callback_activate_nolock_
 
 ### 其他高优先级待办项
 ```markdown
-- [ ] **`LU_EVBASE_ASSERT_LOCKED` 宏未定义**
+- [X] **`LU_EVBASE_ASSERT_LOCKED` 宏未定义**
   - 现象：`warning: implicit declaration of function 'LU_EVBASE_ASSERT_LOCKED'`
   - 修复：在`lu_event-internal.h`添加：
     ```c
@@ -50,18 +50,10 @@ lu_event_callback_activate_nolock_
         LU_EVUTIL_ASSERT((base)->th_owner == lu_evthread_get_id_())
     ```
 
-- [ ] **函数指针类型转换警告**
+- [X] **函数指针类型转换警告**
   - 现象：`ISO C forbids conversion of function pointer to object pointer`
-  - 修复：使用联合类型转换：
-    ```c
-    union {
-        lu_event_callback_fn func;
-        void* ptr;
-    } u;
-    u.func = ev->ev_callback;
-    LU_EVENT_LOG_DEBUGX("callback=%p", u.ptr);
-    ```
+  - 修复：使用了uintptr_t进行转换
 
-- [ ] **`lu_epoll_init` 等epoll函数未实现**
+- [X] **`lu_epoll_init` 等epoll函数未实现**
   - 现象：`warning: ‘lu_epoll_init’ used but never defined`
   - 方案：创建`src/lu_epoll.c`实现所有epoll相关后端

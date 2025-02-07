@@ -95,7 +95,8 @@
         "lu_watch.h": "c",
         "atomic": "c",
         "condition_variable": "c",
-        "map": "c"
+        "map": "c",
+        "lu_common.h": "c"
     },
     "Codegeex.RepoIndex": true
 }

@@ -27,9 +27,17 @@ static void lu_event_base_free_(lu_event_base_t * base, int run_finalizers);
 static int lu_event_del_(lu_event_t  *ev, int blocking);
 static int lu_event_is_method_disabled(const char *method_name);
 
+static int lu_evthread_make_base_notifiable_nolock_(lu_event_base_t *base);
+
+int
+	lu_evthread_make_base_notifiable(lu_event_base_t *base);
+
 int lu_event_del_nolock_(lu_event_t *ev, int blocking);
 static inline
 lu_event_t *lu_event_callback_to_event(lu_event_callback_t *evcb);
+
+int	lu_event_base_priority_init(lu_event_base_t  *base, int npriorities);
+
 
 static void
 lu_event_once_cb(lu_evutil_socket_t fd, short events, void *arg);
@@ -78,7 +86,7 @@ static const lu_event_op_t* eventops[] = {
 
 };
 
-
+int event_debug_created_threadable_ctx_ = 0;
 
 /* Global state; deprecated */
 LU_EVENT_EXPORT_SYMBOL
@@ -227,10 +235,44 @@ lu_event_base_t *lu_event_base_new_with_config(lu_event_config_t * cfg) {
       evbase->evsel_op = NULL;
       lu_event_base_free(evbase);
       return NULL;
-    }
+	}
+	if (lu_evutil_getenv_("LU_EVENT_SHOW_METHOD"))
+			LU_EVENT_LOG_MSGX("libevent using: %s", evbase->evsel_op->name);
 
-  //TODO: 事件处理器队列
-  return (evbase);
+	/* allocate a single active event queue */
+	if (lu_event_base_priority_init(evbase, 1) < 0) {
+		lu_event_base_free(evbase);
+		return NULL;
+	}
+		/* prepare for threading */
+
+#if !defined(EVENT__DISABLE_THREAD_SUPPORT) && !defined(EVENT__DISABLE_DEBUG_MODE)
+	event_debug_created_threadable_ctx_ = 1;
+#endif
+
+//TODO:
+#ifndef LU_EVENT__DISABLE_THREAD_SUPPORT
+	if (LU_EVTHREAD_LOCKING_ENABLED() &&
+	    (!cfg || !(cfg->flags & LU_EVENT_BASE_FLAG_NOLOCK))) {
+		int r;
+
+		LU_EVTHREAD_ALLOC_LOCK(evbase->th_base_lock, 0);
+		LU_EVTHREAD_ALLOC_COND(evbase->current_event_cond);
+		r = lu_evthread_make_base_notifiable(evbase);
+		if (r<0) {
+			event_warnx("%s: Unable to make base notifiable.", __func__);
+			lu_event_base_free(evbase);
+			return NULL;
+		}
+	}
+#endif
+
+	/* initialize watcher lists */
+	for (i = 0; i < EVWATCH_MAX; ++i)
+		TAILQ_INIT(&evbase->watchers[i]);
+
+	return (evbase);
+
 }
 
 static void lu_event_config_entry_free(lu_event_config_entry_t * entry) {
@@ -1242,4 +1284,102 @@ static void lu_event_queue_insert_active(lu_event_base_t *base,  lu_event_callba
 	LU_EVUTIL_ASSERT(evcb->evcb_pri < base->nactivequeues);
 	TAILQ_INSERT_TAIL(&base->activequeues[evcb->evcb_pri],
 	    evcb, evcb_active_next);
+}
+
+
+int	lu_event_base_priority_init(lu_event_base_t  *base, int npriorities){
+	int i, r;
+	r = -1;
+
+	LU_EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+
+	if (N_ACTIVE_CALLBACKS(base) || npriorities < 1
+	    || npriorities >= LU_EVENT_MAX_PRIORITIES)
+		goto err;
+
+	if (npriorities == base->nactivequeues)
+		goto ok;
+
+	if (base->nactivequeues) {
+		mm_free(base->activequeues);
+		base->nactivequeues = 0;
+	}
+
+	/* Allocate our priority queues */
+	base->activequeues = (struct lu_evcallback_list *)
+	  mm_calloc(npriorities, sizeof(struct lu_evcallback_list));
+	if (base->activequeues == NULL) {
+		LU_EVENT_LOG_WARN("%s: calloc", __func__);
+		goto err;
+	}
+	base->nactivequeues = npriorities;
+
+	for (i = 0; i < base->nactivequeues; ++i) {
+		TAILQ_INIT(&base->activequeues[i]);
+	}
+
+ok:
+	r = 0;
+err:
+	LU_EVBASE_RELEASE_LOCK(base, th_base_lock);
+	return (r);
+}
+
+
+int lu_evthread_make_base_notifiable(lu_event_base_t *base){
+	int r;
+	if (!base)
+		return -1;
+
+	LU_EVBASE_ACQUIRE_LOCK(base, th_base_lock);
+	r = lu_evthread_make_base_notifiable_nolock_(base);
+	LU_EVBASE_RELEASE_LOCK(base, th_base_lock);
+	return r;
+}
+
+
+	void (*cb)(evutil_socket_t, short, void *);
+	int (*notify)(struct event_base *);
+
+	if (base->th_notify_fn != NULL) {
+		/* The base is already notifiable: we're doing fine. */
+		return 0;
+	}
+
+#if defined(EVENT__HAVE_WORKING_KQUEUE)
+	if (base->evsel == &kqops && event_kq_add_notify_event_(base) == 0) {
+		base->th_notify_fn = event_kq_notify_base_;
+		/* No need to add an event here; the backend can wake
+		 * itself up just fine. */
+		return 0;
+	}
+#endif
+
+#ifdef EVENT__HAVE_EVENTFD
+	base->th_notify_fd[0] = evutil_eventfd_(0,
+	    EVUTIL_EFD_CLOEXEC|EVUTIL_EFD_NONBLOCK);
+	if (base->th_notify_fd[0] >= 0) {
+		base->th_notify_fd[1] = -1;
+		notify = evthread_notify_base_eventfd;
+		cb = evthread_notify_drain_eventfd;
+	} else
+#endif
+	if (evutil_make_internal_pipe_(base->th_notify_fd) == 0) {
+		notify = evthread_notify_base_default;
+		cb = evthread_notify_drain_default;
+	} else {
+		return -1;
+	}
+
+	base->th_notify_fn = notify;
+
+	/* prepare an event that we can use for wakeup */
+	event_assign(&base->th_notify, base, base->th_notify_fd[0],
+				 EV_READ|EV_PERSIST|EV_ET, cb, base);
+
+	/* we need to mark this as internal event */
+	base->th_notify.ev_flags |= EVLIST_INTERNAL;
+	event_priority_set(&base->th_notify, 0);
+
+	return event_add_nolock_(&base->th_notify, NULL, 0);
 }

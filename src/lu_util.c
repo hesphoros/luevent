@@ -327,7 +327,7 @@ int lu_evutil_create_dictionay(const char * path){
 
 int lu_evutil_make_socket_closeonexec(lu_evutil_socket_t fd){
     int flags;
-    if(flags = fcntl(fd, F_GETFD, NULL) < 0){
+    if((flags = fcntl(fd, F_GETFD, NULL)) < 0){
         LU_EVENT_LOG_WARN("fcntl(%d, F_GETFD)", fd);
         return -1;
     }

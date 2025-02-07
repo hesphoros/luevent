@@ -120,6 +120,38 @@ extern int lu_evthread_lock_debugging_enabled_;//是否开启了debug调试
 #define LU_EVTHREAD_COND_WAIT(cond, lock)					\
 	( (cond) ? evthread_condition_fns_.wait_condition((cond), (lock), NULL) : 0 )
 
+
+/** As EVTHREAD_COND_WAIT, but gives up after 'tv' has elapsed.  Returns 1
+ * on timeout. */
+#define LU_EVTHREAD_COND_WAIT_TIMED(cond, lock, tv)			\
+	( (cond) ? evthread_condition_fns_.wait_condition((cond), (lock), (tv)) : 0 )
+
+
+/** True iff locking functions have been configured. */
+#define LU_EVTHREAD_LOCKING_ENABLED()		\
+	(evthread_lock_fns_.lock != NULL)
+
+
+
+/** Allocate a new condition variable and store it in the void *, condvar */
+#define LU_EVTHREAD_ALLOC_COND(condvar)					\
+	do {								\
+		(condvar) = evthread_condition_fns_.alloc_condition ?	\
+		    evthread_condition_fns_.alloc_condition(0) : NULL;	\
+	} while (0)
+
+/** Signal one thread waiting on cond */
+#define LU_EVTHREAD_COND_SIGNAL(cond)					\
+	( (cond) ? evthread_condition_fns_.signal_condition((cond), 0) : 0 )
+/** Signal all threads waiting on cond */
+#define LU_EVTHREAD_COND_BROADCAST(cond)					\
+	( (cond) ? evthread_condition_fns_.signal_condition((cond), 1) : 0 )
+
+/** True iff locking functions have been configured. */
+#define LU_EVTHREAD_LOCKING_ENABLED()		\
+	(evthread_lock_fns_.lock != NULL)
+
+
 #elif ! defined(LU_EVENT__DISABLE_THREAD_SUPPORT)
 
 

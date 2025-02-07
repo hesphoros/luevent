@@ -38,7 +38,7 @@ int lu_evsig_init_(lu_event_base_t *base){
     base->sig_info_.sh_old = NULL;
     base->sig_info_.sh_old_max = 0;
 
-    lu_event_assign_(&base->sig_info_.ev_signal, base, base->sig_info_.ev_signal_pair[0],
+    lu_event_assign(&base->sig_info_.ev_signal, base, base->sig_info_.ev_signal_pair[0],
 		LU_EV_READ | LU_EV_PERSIST, lu_evsig_cb, base);
 	base->sig_info_.ev_signal.ev_flags |= LU_EVLIST_INTERNAL;
 	lu_event_priority_set(&base->sig_info_.ev_signal, 0);

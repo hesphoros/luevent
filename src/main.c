@@ -25,12 +25,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include "lu_event.h"
 #include <unistd.h>
 #include "lu_evthread-internal.h"
 #include "lu_thread.h"
 #include "lu_epoll.h"
 
 
-#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
 
+#define LU_EVENT__ENABLE_DEFAULT_MEMORY_LOGGING
 

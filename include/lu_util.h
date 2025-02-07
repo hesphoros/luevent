@@ -392,6 +392,8 @@ char LU_EVUTIL_TOLOWER_(char c);
 
 #define LU_EVENT_DEBUG_MODE_IS_ON() event_debug_mode_on_
 
+#define LU_EVENT_MAX_PRIORITIES 256
+
 
 #ifdef __cplusplus
 }
